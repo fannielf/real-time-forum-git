@@ -112,6 +112,24 @@ func MakeTables(db *sql.DB) {
 		fmt.Println("Error creating Session table:", err)
 		return
 	}
+
+	createMessageTableQuery := `
+	CREATE TABLE IF NOT EXISTS Message (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		sender_id INTEGER NOT NULL,  -- The user who sent the message
+		receiver_id INTEGER NOT NULL, -- The user who receives the message
+		content TEXT NOT NULL,      -- The message content
+		created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- Timestamp when the message was sent
+		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted', 'edited')),  -- Message status
+		FOREIGN KEY (sender_id) REFERENCES User(id),  -- Foreign key to User table (sender)
+		FOREIGN KEY (receiver_id) REFERENCES User(id)  -- Foreign key to User table (receiver)
+	);`
+	if _, err := db.Exec(createMessageTableQuery); err != nil {
+		fmt.Println("Error inserting into Message table:", err)
+		return
+	}
+
+	// Inserting categories to database
 	insertCategoryQuery := `
     INSERT INTO category (name)
     SELECT 'General' WHERE NOT EXISTS (SELECT 1 FROM category WHERE name = 'General')
@@ -130,16 +148,18 @@ func MakeTables(db *sql.DB) {
 		fmt.Println("Error inserting into Category table:", err)
 		return
 	}
+
+	//Insert initial admin data
 	insertUserQuery := `
     INSERT INTO User (username, email, password, created_at)
     SELECT 'admin', 'admin@example.com', 'hashedpassword', datetime('now')
     WHERE NOT EXISTS (SELECT 1 FROM User WHERE username = 'admin');
 `
-
 	if _, err := db.Exec(insertUserQuery); err != nil {
 		fmt.Println("Error inserting into Post table:", err)
 		return
 	}
+
 	//Insert initial data into Post
 	insertPostQuery := `
     INSERT INTO post (title, content, user_id, created_at) 
@@ -165,7 +185,6 @@ func MakeTables(db *sql.DB) {
     INSERT INTO Post_category (post_id, category_id)
 	VALUES (?, 1);
 `
-
 	if _, err := db.Exec(insertPostCategoryQuery, int(lastInsertID)); err != nil {
 		fmt.Println("Error inserting into Post_category table:", err)
 		return
