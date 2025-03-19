@@ -19,8 +19,8 @@ func MakeTables(db *sql.DB) {
 		email TEXT UNIQUE NOT NULL,
 		password TEXT NOT NULL,
 		created_at TEXT NOT NULL,
-		updated_at TEXT NOT NULL,
-		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'delete'))
+		updated_at TEXT,
+		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'deleted'))
 
 	);`
 	if _, err := db.Exec(createUserTableQuery); err != nil {
@@ -34,7 +34,7 @@ func MakeTables(db *sql.DB) {
     	content TEXT NOT NULL,
    		user_id INTEGER NOT NULL,
    		created_at TEXT NOT NULL,
-		status TEXT NOT NULL,
+		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted'))
     	FOREIGN KEY (user_id) REFERENCES User (id)
 	);`
 	if _, err := db.Exec(createPostTableQuery); err != nil {
@@ -116,13 +116,13 @@ func MakeTables(db *sql.DB) {
 	createMessageTableQuery := `
 	CREATE TABLE IF NOT EXISTS Message (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		sender_id INTEGER NOT NULL,  -- The user who sent the message
-		receiver_id INTEGER NOT NULL, -- The user who receives the message
-		content TEXT NOT NULL,      -- The message content
-		created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- Timestamp when the message was sent
-		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted', 'edited')),  -- Message status
-		FOREIGN KEY (sender_id) REFERENCES User(id),  -- Foreign key to User table (sender)
-		FOREIGN KEY (receiver_id) REFERENCES User(id)  -- Foreign key to User table (receiver)
+		sender_id INTEGER NOT NULL,
+		receiver_id INTEGER NOT NULL,
+		content TEXT NOT NULL,
+		created_at TEXT NOT NULL,
+		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted', 'edited')),
+		FOREIGN KEY (sender_id) REFERENCES User(id),
+		FOREIGN KEY (receiver_id) REFERENCES User(id)
 	);`
 	if _, err := db.Exec(createMessageTableQuery); err != nil {
 		fmt.Println("Error inserting into Message table:", err)
@@ -151,12 +151,12 @@ func MakeTables(db *sql.DB) {
 
 	//Insert initial admin data
 	insertUserQuery := `
-    INSERT INTO User (username, email, password, created_at)
-    SELECT 'admin', 'admin@example.com', 'hashedpassword', datetime('now')
+    INSERT INTO User (username, age, gender, firstname, lastname, email, password, created_at)
+    SELECT 'admin', 35, 'female', 'Fanni', 'Vesanen', 'admin@example.com', 'hashedpassword', datetime('now')
     WHERE NOT EXISTS (SELECT 1 FROM User WHERE username = 'admin');
 `
 	if _, err := db.Exec(insertUserQuery); err != nil {
-		fmt.Println("Error inserting into Post table:", err)
+		fmt.Println("Error inserting into User table:", err)
 		return
 	}
 
