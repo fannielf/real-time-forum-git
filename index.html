@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/styles.css">
+    <link rel="icon" type="image/png" href="/assets/favicon.ico">
+    <title>Forum</title>
+</head>
+<body>
+    <header>
+        <h1>grit:garden</h1>
+        <nav>
+            <button id="logout-button" style="display: none;">Logout</button>
+        </nav>
+    </header>
+    <main id="app">
+            <!-- Authentication pages -->
+             <section>
+                {{range .Posts}}
+                <div class="post">
+                    <h3><a href="/post/{{.PostID}}">{{.PostTitle}}</a></h3>
+                    <div class="category-container">
+                
+                        {{range $index, $category := .Categories}}
+                        <p class="category-tags">
+                        {{if $index}} {{end}}{{$category}} {{end}}
+                        </p>
+                    </div>
+                    <div class="post-info-home">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">filter_vintage</span>
+                        <span class="username">{{.Username}}</span>
+                    </div>
+                    <p class="post-content">{{.PostContent}}</p>
+                    <div class="icons-container">
+                        <span class="comment-icon"><span class="material-symbols-outlined">chat</span>{{len .Comments}}</span>
+                        <div class="reaction-buttons">
+                            <span class="material-symbols-outlined">thumb_up</span>
+                            <span class="reaction-count">{{.Likes}}</span>
+                            <span class="material-symbols-outlined">thumb_down</span>
+                            <span class="reaction-count">{{.Dislikes}}</span>
+                        </div>
+                    </div>
+                </div>
+                {{else}}
+                <p>No posts...</p>
+                {{end}}
+             </section>
+            <!-- Main Forum Feed -->
+            <!-- Create Post Page -->
+            <!-- Post Page (with comments) -->
+            <!-- Users (visible all the time) -->
+            <!-- Private Messaging (chat pop-up) -->
+            
+    </main>
+
+    <script scr="app.js"></script>
+</body>
+
+<footer>
+    <p>&copy; 2025 grit:garden. All rights reserved.</p>
+</footer>
+</html>
