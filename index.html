@@ -15,44 +15,63 @@
         </nav>
     </header>
     <main id="app">
-            <!-- Authentication pages -->
-             <section>
-                {{range .Posts}}
-                <div class="post">
-                    <h3><a href="/post/{{.PostID}}">{{.PostTitle}}</a></h3>
-                    <div class="category-container">
-                
-                        {{range $index, $category := .Categories}}
-                        <p class="category-tags">
-                        {{if $index}} {{end}}{{$category}} {{end}}
-                        </p>
-                    </div>
-                    <div class="post-info-home">
-                        <span class="material-symbols-outlined" style="font-size: 24px;">filter_vintage</span>
-                        <span class="username">{{.Username}}</span>
-                    </div>
-                    <p class="post-content">{{.PostContent}}</p>
-                    <div class="icons-container">
-                        <span class="comment-icon"><span class="material-symbols-outlined">chat</span>{{len .Comments}}</span>
-                        <div class="reaction-buttons">
-                            <span class="material-symbols-outlined">thumb_up</span>
-                            <span class="reaction-count">{{.Likes}}</span>
-                            <span class="material-symbols-outlined">thumb_down</span>
-                            <span class="reaction-count">{{.Dislikes}}</span>
-                        </div>
-                    </div>
-                </div>
-                {{else}}
-                <p>No posts...</p>
-                {{end}}
-             </section>
-            <!-- Main Forum Feed -->
-            <!-- Create Post Page -->
-            <!-- Post Page (with comments) -->
-            <!-- Users (visible all the time) -->
-            <!-- Private Messaging (chat pop-up) -->
+        <!-- Authentication pages -->
+        <section id="login-page"></section>
+
+        <!-- Main Forum Feed -->
+        <section id="posts-section">
+            <h2>Forum Feed</h2>
+            <div id="posts-list"></div>
+        </section>
+
+        <!-- Create Post Page -->
+        <section id="create-post-section" style="display: none;">
+            <h2>Create a Post</h2>
+            <div class="container">
+                <form id="create-post-form">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title" required maxlength="50">
+                    <br>
+
+                    <label for="content">Content:</label>
+                    <textarea class="content-textarea" id="content" name="content" required></textarea>
+                    <br>
+
+                    <label>Select Topics:</label>
+                    <div id="category-container"></div> <!-- Categories loaded dynamically -->
+                    <br>
+
+                    <button type="submit">Submit Post</button>
+                </form>
+            </div>
+        </section>
+
+              <!-- Post Page (with comments) -->
+        <section id="post-page" style="display: none;">
+            <h2>Post Details</h2>
+            <div id="post-content"></div> <!-- Post content dynamically loaded here -->
+        </section>
             
-    </main>
+            <!-- Private Messaging (chat pop-up) -->
+        <section id="chat-window" class="chat-popup" style="display: none;">
+            <div class="chat-header">
+                <span id="chat-user-name"></span>
+                <button id="close-chat">X</button>
+            </div>
+             <div id="chat-messages"></div> 
+            <form id="chat-form">
+                <input type="text" id="chat-input" placeholder="Write a message..." autocomplete="off">
+                <button type="submit">Send</button>
+            </form>
+        </section>
+            
+        </main>
+
+        <!-- Sidebar showing users (visible all the time) -->
+        <aside id="chat-sidebar">
+            <h3>Live Chat</h3>
+            <div id="chat-users"></div> 
+        </aside>
 
     <script scr="app.js"></script>
 </body>
