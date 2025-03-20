@@ -8,29 +8,29 @@ import (
 )
 
 // HomePage handles the rendering of the home page
-func GetFeed(w http.ResponseWriter, r *http.Request) {
+func HandleFeed(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json") // Set the response content type to JSON
 
 	switch r.Method {
 	case http.MethodGet:
-		HandleFeedGet(w, r)
-	case http.MethodPost:
-		//HandleHomePost(w, r)
+		GetFeed(w, r)
+	//case http.MethodPost:
+	//HandleHomePost(w, r)
 	default:
-		http.Error(w, fmt.Sprintf("Method Not Allowed"), http.StatusMethodNotAllowed)
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 	}
 }
 
-// HandleFeedGet fetches posts from the database for the home page (returns JSON)
-func HandleFeedGet(w http.ResponseWriter, r *http.Request) {
-	loggedIn, userID, _ := VerifySession(r)
-	if !loggedIn {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
+// GetFeed fetches posts from the database for the home page (returns JSON)
+func GetFeed(w http.ResponseWriter, r *http.Request) {
+	// loggedIn, userID, _ := VerifySession(r)
+	// if !loggedIn {
+	// 	http.Error(w, "Unauthorized", http.StatusUnauthorized)
+	// 	return
+	// }
 
 	// Fetch posts from the database
-	posts, err := GetPosts(userID)
+	posts, err := GetPosts(0)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error fetching posts: %v", err), http.StatusInternalServerError)
 		return

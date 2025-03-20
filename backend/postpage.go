@@ -16,14 +16,14 @@ func PostHandler(w http.ResponseWriter, r *http.Request, data *PageDetails) {
 	postID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/post/"))
 	if err != nil {
 		log.Println("Error converting postID to int:", err)
-		ErrorHandler(w, "Page Not Found", http.StatusNotFound)
+		//ErrorHandler(w, "Page Not Found", http.StatusNotFound)
 		return
 	}
 
 	valid := ValidatePostID(postID)
 	if !valid {
 		log.Println("Invalid postID")
-		ErrorHandler(w, "Page Not Found", http.StatusNotFound)
+		//ErrorHandler(w, "Page Not Found", http.StatusNotFound)
 		return
 	}
 
@@ -33,7 +33,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request, data *PageDetails) {
 	case http.MethodPost:
 		HandlePostPagePost(w, r, data, postID)
 	default:
-		ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		//ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 	}
 
 }
@@ -47,13 +47,13 @@ func HandlePostPageGet(w http.ResponseWriter, r *http.Request, data *PageDetails
 	post, err := GetPostDetails(postID, userID)
 	if err != nil {
 		log.Println("Error fetching post details:", err)
-		ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+		//ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	data.Posts = append(data.Posts, *post)
 
-	RenderTemplate(w, "post", data)
+	//RenderTemplate(w, "post", data)
 }
 
 // HandlePostPagePost handles post requests to the post page
@@ -73,7 +73,7 @@ func HandlePostPagePost(w http.ResponseWriter, r *http.Request, data *PageDetail
 				postID, content, userID, time.Now().Format("2006-01-02 15:04:05"))
 			if err != nil {
 				log.Println("Error creating post:", err)
-				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				//ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
 				return
 			}
 		} else {
@@ -87,7 +87,7 @@ func HandlePostPagePost(w http.ResponseWriter, r *http.Request, data *PageDetail
 				likeType = 2
 			} else {
 				log.Println("Invalid vote value: ", vote)
-				ErrorHandler(w, "Bad Request", http.StatusBadRequest)
+				//ErrorHandler(w, "Bad Request", http.StatusBadRequest)
 				return
 			}
 			// Check if the vote is for a post or a comment
@@ -98,13 +98,13 @@ func HandlePostPagePost(w http.ResponseWriter, r *http.Request, data *PageDetail
 				comment_id, err = strconv.Atoi(commentID)
 				if err != nil {
 					log.Println("Error converting commentID", err)
-					ErrorHandler(w, "Bad Request", http.StatusBadRequest)
+					//ErrorHandler(w, "Bad Request", http.StatusBadRequest)
 					return
 				}
 				exists := ValidateCommentID(comment_id)
 				if !exists {
 					log.Println("CommentID doesn't exist", comment_id)
-					ErrorHandler(w, "Bad Request", http.StatusBadRequest)
+					//ErrorHandler(w, "Bad Request", http.StatusBadRequest)
 					return
 				}
 				post_id = 0
@@ -113,7 +113,7 @@ func HandlePostPagePost(w http.ResponseWriter, r *http.Request, data *PageDetail
 			err = AddVotes(userID, post_id, comment_id, likeType)
 			if err != nil {
 				log.Printf("Error adding votes to the database: userID %d, postID %d, commentID %d, like type %d\n", userID, post_id, comment_id, likeType)
-				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				//ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
 				return
 			}
 		}

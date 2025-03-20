@@ -27,17 +27,19 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	// Handle different routes based on the URL path
 	switch page {
 	case "feed":
-		GetFeed(w, r) // Returns all posts
-	case "create_post":
-		CreatePost(w, r) // API endpoint for creating a post
-	case "login":
-		Login(w, r) // API for login
-	case "logout":
-		Logout(w, r) // API for logout
-	case "post":
-		// Handle post details page (GET specific post)
-		PostDetails(w, r)
+		HandleFeed(w, r) // Returns posts to be shown in feed
+	case "authentication":
+		CheckAuth(w, r)
+	// case "create_post":
+	// 	CreatePost(w, r) // API endpoint for creating a post
+	// case "login":
+	// 	Login(w, r) // API for login
+	// case "logout":
+	// 	Logout(w, r) // API for logout
+	// case "post":
+	// 	// Handle post details page (GET specific post)
+	// 	PostDetails(w, r)
 	default:
-		ErrorHandler(w, "Page Not Found", http.StatusNotFound)
+		//ErrorHandler(w, "Page Not Found", http.StatusNotFound)
 	}
 }

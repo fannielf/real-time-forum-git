@@ -34,7 +34,7 @@ func MakeTables(db *sql.DB) {
     	content TEXT NOT NULL,
    		user_id INTEGER NOT NULL,
    		created_at TEXT NOT NULL,
-		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted'))
+		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted')),
     	FOREIGN KEY (user_id) REFERENCES User (id)
 	);`
 	if _, err := db.Exec(createPostTableQuery); err != nil {
@@ -48,7 +48,7 @@ func MakeTables(db *sql.DB) {
     	post_id INTEGER NOT NULL,
     	user_id INTEGER NOT NULL,
     	created_at TEXT NOT NULL,
-    	status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted'))
+    	status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted')),
     	FOREIGN KEY (post_id) REFERENCES Post (id),
     	FOREIGN KEY (user_id) REFERENCES User (id)
 	);`
@@ -99,12 +99,10 @@ func MakeTables(db *sql.DB) {
 		CREATE TABLE IF NOT EXISTS Session (
 		id TEXT PRIMARY KEY, -- Unique session ID (UUID)
     	user_id INTEGER NOT NULL,
-		session_token TEXT UNIQUE NOT NULL,
-    	status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'expired', 'inactive')),
+    	status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'expired', 'inactive', 'deleted')),
     	created_at TEXT NOT NULL,
 		updated_at TEXT NOT NULL,
 		expires_at TEXT,
-		status TEXT NOT NULL,
 		last_access TEXT NOT NULL,
     	FOREIGN KEY (user_id) REFERENCES User (id)
 	);`

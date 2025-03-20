@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 )
@@ -14,7 +15,7 @@ func VerifySession(r *http.Request) (bool, int, string) {
 		return false, 0, ""
 	}
 
-	err = db.QueryRow("SELECT user_id FROM Session WHERE id = ?", cookie.Value).Scan(&userID)
+	err = db.QueryRow("SELECT user_id FROM Session WHERE id = ? AND status = 'active'", cookie.Value).Scan(&userID)
 	if err != nil {
 		log.Println("No userID found for the cookie")
 		return false, 0, ""
@@ -27,4 +28,13 @@ func VerifySession(r *http.Request) (bool, int, string) {
 	}
 
 	return true, userID, username
+}
+
+func CheckAuth(w http.ResponseWriter, r *http.Request) {
+	loggedIn, userID, _ := VerifySession(r)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"loggedIn": loggedIn,
+		"userID":   userID,
+	})
 }
