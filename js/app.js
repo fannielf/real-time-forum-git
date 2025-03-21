@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 let currentPage = 'feed';
+let errorMsg = '';
 
 function init() {
     // Load the home page by default (e.g., feed page)
@@ -44,7 +45,8 @@ function loadPage(page, postID = null) {
             }
             break;
         default:
-            loadFeedPage();
+            showError();
+            break;
     }
     showPage(page)
     currentPage = page;
@@ -58,4 +60,18 @@ function showPage(pageId) {
 function hideAllPages() {
     const pages = document.querySelectorAll('.page');
     pages.forEach(page => page.style.display = 'none');
+}
+
+function showError() {
+    const errorContainer = document.querySelector("#error-message");
+    const errorText = document.querySelector("#error-text");
+    const backButton = document.querySelector("#error-back-btn");
+
+    if (!errorContainer || !errorText || !backButton) return;
+
+    errorText.textContent = errorMsg;
+
+    backButton.addEventListener("click", () => {
+        loadPage('feed');
+    });
 }

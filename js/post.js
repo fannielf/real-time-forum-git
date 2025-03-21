@@ -7,7 +7,7 @@ function loadPostPage(postID) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error("Failed to load post");
+            return response.json().then(err => { throw new Error(err.error || "Unknown error"); });
         }
         return response.json();  // Parse the JSON response
     })
@@ -17,7 +17,8 @@ function loadPostPage(postID) {
     })
     .catch(error => {
         console.error("Error fetching post:", error);
-        // Optionally, show an error message
+        errorMsg = error.message;
+        loadPage("error");
     });
 }
 

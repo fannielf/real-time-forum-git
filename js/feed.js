@@ -5,7 +5,7 @@ function loadFeedPage() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Failed to load feed');
+            return response.json().then(err => { throw new Error(err.error || "Unknown error"); });
         }
         return response.json();  // Parse the JSON response
     })
@@ -14,7 +14,8 @@ function loadFeedPage() {
     })
     .catch(error => {
         console.error('Error fetching feed:', error);
-        // Optionally, show an error message or redirect to login if not authenticated
+        errorMsg = error.message;
+        loadPage('error');
     });
 }
 

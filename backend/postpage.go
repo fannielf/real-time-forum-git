@@ -18,7 +18,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/api/post/"))
 	if err != nil {
 		log.Println("Error converting postID to int:", err)
-		//ErrorHandler(w, "Page Not Found", http.StatusNotFound)
+		http.Error(w, `{"error": Page Not Found"}`, http.StatusNotFound)
 		return
 	}
 	log.Println("PostID:", postID)
@@ -26,7 +26,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	valid := ValidatePostID(postID)
 	if !valid {
 		log.Println("Invalid postID")
-		//ErrorHandler(w, "Page Not Found", http.StatusNotFound)
+		http.Error(w, `{"error": Page Not Found"}`, http.StatusNotFound)
 		return
 	}
 
@@ -36,7 +36,8 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	// case http.MethodPost:
 	// 	HandlePostPagePost(w, r, data, postID)
 	default:
-		//ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		http.Error(w, `{"error": "Method not allowed"}`, http.StatusMethodNotAllowed)
+		return
 	}
 
 }
@@ -47,7 +48,7 @@ func HandlePostPageGet(w http.ResponseWriter, r *http.Request, postID int) {
 	post, err := GetPostDetails(postID, 0)
 	if err != nil {
 		log.Println("Error fetching post details:", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, `{"error": "Internal Server Error"}`, http.StatusInternalServerError)
 		return
 	}
 	log.Println(post.Categories)

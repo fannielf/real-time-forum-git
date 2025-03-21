@@ -2,7 +2,6 @@ package backend
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -24,7 +23,6 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	} else {
 		page = trimmedPath
 	}
-	fmt.Println(page)
 
 	// Handle different routes based on the URL path
 	switch page {
@@ -39,9 +37,9 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	// case "logout":
 	// 	Logout(w, r) // API for logout
 	case "post":
-		// Handle post details page (GET specific post)
 		PostPage(w, r)
 	default:
-		//ErrorHandler(w, "Page Not Found", http.StatusNotFound)
+		http.Error(w, `{"error": "Page Not Found"}`, http.StatusNotFound)
+		return
 	}
 }
