@@ -2,14 +2,12 @@ package backend
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
 
 // HomePage handles the rendering of the home page
 func HandleFeed(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json") // Set the response content type to JSON
 
 	switch r.Method {
 	case http.MethodGet:
@@ -34,14 +32,14 @@ func GetFeed(w http.ResponseWriter, r *http.Request) {
 	// Fetch posts from the database
 	posts, err := GetPosts(0)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error fetching posts: %v", err), http.StatusInternalServerError)
+		http.Error(w, `{"error": "Internal Server Error"}`, http.StatusInternalServerError)
 		return
 	}
 
 	// Return posts as JSON
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
-		http.Error(w, fmt.Sprintf("Error encoding JSON: %v", err), http.StatusInternalServerError)
+		http.Error(w, `{"error": "Internal Server Error"}`, http.StatusInternalServerError)
 	}
 }
 

@@ -12,8 +12,6 @@ import (
 func Login(w http.ResponseWriter, r *http.Request, data *PageDetails) {
 	data.ValidationError = ""
 	switch r.Method {
-	case http.MethodGet:
-		//RenderTemplate(w, "login", data)
 	case http.MethodPost:
 		HandleLoginPost(w, r, data)
 	default:
