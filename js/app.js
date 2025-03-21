@@ -3,10 +3,12 @@ document.addEventListener('DOMContentLoaded', function() {
     init();
 });
 
+let currentPage = 'feed';
+
 function init() {
     // Load the home page by default (e.g., feed page)
     console.log("initializing the page")
-    loadPage('feed');
+    loadPage(currentPage);
 
     // Handle navigation events (e.g., clicking on links or buttons)
     document.addEventListener("click", async (event) => {
@@ -45,6 +47,7 @@ function loadPage(page, postID = null) {
             loadFeedPage();
     }
     showPage(page)
+    currentPage = page;
 }
 
 function showPage(pageId) {
