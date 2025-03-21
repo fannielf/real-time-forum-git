@@ -12,6 +12,14 @@ body {
     overflow: auto;
 }
 
+/* Wrapper to ensure correct padding for containers */
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 75vw;
+    justify-content: center;
+}
+
 /*------ Buttons ------*/
 
 button {
@@ -66,19 +74,20 @@ h1 {
 
 /*------ Main section ------*/
 
-main#app {
+main {
     display: flex;
     flex-direction: column;
-    margin-top: 75px; /* Space to push content below header */
-    min-height: calc(100vh - 75px - 55px); /* Ensure it fills the rest of the page */
-    width: 75vw;
+    width: 50vw;
+    margin-top: 15vh;
+    margin-bottom: 15vh;
+    padding: 1rem;
+    background: #e5f0e5;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    max-height: min-content;
 }
 
 /*------ Feed page (root) ------*/
-
-#feed {
-    padding: 30px;
-}
 
 /* Feed header */
 .feed-header {
@@ -87,20 +96,80 @@ main#app {
     align-items: center; /* Align vertically if needed */
 }
 
-/* Main content area */
-#feed #section {
-    max-width: 800px;
-    width: clamp(200px, 60%, 1000px);
-    margin: 0 auto;
-    padding: 1rem;
-    background: #e5f0e5;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    min-height: min-content;
-}
-
 .username {
     font-size: 16px;
+}
+
+.post-card {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+/* Like and dislike styling (post page) */
+.like-dislike-form {
+    display: inline;
+    gap: 10px;
+}
+
+.like-button, .dislike-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #1b2218;
+    padding: 0;
+}
+
+.like-button:hover, .dislike-button:hover {
+    background-color: transparent;
+}
+
+.reaction-buttons {
+    display: flex;
+    align-items: center;
+    margin: 5px 0; 
+}
+  
+.reaction-count {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 5px;
+}
+
+/* To group header and like/dislike buttons (post page) */
+.post-header-like-dislike {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Wrap title to post-card (post page) */
+.post-title {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+/* Comment section */
+.comment-header {
+    border-top: #5C7164 2px dotted;
+    padding-top: 15px;
+}
+
+.comment-textarea {
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 50px;
+    font-size: 15px;
+}
+
+.container-post {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .icons-container {
@@ -165,12 +234,6 @@ main#app {
 
 .post h2 {
     margin: 0 0 0.5rem;
-}
-
-.post h3 {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
 }
 
 .post p {
@@ -254,5 +317,6 @@ footer {
     padding: 1rem 0;
     position: fixed;
     bottom: 0;
+    height: 5vh;
     width: 100vw;
 }
