@@ -3,29 +3,31 @@ document.addEventListener('DOMContentLoaded', function() {
     init();
 });
 
-let currentPage = 'feed';
 let errorMsg = '';
 
 function init() {
-    // Load the home page by default (e.g., feed page)
-    console.log("initializing the page")
-    loadPage(currentPage);
-    
+
+    loadPage();
 
     // Handle navigation events (e.g., clicking on links or buttons)
     document.addEventListener("click", async (event) => {
         const postLink = event.target.closest(".post-title a");
-
-        // Only proceed if the anchor inside a post-title is clicked
         if (!postLink) return;
 
         // Get the post ID from the dataset and load the page
         const postID = postLink.dataset.postId;
 
-        loadPage('post-details', postID);
+        history.pushState({}, "", `/post/${postID}`);
+        loadPage();
         event.preventDefault();
 
     });
+
+    // Handle back/forward navigation
+    window.addEventListener('popstate', () => {
+        loadPage(); // Re-run init to reload correct page based on new URL
+    });
+
     // document.getElementById('loginLink').addEventListener('click', () => loadPage('login'));
     // document.getElementById('registerLink').addEventListener('click', () => loadPage('register'));
     // document.getElementById('feedLink').addEventListener('click', () => loadPage('feed'));
@@ -34,26 +36,28 @@ function init() {
 }
 
 // toggle which page is shown
-function loadPage(page, postID = null) {
-    hideAllPages(); // Hide all pages
-    switch (page) {
-        case 'feed':
-            loadFeedPage();
-            break;
-        case 'post-details':
-            if (postID !== null) {
-                loadPostPage(postID);
-            }
-            break;
-        default:
-            showError();
-            break;
+function loadPage() {
+    hideAllPages();
+
+    const path = window.location.pathname; // Get the URL
+    const segments = path.split('/').filter(Boolean); // Remove empty segments
+    let page;
+    console.log(segments)
+
+    if (segments.length === 0) {
+        page = 'feed'
+        loadFeedPage();
+    } else  if (segments[0] === 'post') {
+        page = 'post-details'
+        loadPostPage();
     }
+
     showPage(page)
-    currentPage = page;
+
 }
 
 function showPage(pageId) {
+    if (pageId === null) return;
     // Show the page and hide others
     document.getElementById(pageId).style.display = 'block';
 }

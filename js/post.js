@@ -1,5 +1,11 @@
-function loadPostPage(postID) {
-    history.pushState({}, "", `/post/${postID}`);
+function loadPostPage() {
+    const path = window.location.pathname;
+    const segments = path.split('/').filter(Boolean); // Remove empty segments
+    let postID;
+
+    if (segments[0] === 'post' && segments[1]) {
+        postID = segments[1];
+    }
 
     fetch(`/api/post/${postID}`, {
         method: "GET",
@@ -32,12 +38,10 @@ function renderPost(post) {
         <div class="post-header-like-dislike">
             <h2 class="post-title">${post.post_title}</h2>
             <div class="reaction-buttons">
-                <button class="like-button" style="color: ${post.liked_now ? '#54956d' : 'inherit'};">
-                    👍 <span>${post.likes}</span>
-                </button>
-                <button class="dislike-button" style="color: ${post.disliked_now ? 'rgb(197, 54, 64)' : 'inherit'};">
-                    👎 <span>${post.dislikes}</span>
-                </button>
+                <span class="material-symbols-outlined">thumb_up</span> 
+                <span class="reaction-count">${post.likes}</span>
+                <span class="material-symbols-outlined">thumb_down</span>
+                <span class="reaction-count">${post.dislikes}</span>
             </div>
         </div>
         <div class="category-container">
