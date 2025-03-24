@@ -19,8 +19,8 @@ func MakeTables(db *sql.DB) {
 		email TEXT UNIQUE NOT NULL,
 		password TEXT NOT NULL,
 		created_at TEXT NOT NULL,
-		updated_at TEXT NOT NULL,
-		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'delete'))
+		updated_at TEXT,
+		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'deleted'))
 
 	);`
 	if _, err := db.Exec(createUserTableQuery); err != nil {
@@ -34,7 +34,7 @@ func MakeTables(db *sql.DB) {
     	content TEXT NOT NULL,
    		user_id INTEGER NOT NULL,
    		created_at TEXT NOT NULL,
-		status TEXT NOT NULL,
+		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted')),
     	FOREIGN KEY (user_id) REFERENCES User (id)
 	);`
 	if _, err := db.Exec(createPostTableQuery); err != nil {
@@ -48,7 +48,7 @@ func MakeTables(db *sql.DB) {
     	post_id INTEGER NOT NULL,
     	user_id INTEGER NOT NULL,
     	created_at TEXT NOT NULL,
-    	status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted'))
+    	status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted')),
     	FOREIGN KEY (post_id) REFERENCES Post (id),
     	FOREIGN KEY (user_id) REFERENCES User (id)
 	);`
@@ -99,12 +99,10 @@ func MakeTables(db *sql.DB) {
 		CREATE TABLE IF NOT EXISTS Session (
 		id TEXT PRIMARY KEY, -- Unique session ID (UUID)
     	user_id INTEGER NOT NULL,
-		session_token TEXT UNIQUE NOT NULL,
-    	status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'expired', 'inactive')),
+    	status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'expired', 'inactive', 'deleted')),
     	created_at TEXT NOT NULL,
 		updated_at TEXT NOT NULL,
 		expires_at TEXT,
-		status TEXT NOT NULL,
 		last_access TEXT NOT NULL,
     	FOREIGN KEY (user_id) REFERENCES User (id)
 	);`
@@ -112,6 +110,24 @@ func MakeTables(db *sql.DB) {
 		fmt.Println("Error creating Session table:", err)
 		return
 	}
+
+	createMessageTableQuery := `
+	CREATE TABLE IF NOT EXISTS Message (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		sender_id INTEGER NOT NULL,
+		receiver_id INTEGER NOT NULL,
+		content TEXT NOT NULL,
+		created_at TEXT NOT NULL,
+		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted', 'edited')),
+		FOREIGN KEY (sender_id) REFERENCES User(id),
+		FOREIGN KEY (receiver_id) REFERENCES User(id)
+	);`
+	if _, err := db.Exec(createMessageTableQuery); err != nil {
+		fmt.Println("Error inserting into Message table:", err)
+		return
+	}
+
+	// Inserting categories to database
 	insertCategoryQuery := `
     INSERT INTO category (name)
     SELECT 'General' WHERE NOT EXISTS (SELECT 1 FROM category WHERE name = 'General')
@@ -130,16 +146,18 @@ func MakeTables(db *sql.DB) {
 		fmt.Println("Error inserting into Category table:", err)
 		return
 	}
+
+	//Insert initial admin data
 	insertUserQuery := `
-    INSERT INTO User (username, email, password, created_at)
-    SELECT 'admin', 'admin@example.com', 'hashedpassword', datetime('now')
+    INSERT INTO User (username, age, gender, firstname, lastname, email, password, created_at)
+    SELECT 'admin', 35, 'female', 'Fanni', 'Vesanen', 'admin@example.com', 'hashedpassword', datetime('now')
     WHERE NOT EXISTS (SELECT 1 FROM User WHERE username = 'admin');
 `
-
 	if _, err := db.Exec(insertUserQuery); err != nil {
-		fmt.Println("Error inserting into Post table:", err)
+		fmt.Println("Error inserting into User table:", err)
 		return
 	}
+
 	//Insert initial data into Post
 	insertPostQuery := `
     INSERT INTO post (title, content, user_id, created_at) 
@@ -165,7 +183,6 @@ func MakeTables(db *sql.DB) {
     INSERT INTO Post_category (post_id, category_id)
 	VALUES (?, 1);
 `
-
 	if _, err := db.Exec(insertPostCategoryQuery, int(lastInsertID)); err != nil {
 		fmt.Println("Error inserting into Post_category table:", err)
 		return
