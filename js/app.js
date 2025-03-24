@@ -9,15 +9,21 @@ function init() {
 
     loadPage();
 
-    if (userLoggedIn) {
-        enableCommentingAndLiking();
-    } else {
-        disableCommentingAndLiking();
-    }
+    // if (userLoggedIn) {
+    //     enableCommentingAndLiking();
+    // } else {
+    //     disableCommentingAndLiking();
+    // }
     
     document.getElementById("login-button").addEventListener("click", function () {
         history.pushState({}, '', '/login');  
         loadPage(); 
+    });
+
+    document.getElementById('signup-link').addEventListener('click', (event) => {
+        event.preventDefault();  
+        history.pushState({}, '', '/signup');  
+        loadPage();  
     });
 
       // Handle logout
@@ -72,6 +78,8 @@ function loadPage() {
         loadPostPage();
     } else if (segments[0] === 'login') {
         page = 'login-page'
+    } else if (segments[0] === 'signup') {
+        page = 'signup-page'
     }
 
     showPage(page)

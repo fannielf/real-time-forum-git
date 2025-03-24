@@ -64,18 +64,18 @@ function renderPost(post) {
     `;
 }
 
-function enableCommentingAndLiking() {
-    const commentButtons = document.querySelectorAll('.comment-button');
-    const likeButtons = document.querySelectorAll('.like-button');
+// function enableCommentingAndLiking() {
+//     const commentButtons = document.querySelectorAll('.comment-button');
+//     const likeButtons = document.querySelectorAll('.like-button');
 
-    commentButtons.forEach(button => button.disabled = false); 
-    likeButtons.forEach(button => button.disabled = false); 
-}
+//     commentButtons.forEach(button => button.disabled = false); 
+//     likeButtons.forEach(button => button.disabled = false); 
+// }
 
-function disableCommentingAndLiking() {
-    const commentButtons = document.querySelectorAll('.comment-button');
-    const likeButtons = document.querySelectorAll('.like-button');
+// function disableCommentingAndLiking() {
+//     const commentButtons = document.querySelectorAll('.comment-button');
+//     const likeButtons = document.querySelectorAll('.like-button');
 
-    commentButtons.forEach(button => button.disabled = true); 
-    likeButtons.forEach(button => button.disabled = true); 
-}
+//     commentButtons.forEach(button => button.disabled = true); 
+//     likeButtons.forEach(button => button.disabled = true); 
+// }
