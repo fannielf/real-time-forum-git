@@ -37,12 +37,14 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 		CheckAuth(w, r)
 	// case "create_post":
 	// 	CreatePost(w, r) // API endpoint for creating a post
-	// case "login":
-	// 	Login(w, r) // API for login
+	case "login":
+		Login(w, r) // API for login
 	// case "logout":
 	// 	Logout(w, r) // API for logout
 	case "post":
 		PostPage(w, r)
+	case "refresh-session":
+		SessionHandler(w, r)
 	default:
 		http.Error(w, `{"error": "Page Not Found"}`, http.StatusNotFound)
 		return

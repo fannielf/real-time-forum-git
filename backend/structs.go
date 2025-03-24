@@ -42,3 +42,13 @@ type CategoryDetails struct {
 	CategoryID   int
 	CategoryName string
 }
+
+// Struct to map the incoming login data
+type LoginData struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type Response struct {
+	Message string `json:"message"`
+}

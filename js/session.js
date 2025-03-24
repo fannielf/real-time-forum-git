@@ -1,0 +1,21 @@
+// Function to refresh session by sending a request every 30 minutes
+const refreshSession = async () => {
+    try {
+        const response = await fetch('/api/refresh-session', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            console.log(result.message);  // Should log: "Session refreshed"
+        }
+    } catch (error) {
+        console.error('Error refreshing session:', error);
+    }
+};
+
+// Refresh the session every 20 minutes
+setInterval(refreshSession, 20 * 60 * 1000);
