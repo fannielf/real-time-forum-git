@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/assets/styles.css">
-    <link rel="icon" type="image/png" href="/assets/favicon.ico">
+    <link rel="stylesheet" href="/styles.css">
+    <!-- <link rel="icon" type="image/png" href="/assets/favicon.ico"> -->
     <title>Forum</title>
 </head>
 <body>
     <header>
         <h1>grit:garden</h1>
-        <nav>
-            <button id="logout-button" style="display: none;">Logout</button>
-        </nav>
+            <div class="nav-right">
+                <p class="welcome-text">Logged in as:</p>
+                <button id="logout-button" type="submit" class="logout-button">Log Out</button>
+                <button id="login-button" type="button" class="login-button">Login</button>
+                <button id="home-button" type="button" class="home-button">Home</button>
+            </div>
     </header>
     <main id="app">
         <!-- Authentication pages -->
         <section id="login-page"></section>
 
         <!-- Main Forum Feed -->
-        <section id="posts-section">
+        <section id="feed">
             <h2>Forum Feed</h2>
             <div id="posts-list"></div>
         </section>
@@ -68,10 +71,10 @@
         </main>
 
         <!-- Sidebar showing users (visible all the time) -->
-        <aside id="chat-sidebar">
+        <section id="chat-sidebar">
             <h3>Live Chat</h3>
             <div id="chat-users"></div> 
-        </aside>
+        </section>
 
     <script scr="app.js"></script>
 </body>
