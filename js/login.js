@@ -1,5 +1,5 @@
 // login.js
-document.getElementById('loginForm').addEventListener('submit', async (event) => {
+document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const username = document.getElementById('username').value;
@@ -10,8 +10,12 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         password: password
     };
 
+    const loginButton = document.getElementById('login-button');
+    loginButton.disabled = true;
+    loginButton.textContent = 'Logging in...';
+
     try {
-        const response = await fetch('/login', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -30,5 +34,9 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         }
     } catch (error) {
         alert('An error occurred while logging in');
+    } finally {
+        // restore the login button
+        loginButton.disabled = false;
+        loginButton.textContent = 'Login';
     }
 });

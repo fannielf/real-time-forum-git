@@ -54,6 +54,8 @@ func HandlePostPageGet(w http.ResponseWriter, r *http.Request, postID int) {
 	log.Println(post.Categories)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(post)
+
+	//add error handling
 }
 
 // // HandlePostPagePost handles post requests to the post page

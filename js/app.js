@@ -10,6 +10,7 @@ function init() {
     // Load the home page by default (e.g., feed page)
     console.log("initializing the page")
     loadPage(currentPage);
+    
 
     // Handle navigation events (e.g., clicking on links or buttons)
     document.addEventListener("click", async (event) => {
