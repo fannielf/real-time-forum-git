@@ -10,10 +10,6 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         password: password
     };
 
-    const loginButton = document.getElementById('login-button');
-    loginButton.disabled = true;
-    loginButton.textContent = 'Logging in...';
-
     try {
         const response = await fetch('/api/login', {
             method: 'POST',

@@ -9,6 +9,24 @@ function init() {
 
     loadPage();
 
+    if (userLoggedIn) {
+        enableCommentingAndLiking();
+    } else {
+        disableCommentingAndLiking();
+    }
+    
+    document.getElementById("login-button").addEventListener("click", function () {
+        history.pushState({}, '', '/login');  
+        loadPage(); 
+    });
+
+      // Handle logout
+      document.getElementById('logout-button').addEventListener('click', () => {
+        userLoggedIn = false; 
+        loadPage('login'); 
+        disableCommentingAndLiking(); 
+    });
+
     // Handle navigation events (e.g., clicking on links or buttons)
     document.addEventListener("click", async (event) => {
         const postLink = event.target.closest(".post-title a");
@@ -27,6 +45,8 @@ function init() {
     window.addEventListener('popstate', () => {
         loadPage(); // Re-run init to reload correct page based on new URL
     });
+
+    
 
     // document.getElementById('loginLink').addEventListener('click', () => loadPage('login'));
     // document.getElementById('registerLink').addEventListener('click', () => loadPage('register'));
@@ -50,6 +70,8 @@ function loadPage() {
     } else  if (segments[0] === 'post') {
         page = 'post-details'
         loadPostPage();
+    } else if (segments[0] === 'login') {
+        page = 'login-page'
     }
 
     showPage(page)
