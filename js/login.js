@@ -1,5 +1,5 @@
 // login.js
-document.getElementById('loginForm').addEventListener('submit', async (event) => {
+document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const username = document.getElementById('username').value;
@@ -30,5 +30,9 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         }
     } catch (error) {
         alert('An error occurred while logging in');
+    } finally {
+        // restore the login button
+        loginButton.disabled = false;
+        loginButton.textContent = 'Login';
     }
 });
