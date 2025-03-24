@@ -18,6 +18,7 @@ function init() {
         const postID = postLink.dataset.postId;
 
         history.pushState({}, "", `/post/${postID}`);
+        loadPage();
         event.preventDefault();
 
     });
