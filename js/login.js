@@ -1,4 +1,11 @@
 // login.js
+
+document.getElementById('signup-link').addEventListener('click', (event) => {
+    event.preventDefault();  
+    history.pushState({}, '', '/signup');  
+    loadPage();  
+});
+
 document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 

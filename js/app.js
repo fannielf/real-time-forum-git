@@ -20,11 +20,6 @@ function init() {
         loadPage(); 
     });
 
-    document.getElementById('signup-link').addEventListener('click', (event) => {
-        event.preventDefault();  
-        history.pushState({}, '', '/signup');  
-        loadPage();  
-    });
 
       // Handle logout
       document.getElementById('logout-button').addEventListener('click', () => {
