@@ -12,7 +12,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	db = database
 
 	if r.Method != http.MethodGet && r.Method != http.MethodPost {
-		http.Error(w, `{"error": "Method not allowed"}`, http.StatusMethodNotAllowed)
+		ResponseHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 		return
 	}
 
@@ -34,7 +34,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	case "feed":
 		HandleFeed(w, r) // Returns posts to be shown in feed
 	case "auth":
-		SessionHandler(w, r)
+		Authenticate(w, r)
 	// case "create_post":
 	// 	CreatePost(w, r) // API endpoint for creating a post
 	case "login":
@@ -48,7 +48,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	case "refresh-session":
 		SessionHandler(w, r)
 	default:
-		ErrorHandler(w, http.StatusNotFound, "Page Not Found")
+		ResponseHandler(w, http.StatusNotFound, "Page Not Found")
 		return
 	}
 }

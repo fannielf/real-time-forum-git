@@ -14,7 +14,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		HandleLoginPost(w, r)
 	default:
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
+		ResponseHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 	}
 }
 
@@ -27,29 +27,29 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&loginData)
 	if err != nil {
-		ErrorHandler(w, http.StatusBadRequest, "Bad Request")
+		ResponseHandler(w, http.StatusBadRequest, "Bad Request")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	response := Response{Message: "Login successful"}
+	message := "Login successful"
+	status := http.StatusOK
 	log.Println("decode successful, checking credentials")
 	userID, hashedPassword, err := getUserCredentials(loginData.Username)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		response = Response{Message: "Invalid username"}
+		status = http.StatusUnauthorized
+		message = "Invalid username"
 	} else if err := verifyPassword(hashedPassword, loginData.Password); err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		response = Response{Message: "Invalid password"}
+		status = http.StatusUnauthorized
+		message = "Invalid password"
 	}
 	log.Println("creating session")
 	// Create session
 	if err := CreateSession(w, userID); err != nil {
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 	log.Println("sending response")
-	json.NewEncoder(w).Encode(response)
+	ResponseHandler(w, status, message)
 }
 
 // getUserCredentials retrieves the user's ID and hashed password from the database

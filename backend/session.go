@@ -9,9 +9,21 @@ import (
 	"github.com/google/uuid"
 )
 
+func Authenticate(w http.ResponseWriter, r *http.Request) {
+	status := http.StatusUnauthorized
+	message := "No current sessions"
+	loggedIn, _ := VerifySession(w, r)
+	if loggedIn {
+		status = http.StatusOK
+		message = "Current session found"
+	}
+
+	ResponseHandler(w, status, message)
+}
+
 // CreateSession creates a new session for the user and stores it in the database
 func CreateSession(w http.ResponseWriter, userID int) error {
-	// First check for and delete any existing sessions for this user
+	//First check for and delete any existing sessions for this user
 	_, err := db.Exec("UPDATE Session SET status = 'deleted', updated_at = ? WHERE user_id = ? AND status = 'active'",
 		time.Now().Format("2006-01-02 15:04:05"), userID)
 	if err != nil {
@@ -39,6 +51,7 @@ func CreateSession(w http.ResponseWriter, userID int) error {
 		expirationTime.Format("2006-01-02 15:04:05"), // expires_at (correct format)
 		currentTime,
 	)
+	log.Println(err)
 	return err
 }
 

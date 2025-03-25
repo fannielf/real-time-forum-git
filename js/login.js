@@ -37,7 +37,6 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         console.log("got response")
         if (response.ok) {
             const data = await response.json();
-            alert(data.message); // Show success message
             // Redirect to feed or home page
             window.location.href = '/'; 
         } else {

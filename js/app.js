@@ -7,18 +7,13 @@ let errorMsg = '';
 
 function init() {
 
+    authenticateSession();
     loadPage();
-    
-    document.getElementById("login-button").addEventListener("click", function () {
-        history.pushState({}, '', '/login');  
-        loadPage(); 
-    });
 
       // Handle logout
       document.getElementById('logout-button').addEventListener('click', () => {
-        userLoggedIn = false; 
-        loadPage('login'); 
-        disableCommentingAndLiking(); 
+        window.location.href = '/logout'; 
+        loadPage();
     });
 
     // Handle navigation events (e.g., clicking on links or buttons)
@@ -39,14 +34,6 @@ function init() {
     window.addEventListener('popstate', () => {
         loadPage(); // Re-run init to reload correct page based on new URL
     });
-
-    
-
-    // document.getElementById('loginLink').addEventListener('click', () => loadPage('login'));
-    // document.getElementById('registerLink').addEventListener('click', () => loadPage('register'));
-    // document.getElementById('feedLink').addEventListener('click', () => loadPage('feed'));
-    // document.getElementById('createPostLink').addEventListener('click', () => loadPage('createPost'));
-    // document.getElementById('chatLink').addEventListener('click', () => loadPage('chat'));
 }
 
 // toggle which page is shown
@@ -63,6 +50,7 @@ function loadPage() {
         loadFeedPage();
     } else  if (segments[0] === 'post') {
         page = 'post-details'
+        console.log("Post page detected!");
         loadPostPage();
     } else if (segments[0] === 'login') {
         page = 'login-page'
@@ -72,10 +60,41 @@ function loadPage() {
         page = 'signup-page'
         console.log("Signup page detected!");
         renderSignupPage();
+    } else {
+        page = 'error'
+        errorMsg = "Page Not Found"
+        renderSignupPage();
     }
 
     showPage(page)
 
+}
+
+// Function to authenticate session
+async function authenticateSession() {
+    try {
+        const response = await fetch('/api/auth', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include', // Include cookies for authentication
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('User is authenticated:', data);
+            return;
+            // Update your UI based on the authentication status, like showing/hiding buttons
+        } else {
+            console.log('User not authenticated');
+            // Redirect to login page or show login button
+        }
+    } catch (error) {
+        console.error('Error authenticating session:', error);
+        // Handle any error with the API request
+    }
+    history.pushState({}, '', '/login');
 }
 
 function showPage(pageId) {
@@ -99,6 +118,6 @@ function showError() {
     errorText.textContent = errorMsg;
 
     backButton.addEventListener("click", () => {
-        loadPage('feed');
+        window.location.href = '/'; 
     });
 }

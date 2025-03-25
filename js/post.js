@@ -32,12 +32,13 @@ function loadPostPage() {
 }
 
 function renderPost(post) {
-    const postContentContainer = document.querySelector("#post-content");
-    console.log("Categories:", post.categories);  // Log categories to check if it's an array
+    const postContainer = document.getElementById('post-details');
 
+    const postElement = document.getElementById('post-content');
+    postElement.innerHTML = '';
 
     // Render the post content
-    postContentContainer.innerHTML = `
+    postElement.innerHTML = `
         <div class="post-header-like-dislike">
             <h2 class="post-title">${post.post_title}</h2>
             <div class="reaction-buttons">
@@ -65,20 +66,5 @@ function renderPost(post) {
             </div>
         `).join('') : '<p>No comments yet.</p>'}
     `;
+    postContainer.appendChild(postElement);
 }
-
-// function enableCommentingAndLiking() {
-//     const commentButtons = document.querySelectorAll('.comment-button');
-//     const likeButtons = document.querySelectorAll('.like-button');
-
-//     commentButtons.forEach(button => button.disabled = false); 
-//     likeButtons.forEach(button => button.disabled = false); 
-// }
-
-// function disableCommentingAndLiking() {
-//     const commentButtons = document.querySelectorAll('.comment-button');
-//     const likeButtons = document.querySelectorAll('.like-button');
-
-//     commentButtons.forEach(button => button.disabled = true); 
-//     likeButtons.forEach(button => button.disabled = true); 
-// }

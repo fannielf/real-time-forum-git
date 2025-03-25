@@ -37,7 +37,7 @@ func main() {
 	// One API Handler for api calls
 	http.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Content-Type") != "application/json" {
-			backend.ErrorHandler(w, http.StatusUnsupportedMediaType, "Content-Type must be application/json")
+			backend.ResponseHandler(w, http.StatusUnsupportedMediaType, "Content-Type must be application/json")
 			return
 		}
 		backend.APIHandler(w, r, db)

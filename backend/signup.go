@@ -19,7 +19,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		handleSignUpPost(w, r)
 	default:
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
+		ResponseHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 	}
 }
 
@@ -30,46 +30,45 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&signUpData)
 	if err != nil {
 		log.Println("error decoding the data")
-		ErrorHandler(w, http.StatusBadRequest, "Bad Request")
+		ResponseHandler(w, http.StatusBadRequest, "Bad Request")
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	response := Response{Message: "Login successful"}
+	status := http.StatusCreated
+	message := "Login successful"
 
 	// Validate username
 	if !IsValidUsername(signUpData.Username) {
-		w.WriteHeader(http.StatusBadRequest)
-		response = Response{Message: "Invalid username: must be 3-20 characters, letters, numbers, or _"}
+		status = http.StatusBadRequest
+		message = "Invalid username: must be 3-20 characters, letters, numbers, or _"
 	} else if !isValidEmail(signUpData.Email) {
-		w.WriteHeader(http.StatusBadRequest)
-		response = Response{Message: "Invalid email address"}
+		status = http.StatusBadRequest
+		message = "Invalid email address"
 	} else if signUpData.Password == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		response = Response{Message: "Password cannot be empty"}
+		status = http.StatusBadRequest
+		message = "Password cannot be empty"
 	}
 
 	uniqueUsername, uniqueEmail, err := isUsernameOrEmailUnique(signUpData.Username, signUpData.Email)
 	if err != nil {
 		log.Println("Error checking if username is unique:", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 	if !uniqueUsername {
-		w.WriteHeader(http.StatusConflict)
-		response = Response{Message: "Username is already taken"}
+		status = http.StatusConflict
+		message = "Username is already taken"
 	}
 	if !uniqueEmail {
-		w.WriteHeader(http.StatusConflict)
-		response = Response{Message: "Email is already registered to existing user"}
+		status = http.StatusConflict
+		message = "Email is already registered to existing user"
 	}
 
 	// Hash the password
 	hashedPassword, err := hashPassword(signUpData.Password)
 	if err != nil {
 		log.Println("Error hashing password:", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
@@ -85,11 +84,11 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Println("Error inserting user into database:", err)
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
-	json.NewEncoder(w).Encode(response)
+	ResponseHandler(w, status, message)
 }
 
 // hashPassword hashes the user's password using bcrypt

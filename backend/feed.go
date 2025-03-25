@@ -16,30 +16,26 @@ func HandleFeed(w http.ResponseWriter, r *http.Request) {
 	//Post method on feedPage only for filters
 	//HandleHomePost(w, r)
 	default:
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
+		ResponseHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 		return
 	}
 }
 
 // GetFeed fetches posts from the database for the home page (returns JSON)
 func GetFeed(w http.ResponseWriter, r *http.Request) {
-	// loggedIn, userID, _ := VerifySession(r)
-	// if !loggedIn {
-	// 	http.Error(w, "Unauthorized", http.StatusUnauthorized)
-	// 	return
-	// }
 
 	// Fetch posts from the database
 	posts, err := GetPosts(0)
 	if err != nil {
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
 	// Return posts as JSON
+	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
-		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 }
