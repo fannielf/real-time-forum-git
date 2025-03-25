@@ -9,6 +9,7 @@ document.getElementById('signup-link').addEventListener('click', (event) => {
 document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 
+
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
@@ -16,6 +17,12 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         username: username,
         password: password
     };
+
+    document.getElementById('signup-link').addEventListener('click', (event) => {
+        event.preventDefault();  
+        history.pushState({}, '', '/signup');  
+        loadPage();  
+    });
 
     try {
         const response = await fetch('/api/login', {

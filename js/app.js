@@ -20,7 +20,6 @@ function init() {
         loadPage(); 
     });
 
-
       // Handle logout
       document.getElementById('logout-button').addEventListener('click', () => {
         userLoggedIn = false; 
@@ -73,8 +72,10 @@ function loadPage() {
         loadPostPage();
     } else if (segments[0] === 'login') {
         page = 'login-page'
+        
     } else if (segments[0] === 'signup') {
         page = 'signup-page'
+        renderSignupPage();
     }
 
     showPage(page)
