@@ -4,9 +4,9 @@ function renderLoginPage() {
 
     loginPage.innerHTML += `
         <form id="login-form">
-            <label for="username">Username</label>
+            <label for="username-login">Username</label>
             <input type="text" id="username-login" name="username" placeholder="Enter your username" required>
-            <label for="password">Password</label>
+            <label for="password-login">Password</label>
             <input type="password" id="password-login" name="password" placeholder="Enter your password" required>
             <button type="submit">Login</button>
         </form>
@@ -39,7 +39,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             const data = await response.json();
             alert(data.message); // Show success message
             // Redirect to feed or home page
-            window.location.href = '/feed'; 
+            window.location.href = '/'; 
         } else {
             const errorData = await response.json();
             alert(errorData.message); // Show error message

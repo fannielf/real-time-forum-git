@@ -8,13 +8,12 @@ function renderSignupPage() {
             <a href="/login">Log in here</a>
         </div>
         <form id="signup-form">
-            <label for="username">Username
+            <label for="username-signup">Username
                 <div class="hover-icon">
                     <span class="material-symbols-outlined" style="font-size: 20px; vertical-align: middle;">info</span>
                     <span class="tooltip">Username must be 3-20 characters, letters, numbers, or _</span>
                 </div>
             </label>
-            <input type="text" id="username-signup" name="username" placeholder="Enter your username" required>
             <input type="text" id="username-signup" name="username" placeholder="Enter your username" required>
             <label for="age">Age</label>
             <input type="number" id="age" name="age" placeholder="Enter your age" required>
@@ -31,7 +30,7 @@ function renderSignupPage() {
             <input type="text" id="last-name" name="last-name" placeholder="Enter your last name" required>
             <label for="email">E-mail</label>
             <input type="email" id="email" name="email" placeholder="Enter your e-mail" required>
-            <label for="password">Password</label>
+            <label for="password-signup">Password</label>
             <input type="password" id="password-signup" name="password" placeholder="Enter your password" required>
             <label for="confirm-password">Re-enter Password</label>
             <input type="password" id="confirm-password" name="confirm-password" placeholder="Re-enter your password" required>
@@ -103,9 +102,8 @@ function setupSignupForm() {
             errorMsg = error.message;
             loadPage('error');
         });
-        }
     });
-}
+};
 
 // First we render the signup page
 renderSignupPage();
