@@ -29,20 +29,16 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+	response := Response{Message: "Login successful"}
+
 	userID, hashedPassword, err := getUserCredentials(loginData.Username)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		response := Response{Message: "Invalid username"}
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-
-	// Verify password
-	if err := verifyPassword(hashedPassword, loginData.Password); err != nil {
+		response = Response{Message: "Invalid username"}
+	} else if err := verifyPassword(hashedPassword, loginData.Password); err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		response := Response{Message: "Invalid password"}
-		json.NewEncoder(w).Encode(response)
-		return
+		response = Response{Message: "Invalid password"}
 	}
 
 	// Create session
@@ -51,8 +47,6 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	response := Response{Message: "Login successful"}
 	json.NewEncoder(w).Encode(response)
 }
 

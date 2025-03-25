@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/mail"
@@ -12,60 +13,57 @@ import (
 )
 
 // signUp handles both GET and POST requests for user registration
-func SignUp(w http.ResponseWriter, r *http.Request, data *PageDetails) {
-	data.ValidationError = ""
+func SignUp(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case http.MethodGet:
-		//RenderTemplate(w, "signup", data)
 	case http.MethodPost:
-		handleSignUpPost(w, r, data)
+		handleSignUpPost(w, r)
 	default:
 		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 	}
 }
 
-func handleSignUpPost(w http.ResponseWriter, r *http.Request, data *PageDetails) {
-	username := r.FormValue("username")
-	email := r.FormValue("email")
-	password := r.FormValue("password")
+func handleSignUpPost(w http.ResponseWriter, r *http.Request) {
+	// Decode the JSON body into the LoginData struct
+	var signUpData SignUpData
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&signUpData)
+	if err != nil {
+		ErrorHandler(w, http.StatusBadRequest, "Bad Request")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := Response{Message: "Login successful"}
 
 	// Validate username
-	if !IsValidUsername(username) {
-		data.ValidationError = "Invalid username: must be 3-20 characters, letters, numbers, or _"
-		//RenderTemplate(w, "signup", data)
-		return
+	if !IsValidUsername(signUpData.Username) {
+		w.WriteHeader(http.StatusBadRequest)
+		response = Response{Message: "Invalid username: must be 3-20 characters, letters, numbers, or _"}
+	} else if !isValidEmail(signUpData.Email) {
+		w.WriteHeader(http.StatusBadRequest)
+		response = Response{Message: "Invalid email address"}
+	} else if signUpData.Password == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		response = Response{Message: "Password cannot be empty"}
 	}
 
-	if !isValidEmail(email) {
-		data.ValidationError = "Invalid email address"
-		//RenderTemplate(w, "signup", data)
-		return
-	}
-	if password == "" {
-		data.ValidationError = "Password cannot be empty"
-		//RenderTemplate(w, "signup", data)
-		return
-	}
-
-	uniqueUsername, uniqueEmail, err := isUsernameOrEmailUnique(username, email)
+	uniqueUsername, uniqueEmail, err := isUsernameOrEmailUnique(signUpData.Username, signUpData.Email)
 	if err != nil {
 		log.Println("Error checking if username is unique:", err)
 		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 	if !uniqueUsername {
-		data.ValidationError = "Username is already taken"
-		//RenderTemplate(w, "signup", data)
-		return
+		w.WriteHeader(http.StatusConflict)
+		response = Response{Message: "Username is already taken"}
 	}
 	if !uniqueEmail {
-		data.ValidationError = "Email is already registered to existing user"
-		//RenderTemplate(w, "signup", data)
-		return
+		w.WriteHeader(http.StatusConflict)
+		response = Response{Message: "Email is already registered to existing user"}
 	}
 
 	// Hash the password
-	hashedPassword, err := hashPassword(password)
+	hashedPassword, err := hashPassword(signUpData.Password)
 	if err != nil {
 		log.Println("Error hashing password:", err)
 		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
@@ -73,14 +71,14 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request, data *PageDetails)
 	}
 
 	// Insert user into database
-	err = insertUserIntoDB(username, email, hashedPassword)
+	err = insertUserIntoDB(signUpData.Username, signUpData.Email, hashedPassword)
 	if err != nil {
 		log.Println("Error inserting user into database:", err)
 		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
-	http.Redirect(w, r, "/login", http.StatusFound)
+	json.NewEncoder(w).Encode(response)
 }
 
 // hashPassword hashes the user's password using bcrypt

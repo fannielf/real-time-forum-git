@@ -49,6 +49,19 @@ type LoginData struct {
 	Password string `json:"password"`
 }
 
+// Struct to map json response messages
 type Response struct {
 	Message string `json:"message"`
+}
+
+// Struct to map the incoming sign-up data
+type SignUpData struct {
+	Username        string `json:"username"`
+	Age             int    `json:"age"`
+	Gender          string `json:"gender"`
+	FirstName       string `json:"firstName"`
+	LastName        string `json:"lastName"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirmPassword"`
 }
