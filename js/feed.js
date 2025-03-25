@@ -1,4 +1,4 @@
-function loadFeedPage() {
+function renderFeedPage() {
     fetch('/api/feed', {
         method: 'GET',
         headers: {

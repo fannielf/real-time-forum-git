@@ -1,4 +1,4 @@
-function loadPostPage() {
+function renderPostPage() {
     const path = window.location.pathname;
     const segments = path.split('/').filter(Boolean); // Remove empty segments
     let postID;
