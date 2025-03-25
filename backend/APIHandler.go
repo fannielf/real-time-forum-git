@@ -33,8 +33,8 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	switch page {
 	case "feed":
 		HandleFeed(w, r) // Returns posts to be shown in feed
-	case "authentication":
-		CheckAuth(w, r)
+	case "auth":
+		SessionHandler(w, r)
 	// case "create_post":
 	// 	CreatePost(w, r) // API endpoint for creating a post
 	case "login":
@@ -46,7 +46,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	case "refresh-session":
 		SessionHandler(w, r)
 	default:
-		http.Error(w, `{"error": "Page Not Found"}`, http.StatusNotFound)
+		ErrorHandler(w, http.StatusNotFound, "Page Not Found")
 		return
 	}
 }

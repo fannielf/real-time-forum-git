@@ -13,7 +13,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		HandleLoginPost(w, r)
 	default:
-		http.Error(w, `{"error": "Method not allowed"}`, http.StatusMethodNotAllowed)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 	}
 }
 
@@ -25,7 +25,7 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&loginData)
 	if err != nil {
-		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
+		ErrorHandler(w, http.StatusBadRequest, "Bad Request")
 		return
 	}
 
@@ -47,7 +47,7 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 
 	// Create session
 	if err := CreateSession(w, userID); err != nil {
-		http.Error(w, `{"error": "Internal Server Error"}`, http.StatusInternalServerError)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 

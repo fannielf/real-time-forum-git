@@ -16,7 +16,7 @@ func HandleFeed(w http.ResponseWriter, r *http.Request) {
 	//Post method on feedPage only for filters
 	//HandleHomePost(w, r)
 	default:
-		http.Error(w, `{"error": "Method not allowed"}`, http.StatusMethodNotAllowed)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 		return
 	}
 }
@@ -32,14 +32,15 @@ func GetFeed(w http.ResponseWriter, r *http.Request) {
 	// Fetch posts from the database
 	posts, err := GetPosts(0)
 	if err != nil {
-		http.Error(w, `{"error": "Internal Server Error"}`, http.StatusInternalServerError)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
 	// Return posts as JSON
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
-		http.Error(w, `{"error": "Internal Server Error"}`, http.StatusInternalServerError)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		return
 	}
 }
 

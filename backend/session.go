@@ -43,36 +43,20 @@ func CreateSession(w http.ResponseWriter, userID int) error {
 }
 
 // VerifySession checks if the session ID exists in the database
-func VerifySession(w http.ResponseWriter, r *http.Request) (bool, int, string) {
+func VerifySession(w http.ResponseWriter, r *http.Request) (bool, int) {
 	var userID int
-	var username string
 	cookie, err := r.Cookie("session_id")
 	if err != nil {
-		return false, 0, ""
+		return false, 0
 	}
 
 	err = db.QueryRow("SELECT user_id FROM Session WHERE id = ? AND status = 'active'", cookie.Value).Scan(&userID)
 	if err != nil {
 		log.Println("No userID found for the cookie")
-		return false, 0, ""
+		return false, 0
 	}
 
-	err = db.QueryRow("SELECT username FROM User WHERE id = ?", userID).Scan(&username)
-	if err != nil {
-		log.Println("No username found")
-		return false, 0, ""
-	}
-
-	return true, userID, username
-}
-
-func CheckAuth(w http.ResponseWriter, r *http.Request) {
-	loggedIn, userID, _ := VerifySession(w, r)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"loggedIn": loggedIn,
-		"userID":   userID,
-	})
+	return true, userID
 }
 
 // Update session expiry time
@@ -125,25 +109,25 @@ func checkSessionExpiry(userID int) bool {
 	return true
 }
 
-// Handler to refresh session expiry (called every 30 minutes)
+// Handler to verify or expire session
 func SessionHandler(w http.ResponseWriter, r *http.Request) {
-	// Assuming you get the session from cookie or request
-	loggedIn, userID, _ := VerifySession(w, r)
-	// Refresh the session expiry time
-	if loggedIn {
-		refreshSessionExpiry(userID)
-	}
-
 	var response Response
-	activeSession := checkSessionExpiry(userID)
-	if activeSession {
-		w.WriteHeader(http.StatusOK)
-		response = Response{Message: "Session refreshed"}
-	} else {
+	loggedIn, userID := VerifySession(w, r)
+	if !loggedIn {
 		w.WriteHeader(http.StatusUnauthorized)
 		response = Response{Message: "Session expired"}
+	} else {
+		refreshSessionExpiry(userID)
+		activeSession := checkSessionExpiry(userID)
+		if activeSession {
+			w.WriteHeader(http.StatusOK)
+			response = Response{Message: "Session refreshed"}
+		} else {
+			w.WriteHeader(http.StatusUnauthorized)
+			response = Response{Message: "Session expired"}
+		}
 	}
-	// Respond with a success message
+	// Respond with a appropriate message
 	json.NewEncoder(w).Encode(response)
 
 }

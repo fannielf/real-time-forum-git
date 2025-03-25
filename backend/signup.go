@@ -20,7 +20,7 @@ func SignUp(w http.ResponseWriter, r *http.Request, data *PageDetails) {
 	case http.MethodPost:
 		handleSignUpPost(w, r, data)
 	default:
-		//ErrorHandler(w, "Method Not Allowed", http.StatusNotFound)
+		ErrorHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 	}
 }
 
@@ -50,7 +50,7 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request, data *PageDetails)
 	uniqueUsername, uniqueEmail, err := isUsernameOrEmailUnique(username, email)
 	if err != nil {
 		log.Println("Error checking if username is unique:", err)
-		//ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 	if !uniqueUsername {
@@ -68,7 +68,7 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request, data *PageDetails)
 	hashedPassword, err := hashPassword(password)
 	if err != nil {
 		log.Println("Error hashing password:", err)
-		//ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
@@ -76,7 +76,7 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request, data *PageDetails)
 	err = insertUserIntoDB(username, email, hashedPassword)
 	if err != nil {
 		log.Println("Error inserting user into database:", err)
-		//ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
 
