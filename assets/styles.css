@@ -435,3 +435,20 @@ footer {
     height: 5vh;
     width: 100vw;
 }
+
+/*------ Error styling ------*/
+
+input.error {
+    border: 2px solid red;
+}
+
+input.success {
+    border: 2px solid green;
+}
+
+#password-error {
+    color: red;
+    display: none;
+    font-size: 12px;
+    margin-top: 5px;
+}

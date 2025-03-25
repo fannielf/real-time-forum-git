@@ -72,9 +72,11 @@ function loadPage() {
         loadPostPage();
     } else if (segments[0] === 'login') {
         page = 'login-page'
-        
+        console.log("Login page detected!");
+        renderLoginPage();
     } else if (segments[0] === 'signup') {
         page = 'signup-page'
+        console.log("Signup page detected!");
         renderSignupPage();
     }
 

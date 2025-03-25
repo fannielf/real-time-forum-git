@@ -1,4 +1,5 @@
 function renderSignupPage() {
+    console.log("Rendering signup page...");
     const signupPage = document.getElementById('signup-page');
     
     signupPage.innerHTML = `
@@ -13,7 +14,7 @@ function renderSignupPage() {
                     <span class="tooltip">Username must be 3-20 characters, letters, numbers, or _</span>
                 </div>
             </label>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            <input type="text" id="username-signup" name="username" placeholder="Enter your username" required>
             <label for="age">Age</label>
             <input type="number" id="age" name="age" placeholder="Enter your age" required>
             <label for="signup-gender">Gender</label>
@@ -27,38 +28,50 @@ function renderSignupPage() {
             <input type="text" id="first-name" name="first-name" placeholder="Enter your first name" required>
             <label for="last-name">Last Name</label>
             <input type="text" id="last-name" name="last-name" placeholder="Enter your last name" required>
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" placeholder="Enter your e-mail" required>
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <input type="password" id="password-signup" name="password" placeholder="Enter your password" required>
             <label for="confirm-password">Re-enter Password</label>
             <input type="password" id="confirm-password" name="confirm-password" placeholder="Re-enter your password" required>
+            <p id="password-error" style="color: red; display: none;">Passwords don't match</p>
             <button type="submit">Sign Up</button>
         </form>
     `;
+    console.log("Signup page rendered!");
 }
 
 function setupSignupForm() {
-    const signupForm = document.getElementById("signup-form");
+    console.log("Setting up signup form...");
+    const signupForm = document.getElementById("signup-page");
+    const passwordError = document.getElementById("password-error"); 
 
     signupForm.addEventListener("submit", function(event) {
+        console.log("Signup form submitted!");
         event.preventDefault();  
 
         const formData = {
-            username: document.getElementById("username").value,
+            username: document.getElementById("username-signup").value,
             age: document.getElementById("age").value,
             gender: document.getElementById("signup-gender").value,
             firstName: document.getElementById("first-name").value,
             lastName: document.getElementById("last-name").value,
             email: document.getElementById("email").value,
-            password: document.getElementById("password").value,
+            password: document.getElementById("password-signup").value,
             confirmPassword: document.getElementById("confirm-password").value,
         };
 
         // check if passwords match
         if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match!");
-            return;
+            console.log('Passwords do not match!');
+            passwordError.style.display = 'block'; // Show the error message
+            document.getElementById("confirm-password").classList.add('error'); // Add error class to confirm password field
+            document.getElementById("confirm-password").classList.remove('success'); // Remove success class if exists
+            return;  
+        } else {
+            passwordError.style.display = 'none'; // Hide the error message
+            document.getElementById("confirm-password").classList.remove('error');
+            document.getElementById("confirm-password").classList.add('success'); // Add success class
         }
 
         // sending the form data to the server
