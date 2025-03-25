@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/mail"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,11 +29,13 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&signUpData)
 	if err != nil {
+		log.Println("error decoding the data")
 		ErrorHandler(w, http.StatusBadRequest, "Bad Request")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	response := Response{Message: "Login successful"}
 
 	// Validate username
@@ -71,7 +74,15 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Insert user into database
-	err = insertUserIntoDB(signUpData.Username, signUpData.Email, hashedPassword)
+	err = insertUserIntoDB(
+		signUpData.Username,
+		signUpData.Age,
+		signUpData.Gender,
+		signUpData.FirstName,
+		signUpData.LastName,
+		signUpData.Email,
+		hashedPassword,
+	)
 	if err != nil {
 		log.Println("Error inserting user into database:", err)
 		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
@@ -88,9 +99,13 @@ func hashPassword(password string) (string, error) {
 }
 
 // insertUserIntoDB inserts the user's details into the database
-func insertUserIntoDB(username, email, hashedPassword string) error {
-	_, err := db.Exec("INSERT INTO User (username, email, password, created_at) VALUES (?, ?, ?, ?)",
-		username, email, hashedPassword, time.Now().Format("2006-01-02 15:04:05"))
+func insertUserIntoDB(username, age, gender, firstname, lastname, email, hashedPassword string) error {
+	ageInt, err := strconv.Atoi(age)
+	if err != nil {
+		ageInt = 0
+	}
+	_, err = db.Exec("INSERT INTO User (username, age, gender, firstname, lastname, email, password, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+		username, ageInt, gender, firstname, lastname, email, hashedPassword, time.Now().Format("2006-01-02 15:04:05"))
 	return err
 }
 

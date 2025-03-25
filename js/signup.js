@@ -15,6 +15,7 @@ function renderSignupPage() {
                 </div>
             </label>
             <input type="text" id="username-signup" name="username" placeholder="Enter your username" required>
+            <input type="text" id="username-signup" name="username" placeholder="Enter your username" required>
             <label for="age">Age</label>
             <input type="number" id="age" name="age" placeholder="Enter your age" required>
             <label for="signup-gender">Gender</label>
@@ -60,6 +61,7 @@ function setupSignupForm() {
             password: document.getElementById("password-signup").value,
             confirmPassword: document.getElementById("confirm-password").value,
         };
+        console.log(formData)
 
         // check if passwords match
         if (formData.password !== formData.confirmPassword) {
@@ -75,31 +77,38 @@ function setupSignupForm() {
         }
 
         // sending the form data to the server
-        fetch('/signup', {
+        fetch('/api/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(formData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || "Unknown error"); });
+            }
+            return response.json();  // Parse the JSON response
+        })
         .then(data => {
-            if (data.success) {
-                alert("Signup successful!");
+            if (data.message && data.message.includes("successful")) {
+                alert(data.message);
                 window.location.href = "/login"; // if signup is successful, redirect to login page
             } else {
                 alert("Signup failed: " + data.message);
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert("Something went wrong.");
+            console.error('Error signing up:', error);
+            errorMsg = error.message;
+            loadPage('error');
         });
+        }
     });
 }
 
 // First we render the signup page
 renderSignupPage();
 
-// then we set up the form
+//Set up the form
 setupSignupForm();

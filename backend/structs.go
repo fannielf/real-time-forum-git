@@ -57,7 +57,7 @@ type Response struct {
 // Struct to map the incoming sign-up data
 type SignUpData struct {
 	Username        string `json:"username"`
-	Age             int    `json:"age"`
+	Age             string `json:"age"`
 	Gender          string `json:"gender"`
 	FirstName       string `json:"firstName"`
 	LastName        string `json:"lastName"`

@@ -39,6 +39,8 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	// 	CreatePost(w, r) // API endpoint for creating a post
 	case "login":
 		Login(w, r) // API for login
+	case "signup":
+		SignUp(w, r)
 	// case "logout":
 	// 	Logout(w, r) // API for logout
 	case "post":

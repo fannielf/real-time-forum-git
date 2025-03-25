@@ -14,6 +14,7 @@ function renderLoginPage() {
 
 document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
+    console.log("submit pressed")
 
 
     const username = document.getElementById('username-login').value;
@@ -25,6 +26,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     };
 
     try {
+        console.log("trying to send api")
         const response = await fetch('/api/login', {
             method: 'POST',
             headers: {
@@ -32,7 +34,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             },
             body: JSON.stringify(loginData)
         });
-
+        console.log("got response")
         if (response.ok) {
             const data = await response.json();
             alert(data.message); // Show success message
@@ -44,10 +46,6 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         }
     } catch (error) {
         alert('An error occurred while logging in');
-    } finally {
-        // restore the login button
-        loginButton.disabled = false;
-        loginButton.textContent = 'Login';
     }
 });
 

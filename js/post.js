@@ -9,6 +9,9 @@ function loadPostPage() {
 
     fetch(`/api/post/${postID}`, {
         method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
         //credentials: "same-origin"  // Uncomment if authentication is needed
     })
     .then(response => {

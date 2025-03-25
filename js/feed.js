@@ -1,6 +1,9 @@
 function loadFeedPage() {
     fetch('/api/feed', {
         method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         //credentials: 'same-origin'  // Ensure the session cookie is sent along with the request
     })
     .then(response => {

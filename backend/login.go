@@ -2,6 +2,7 @@ package backend
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
@@ -19,6 +20,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 // HandleLoginPost handles the user login form submission
 func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
+	log.Println("login post request received")
 
 	// Decode the JSON body into the LoginData struct
 	var loginData LoginData
@@ -31,7 +33,7 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := Response{Message: "Login successful"}
-
+	log.Println("decode successful, checking credentials")
 	userID, hashedPassword, err := getUserCredentials(loginData.Username)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -40,13 +42,13 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		response = Response{Message: "Invalid password"}
 	}
-
+	log.Println("creating session")
 	// Create session
 	if err := CreateSession(w, userID); err != nil {
 		ErrorHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
-
+	log.Println("sending response")
 	json.NewEncoder(w).Encode(response)
 }
 

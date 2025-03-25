@@ -8,12 +8,6 @@ let errorMsg = '';
 function init() {
 
     loadPage();
-
-    // if (userLoggedIn) {
-    //     enableCommentingAndLiking();
-    // } else {
-    //     disableCommentingAndLiking();
-    // }
     
     document.getElementById("login-button").addEventListener("click", function () {
         history.pushState({}, '', '/login');  
