@@ -60,10 +60,10 @@ function loadPage() {
 
     if (segments.length === 0) {
         page = 'feed'
-        loadFeedPage();
+        renderFeedPage();
     } else  if (segments[0] === 'post') {
         page = 'post-details'
-        loadPostPage();
+        renderPostPage();
     } else if (segments[0] === 'login') {
         page = 'login-page'
         console.log("Login page detected!");
