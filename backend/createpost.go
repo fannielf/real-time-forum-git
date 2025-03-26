@@ -2,9 +2,25 @@ package backend
 
 import (
 	"database/sql"
+	"encoding/json"
 	"log"
+	"net/http"
 	"time"
 )
+
+func FetchCategories(w http.ResponseWriter, r *http.Request) {
+	var data []CategoryDetails
+	var err error
+	data, err = GetCategories()
+	if err != nil {
+		log.Println("Error fething categories: ", err)
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
+}
 
 // // CreatePost receives details for created post and inserts them into the database
 // func CreatePost(w http.ResponseWriter, r *http.Request) {

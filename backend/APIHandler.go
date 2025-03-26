@@ -49,6 +49,8 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 		PostPage(w, r)
 	case "refresh-session":
 		SessionHandler(w, r)
+	case "categories":
+		FetchCategories(w, r)
 	default:
 		ResponseHandler(w, http.StatusNotFound, "Page Not Found")
 		return
