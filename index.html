@@ -21,13 +21,18 @@
     </header>
     <div class="wrapper">
     <main id="app">
-
+        
         <!-- Main Forum Feed -->
         <section id="feed" class="page">
             <div class="feed-header">
-            <h2>Forum Feed</h2>
+                <h2>Forum Feed</h2>
+                <button id="create-post-btn">Create Post</button>
             </div>
             <div id="posts-list"></div>
+        </section>
+
+        <!-- Create Post Page -->
+        <section id="create-post" class="page" style="display: none;">
         </section>
 
         <!-- Post Details Page -->
@@ -53,6 +58,7 @@
         <section id="signup-page" class="page" style="display: none;">
         </section>
 
+
     </main>
 </div>
     
@@ -69,6 +75,7 @@
 <script src="/js/post.js"></script>
 <script src="/js/signup.js"></script>
 <script src="/js/login.js"></script>
+<script src="/js/createpost.js"></script>
 
 <footer>
     <p>&copy; 2025 grit:garden. All rights reserved.</p>

@@ -91,7 +91,6 @@ function setupSignupForm() {
         })
         .then(data => {
             if (data.message && data.message.includes("successful")) {
-                alert(data.message);
                 window.location.href = "/login"; // if signup is successful, redirect to login page
             } else {
                 alert("Signup failed: " + data.message);
