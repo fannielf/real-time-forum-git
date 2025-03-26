@@ -23,65 +23,69 @@ func FetchCategories(w http.ResponseWriter, r *http.Request) {
 }
 
 // // CreatePost receives details for created post and inserts them into the database
-// func CreatePost(w http.ResponseWriter, r *http.Request) {
-// 	var userID int
-// 	var err error
-// 	var categoryIDs []int
+func CreatePost(w http.ResponseWriter, r *http.Request) {
+	// 	var userID int
+	// 	var err error
+	// 	var categoryIDs []int
 
-// 	if r.Method == http.MethodPost {
-// 		data.LoggedIn, userID, data.Username = VerifySession(r)
-// 		if !data.LoggedIn {
-// 			ErrorHandler(w, "You must be logged in to create a post", http.StatusUnauthorized)
-// 			return
-// 		}
+	if r.Method == http.MethodPost {
+		FetchCategories(w, r)
+		return
+	}
 
-// 		err = r.ParseForm()
-// 		if err != nil {
-// 			log.Println("Unable to parse form:", err)
-// 			ErrorHandler(w, "Bad Request", http.StatusBadRequest)
-// 			return
-// 		}
+	// 	if r.Method == http.MethodPost {
+	// 		data.LoggedIn, userID, data.Username = VerifySession(r)
+	// 		if !data.LoggedIn {
+	// 			ErrorHandler(w, "You must be logged in to create a post", http.StatusUnauthorized)
+	// 			return
+	// 		}
 
-// 		title := r.FormValue("title")
-// 		content := r.FormValue("content")
-// 		categories := r.Form["category"]
+	// 		err = r.ParseForm()
+	// 		if err != nil {
+	// 			log.Println("Unable to parse form:", err)
+	// 			ErrorHandler(w, "Bad Request", http.StatusBadRequest)
+	// 			return
+	// 		}
 
-// 		if title == "" || content == "" {
-// 			ErrorHandler(w, "Title or content cannot be empty", http.StatusBadRequest)
-// 			return
-// 		}
+	// 		title := r.FormValue("title")
+	// 		content := r.FormValue("content")
+	// 		categories := r.Form["category"]
 
-// 		if len(categories) == 0 {
-// 			categories = append(categories, "1") // If no category chosen, give category id 1 (=general)
-// 		}
+	// 		if title == "" || content == "" {
+	// 			ErrorHandler(w, "Title or content cannot be empty", http.StatusBadRequest)
+	// 			return
+	// 		}
 
-// 		// Converting categoryIDs to integers and validating that they exists in the database
-// 		for _, cat := range categories {
-// 			var categoryID int
-// 			categoryID, err = HandleCategory(cat)
-// 			if err != nil {
-// 				log.Println("Error handling categoryID in createpost", err)
-// 				ErrorHandler(w, "Bad Request", http.StatusBadRequest)
-// 			}
+	// 		if len(categories) == 0 {
+	// 			categories = append(categories, "1") // If no category chosen, give category id 1 (=general)
+	// 		}
 
-// 			categoryIDs = append(categoryIDs, categoryID)
-// 		}
+	// 		// Converting categoryIDs to integers and validating that they exists in the database
+	// 		for _, cat := range categories {
+	// 			var categoryID int
+	// 			categoryID, err = HandleCategory(cat)
+	// 			if err != nil {
+	// 				log.Println("Error handling categoryID in createpost", err)
+	// 				ErrorHandler(w, "Bad Request", http.StatusBadRequest)
+	// 			}
 
-// 		err = AddPostToDatabase(title, content, categoryIDs, userID)
-// 		if err != nil {
-// 			ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
-// 			return
-// 		}
+	// 			categoryIDs = append(categoryIDs, categoryID)
+	// 		}
 
-// 		http.Redirect(w, r, "/", http.StatusFound)
+	// 		err = AddPostToDatabase(title, content, categoryIDs, userID)
+	// 		if err != nil {
+	// 			ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+	// 			return
+	// 		}
 
-// 	} else if r.Method != http.MethodGet {
+	// 		http.Redirect(w, r, "/", http.StatusFound)
 
-// 		ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-// 	}
+	// 	} else if r.Method != http.MethodGet {
 
-// 	RenderTemplate(w, "create-post", data)
-// }
+	// 		ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+	// 	}
+
+}
 
 // AddPostToDatabase inserts a new post into the database
 func AddPostToDatabase(title, content string, categories []int, userID int) error {

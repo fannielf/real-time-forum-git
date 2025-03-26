@@ -37,8 +37,8 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 		HandleFeed(w, r) // Returns posts to be shown in feed
 	case "auth":
 		Authenticate(w, r)
-	// case "create_post":
-	// 	CreatePost(w, r) // API endpoint for creating a post
+	case "create-post":
+		CreatePost(w, r)
 	case "login":
 		Login(w, r)
 	case "signup":
@@ -49,8 +49,6 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 		PostPage(w, r)
 	case "refresh-session":
 		SessionHandler(w, r)
-	case "categories":
-		FetchCategories(w, r)
 	default:
 		ResponseHandler(w, http.StatusNotFound, "Page Not Found")
 		return
