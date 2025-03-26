@@ -47,6 +47,9 @@ function loadPage() {
     } else if (segments[0] === 'signup') {
         page = 'signup-page'
         renderSignupPage();
+    } else if (segments[0] === 'create-post') {
+        page = 'create-post'
+        renderCreatePostPage();
     } else {
         page = 'error'
         errorMsg = "Page Not Found"

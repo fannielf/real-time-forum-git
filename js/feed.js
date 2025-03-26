@@ -1,3 +1,8 @@
+const createPostBtn = document.getElementById("create-post-btn");
+
+// open the form when the "Create Post" button is clicked
+createPostBtn.addEventListener("click", () => {
+});
 
 function renderFeedPage() {
     fetch('/api/feed', {

@@ -1,10 +1,7 @@
+function renderCreatePostPage() {
 // getting the elements
-const createPostBtn = document.getElementById("create-post-btn");
 const createPostForm = document.getElementById("create-post");
-const forumFeed = document.getElementById("feed");
-const cancelPostBtn = document.getElementById("cancel-post-btn");
 const submitPostBtn = document.getElementById("submit-post-btn");
-const postContent = document.getElementById("post-content");
 
 const formHTML = `
     <h2>Create a new post</h2>
@@ -20,15 +17,10 @@ const formHTML = `
 
 createPostForm.innerHTML = formHTML;
 
-// open the form when the "Create Post" button is clicked
-createPostBtn.addEventListener("click", () => {
-    forumFeed.style.display = "none";  // hide the feed
-    createPostForm.style.display = "block";  // display the create post form
-});
-
 // send the post when the "Submit" button is clicked
-submitPostBtn.addEventListener("click", () => {
+submitPostBtn.addEventListener("click", (event) => {
     event.preventDefault();
+
     const title = document.getElementById("title").value.trim();
     const content = document.getElementById("content").value.trim();
 
@@ -45,10 +37,10 @@ submitPostBtn.addEventListener("click", () => {
     .then(response => response.json())
     .then(data => {
         console.log("Post created:", data);
-        createPostForm.style.display = "none";
-        forumFeed.style.display = "block";
+        renderFeedPage();
     })
     .catch(error => {
         console.error("Error creating post:", error);
     });
 });
+}
