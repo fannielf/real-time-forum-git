@@ -127,7 +127,7 @@ main {
 }
 
 /* Styling input for forms (signup login page) */
-input[type="text"], input[type="password"], input[type="email"], input[type="number"], select {
+input[type="text"], input[type="password"], input[type="email"], input[type="number"], select, textarea {
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -152,10 +152,16 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 }
 
 /* Textarea styling (create post page) */
-/* .content-textarea {
+/* .post-content {
     font-family: Arial, Helvetica, sans-serif;
     min-height: 50px;
 } */
+
+.content-textarea {
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 50px;
+}
+
 
 /* create-post category selection */
 /* .category-container {
@@ -207,13 +213,15 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 /* Feed header */
 .feed-header {
     display: flex;
-    justify-content: center; /* Center the content horizontally */
-    align-items: center; /* Align vertically if needed */
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px 20px;
 }
 
-.username {
+
+/* .username {
     font-size: 16px;
-}
+} */
 
 .post-card {
     margin-bottom: 1.5rem;
