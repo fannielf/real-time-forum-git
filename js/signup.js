@@ -37,7 +37,7 @@ function renderSignupPage() {
 const signupForm = document.getElementById("signup-page");
 const passwordError = document.getElementById("password-error"); 
 
-signupForm.addEventListener("submit", function(event) {
+signupForm.addEventListener("submit", async function(event) {
     console.log("Signup form submitted!");
     event.preventDefault();  
 
@@ -60,38 +60,32 @@ signupForm.addEventListener("submit", function(event) {
         document.getElementById("confirm-password").classList.remove('success'); // Remove success class if exists
         return;  
     } else {
-        passwordError.style.display = 'none'; // Hide the error message
+        // passwordError.style.display = 'none'; // Hide the error message
         document.getElementById("confirm-password").classList.remove('error');
         document.getElementById("confirm-password").classList.add('success'); // Add success class
     }
 
     // sending the form data to the server
-    fetch('/api/signup', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => { throw new Error(err.error || "Unknown error"); });
-        }
-        return response.json();  // Parse the JSON response
-    })
-    .then(data => {
-        if (data.message && data.message.includes("successful")) {
-            alert(data.message);
+    try {
+        const response = await fetch('/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+        data = await response.json();
+
+        if (response.ok) {
             history.pushState({}, '', '/login');
+            loadPage()
         } else {
-            alert("Signup failed: " + data.message);
+            console.log(data.message)
         }
-    })
-    .catch(error => {
+
+    } catch(error) {
         console.error('Error signing up:', error);
         errorMsg = error.message;
         loadPage('error');
-    });
+    };
 });
 
 // Handle the link to sign-up page

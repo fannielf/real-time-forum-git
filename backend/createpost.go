@@ -40,6 +40,8 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
 
+	_, userID := VerifySession(w, r)
+
 	var newPost PostDetails
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&newPost)
@@ -72,7 +74,7 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 		categoryIDs = append(categoryIDs, categoryID)
 	}
 
-	err = AddPostToDatabase(newPost.PostTitle, newPost.PostContent, categoryIDs, newPost.UserID)
+	err = AddPostToDatabase(newPost.PostTitle, newPost.PostContent, categoryIDs, userID)
 	if err != nil {
 		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return

@@ -48,7 +48,7 @@ function loadPage() {
         page = 'signup-page'
         renderSignupPage();
     } else {
-        page = 'error'
+        page = 'error-message'
         errorMsg = "Page Not Found"
         showError();
     }
