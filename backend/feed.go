@@ -2,8 +2,10 @@ package backend
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // HomePage handles the rendering of the home page
@@ -161,31 +163,31 @@ func GetPosts(userID int) ([]PostDetails, error) {
 // }
 
 // // HandleCategory converts the category ID into a string and returns validated ID
-// func HandleCategory(category string) (int, error) {
+func HandleCategory(category string) (int, error) {
 
-// 	categoryID, err := strconv.Atoi(category)
-// 	if err != nil {
-// 		log.Println("Error converting categoryID", err)
-// 		return 0, err
-// 	}
+	categoryID, err := strconv.Atoi(category)
+	if err != nil {
+		log.Println("Error converting categoryID", err)
+		return 0, err
+	}
 
-// 	valid := ValidateCategoryID(categoryID)
-// 	if !valid {
-// 		log.Println("Invalid categoryID", category)
-// 		return 0, fmt.Errorf("invalid category id: %s", category)
-// 	}
+	valid := ValidateCategoryID(categoryID)
+	if !valid {
+		log.Println("Invalid categoryID", category)
+		return 0, fmt.Errorf("invalid category id: %s", category)
+	}
 
-// 	return categoryID, nil
+	return categoryID, nil
 
-// }
+}
 
 // // ValidateCategoryID checks if the category ID given exists in the databse
-// func ValidateCategoryID(categoryID int) bool {
-// 	var category int
-// 	err := db.QueryRow("SELECT id FROM Category WHERE id = ?", categoryID).Scan(&category)
-// 	if err != nil {
-// 		log.Println("Error scanning category ID:", err)
-// 		return false
-// 	}
-// 	return true
-// }
+func ValidateCategoryID(categoryID int) bool {
+	var category int
+	err := db.QueryRow("SELECT id FROM Category WHERE id = ?", categoryID).Scan(&category)
+	if err != nil {
+		log.Println("Error scanning category ID:", err)
+		return false
+	}
+	return true
+}
