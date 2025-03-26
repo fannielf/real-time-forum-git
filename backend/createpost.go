@@ -2,70 +2,85 @@ package backend
 
 import (
 	"database/sql"
+	"encoding/json"
 	"log"
+	"net/http"
 	"time"
 )
 
+func FetchCategories(w http.ResponseWriter, r *http.Request) {
+	var data []CategoryDetails
+	var err error
+	data, err = GetCategories()
+	if err != nil {
+		log.Println("Error fething categories: ", err)
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
+}
+
 // // CreatePost receives details for created post and inserts them into the database
-// func CreatePost(w http.ResponseWriter, r *http.Request) {
-// 	var userID int
-// 	var err error
-// 	var categoryIDs []int
+func CreatePost(w http.ResponseWriter, r *http.Request) {
 
-// 	if r.Method == http.MethodPost {
-// 		data.LoggedIn, userID, data.Username = VerifySession(r)
-// 		if !data.LoggedIn {
-// 			ErrorHandler(w, "You must be logged in to create a post", http.StatusUnauthorized)
-// 			return
-// 		}
+	if r.Method == http.MethodGet {
+		FetchCategories(w, r)
+		return
+	} else if r.Method == http.MethodPost {
+		NewPost(w, r)
+		return
+	} else {
+		ResponseHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
+		return
+	}
 
-// 		err = r.ParseForm()
-// 		if err != nil {
-// 			log.Println("Unable to parse form:", err)
-// 			ErrorHandler(w, "Bad Request", http.StatusBadRequest)
-// 			return
-// 		}
+}
 
-// 		title := r.FormValue("title")
-// 		content := r.FormValue("content")
-// 		categories := r.Form["category"]
+func NewPost(w http.ResponseWriter, r *http.Request) {
 
-// 		if title == "" || content == "" {
-// 			ErrorHandler(w, "Title or content cannot be empty", http.StatusBadRequest)
-// 			return
-// 		}
+	var newPost PostDetails
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&newPost)
+	if err != nil {
+		log.Println("error decoding the data")
+		ResponseHandler(w, http.StatusBadRequest, "Bad Request")
+		return
+	}
 
-// 		if len(categories) == 0 {
-// 			categories = append(categories, "1") // If no category chosen, give category id 1 (=general)
-// 		}
+	if newPost.PostTitle == "" || newPost.PostContent == "" {
+		ResponseHandler(w, http.StatusBadRequest, "Title or content cannot be empty")
+		return
+	}
 
-// 		// Converting categoryIDs to integers and validating that they exists in the database
-// 		for _, cat := range categories {
-// 			var categoryID int
-// 			categoryID, err = HandleCategory(cat)
-// 			if err != nil {
-// 				log.Println("Error handling categoryID in createpost", err)
-// 				ErrorHandler(w, "Bad Request", http.StatusBadRequest)
-// 			}
+	categories := newPost.Categories
 
-// 			categoryIDs = append(categoryIDs, categoryID)
-// 		}
+	if len(categories) == 0 {
+		categories = append(categories, "1") // If no category chosen, give category id 1 (=general)
+	}
 
-// 		err = AddPostToDatabase(title, content, categoryIDs, userID)
-// 		if err != nil {
-// 			ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
-// 			return
-// 		}
+	var categoryIDs []int
+	// Converting categoryIDs to integers and validating that they exists in the database
+	for _, cat := range categories {
+		categoryID, err := HandleCategory(cat)
+		if err != nil {
+			log.Println("Error handling categoryID in createpost", err)
+			ResponseHandler(w, http.StatusBadRequest, "Bad Request")
+		}
 
-// 		http.Redirect(w, r, "/", http.StatusFound)
+		categoryIDs = append(categoryIDs, categoryID)
+	}
 
-// 	} else if r.Method != http.MethodGet {
+	err = AddPostToDatabase(newPost.PostTitle, newPost.PostContent, categoryIDs, newPost.UserID)
+	if err != nil {
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
 
-// 		ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-// 	}
+	ResponseHandler(w, http.StatusOK, "Message added to database")
 
-// 	RenderTemplate(w, "create-post", data)
-// }
+}
 
 // AddPostToDatabase inserts a new post into the database
 func AddPostToDatabase(title, content string, categories []int, userID int) error {
