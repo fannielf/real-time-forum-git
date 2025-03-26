@@ -20,35 +20,35 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 // HandleLoginPost handles the user login form submission
 func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
-	log.Println("login post request received")
 
 	// Decode the JSON body into the LoginData struct
 	var loginData LoginData
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&loginData)
 	if err != nil {
+		log.Println("Error decoding the login data")
 		ResponseHandler(w, http.StatusBadRequest, "Bad Request")
 		return
 	}
 
 	message := "Login successful"
 	status := http.StatusOK
-	log.Println("decode successful, checking credentials")
 	userID, hashedPassword, err := getUserCredentials(loginData.Username)
 	if err != nil {
+		log.Println("Invalid username")
 		status = http.StatusUnauthorized
 		message = "Invalid username"
 	} else if err := verifyPassword(hashedPassword, loginData.Password); err != nil {
+		log.Println("Invalid password")
 		status = http.StatusUnauthorized
 		message = "Invalid password"
 	}
-	log.Println("creating session")
 	// Create session
 	if err := CreateSession(w, userID); err != nil {
+		log.Println("Error creating session")
 		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
-	log.Println("sending response")
 	ResponseHandler(w, status, message)
 }
 

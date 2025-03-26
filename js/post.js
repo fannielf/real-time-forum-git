@@ -12,7 +12,6 @@ function renderPostPage() {
         headers: {
             'Content-Type': 'application/json',
         },
-        //credentials: "same-origin"  // Uncomment if authentication is needed
     })
     .then(response => {
         if (!response.ok) {
@@ -21,8 +20,7 @@ function renderPostPage() {
         return response.json();  // Parse the JSON response
     })
     .then(post => {
-        console.log(post);  // Check the structure of the post object, including Categories
-        renderPost(post);  // Pass post data to render function
+        renderPost(post);
     })
     .catch(error => {
         console.error("Error fetching post:", error);
