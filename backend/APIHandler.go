@@ -2,6 +2,7 @@ package backend
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -17,6 +18,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	}
 
 	path := r.URL.Path
+	log.Println(path)
 
 	trimmedPath := strings.TrimPrefix(path, "/api/")
 
@@ -38,11 +40,11 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	// case "create_post":
 	// 	CreatePost(w, r) // API endpoint for creating a post
 	case "login":
-		Login(w, r) // API for login
+		Login(w, r)
 	case "signup":
 		SignUp(w, r)
-	// case "logout":
-	// 	Logout(w, r) // API for logout
+	case "logout":
+		Logout(w, r)
 	case "post":
 		PostPage(w, r)
 	case "refresh-session":

@@ -7,26 +7,30 @@ import (
 )
 
 // Logout logs out the user by deleting the session from the database and setting the session cookie to expire
-func Logout(w http.ResponseWriter, r *http.Request, data *PageDetails) {
-
+func Logout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_id")
-	if err == nil {
-		// Delete session from database
-		_, err := db.Exec("DELETE FROM Session WHERE id = ?", cookie.Value)
-		if err != nil {
-			log.Println("Error deleting session:", err)
-		}
+	if err != nil {
+		log.Println("Session cookie not found:", err)
+		ResponseHandler(w, http.StatusBadRequest, "No session cookie found")
+		return
 	}
-	// Expire the session cookie
+
+	_, err = db.Exec("UPDATE Session SET status = 'deleted', updated_at = ? WHERE id = ? AND status = 'active'",
+		time.Now().Format("2006-01-02 15:04:05"), cookie.Value)
+	if err != nil {
+		log.Println("Error deleting session:", err)
+		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_id",
 		Value:    "",
 		Expires:  time.Now().Add(-1 * time.Hour),
-		HttpOnly: true, // Prevent JavaScript from accessing the cookie
+		MaxAge:   -1,
+		HttpOnly: true,
 		Path:     "/",
 	})
-
-	data.LoggedIn = false
-
-	http.Redirect(w, r, "/", http.StatusFound)
+	log.Println("successful logout")
+	ResponseHandler(w, http.StatusOK, "Logout successful")
 }
