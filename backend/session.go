@@ -51,7 +51,6 @@ func CreateSession(w http.ResponseWriter, userID int) error {
 		expirationTime.Format("2006-01-02 15:04:05"), // expires_at (correct format)
 		currentTime,
 	)
-	log.Println(err)
 	return err
 }
 

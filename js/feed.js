@@ -1,3 +1,4 @@
+
 function renderFeedPage() {
     fetch('/api/feed', {
         method: 'GET',
@@ -65,3 +66,17 @@ function renderPosts(posts) {
         feedContainer.appendChild(postElement);
     });
 }
+
+ // Handle navigation events (e.g., clicking on links or buttons)
+ document.addEventListener("click", async (event) => {
+    const postLink = event.target.closest(".post-title a");
+    if (!postLink) return;
+
+    // Get the post ID from the dataset and load the page
+    const postID = postLink.dataset.postId;
+
+    history.pushState({}, "", `/post/${postID}`);
+    loadPage();
+    event.preventDefault();
+
+});

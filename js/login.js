@@ -1,20 +1,19 @@
+// renderng login page dynamically
 function renderLoginPage() {
-    // Render Login form dynamically
-    const loginPage = document.getElementById('login-page');
+    const loginPage = document.getElementById('login-form');
+    loginPage.innerHTML = '';
 
-    loginPage.innerHTML += `
-        <form id="login-form">
+    loginPage.innerHTML = `
             <label for="username-login">Username</label>
             <input type="text" id="username-login" name="username" placeholder="Enter your username" required>
             <label for="password-login">Password</label>
             <input type="password" id="password-login" name="password" placeholder="Enter your password" required>
             <button type="submit">Login</button>
-        </form>
     `;
+}
 
 document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
-    console.log("submit pressed")
 
 
     const username = document.getElementById('username-login').value;
@@ -26,7 +25,6 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     };
 
     try {
-        console.log("trying to send api")
         const response = await fetch('/api/login', {
             method: 'POST',
             headers: {
@@ -34,24 +32,30 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             },
             body: JSON.stringify(loginData)
         });
-        console.log("got response")
+        const data = await response.json();
+
         if (response.ok) {
-            const data = await response.json();
-            // Redirect to feed or home page
-            window.location.href = '/'; 
+            localStorage.setItem('authToken', data.authToken); 
+            history.pushState({}, '', '/');
+            document.getElementById('logout-button').style.display = 'block';
+            document.getElementById('chat-sidebar').style.display = 'block';
+            loadPage();
         } else {
-            const errorData = await response.json();
-            alert(errorData.message); // Show error message
+            errorMsg = data.message;
+            showError();
+            showPage('error')
+            
         }
     } catch (error) {
-        alert('An error occurred while logging in');
+        errorMsg = "Unknown Error";
+        showError();
+        showPage('error')
     }
 });
 
-    // Handle the link to sign-up page
-    document.querySelector('.signup-link a').addEventListener('click', (event) => {
-        event.preventDefault();
-        history.pushState({}, '', '/signup');
-        loadPage(); // assuming this function loads the signup page
-    });
-}
+// Handle the link to sign-up page
+document.getElementById('signup-link').addEventListener('click', (event) => {
+    event.preventDefault();
+    history.pushState({}, '', '/signup');
+    loadPage();
+});

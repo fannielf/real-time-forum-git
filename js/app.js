@@ -1,39 +1,30 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOMContentLoaded fired")
     init();
+});
+
+// Handle logout
+document.getElementById('logout-button').addEventListener('click', async () => {
+    await LogoutUser();
+    init();
+});
+
+// Handle back/forward navigation
+window.addEventListener('popstate', () => {
+    loadPage();
 });
 
 let errorMsg = '';
 
-function init() {
+async function init() {
+    const authenticated = await isAuthenticated();
 
-    authenticateSession();
+    if (!authenticated) {
+        document.getElementById('logout-button').style.display = 'none';
+        document.getElementById('chat-sidebar').style.display = 'none';
+        history.pushState({}, '', '/login');
+    };
     loadPage();
 
-      // Handle logout
-      document.getElementById('logout-button').addEventListener('click', () => {
-        window.location.href = '/logout'; 
-        loadPage();
-    });
-
-    // Handle navigation events (e.g., clicking on links or buttons)
-    document.addEventListener("click", async (event) => {
-        const postLink = event.target.closest(".post-title a");
-        if (!postLink) return;
-
-        // Get the post ID from the dataset and load the page
-        const postID = postLink.dataset.postId;
-
-        history.pushState({}, "", `/post/${postID}`);
-        loadPage();
-        event.preventDefault();
-
-    });
-
-    // Handle back/forward navigation
-    window.addEventListener('popstate', () => {
-        loadPage(); // Re-run init to reload correct page based on new URL
-    });
 }
 
 // toggle which page is shown
@@ -43,7 +34,6 @@ function loadPage() {
     const path = window.location.pathname; // Get the URL
     const segments = path.split('/').filter(Boolean); // Remove empty segments
     let page;
-    console.log(segments)
 
     if (segments.length === 0) {
         page = 'feed'
@@ -53,16 +43,14 @@ function loadPage() {
         renderPostPage();
     } else if (segments[0] === 'login') {
         page = 'login-page'
-        console.log("Login page detected!");
         renderLoginPage();
     } else if (segments[0] === 'signup') {
         page = 'signup-page'
-        console.log("Signup page detected!");
         renderSignupPage();
     } else {
         page = 'error'
         errorMsg = "Page Not Found"
-        renderSignupPage();
+        showError();
     }
 
     showPage(page)
@@ -70,7 +58,7 @@ function loadPage() {
 }
 
 // Function to authenticate session
-async function authenticateSession() {
+async function isAuthenticated() {
     try {
         const response = await fetch('/api/auth', {
             method: 'GET',
@@ -80,20 +68,18 @@ async function authenticateSession() {
             credentials: 'include', // Include cookies for authentication
         });
         
+        // Check if the response is okay
         if (response.ok) {
-            const data = await response.json();
-            console.log('User is authenticated:', data);
-            return;
-            // Update your UI based on the authentication status, like showing/hiding buttons
+            console.log('User is authenticated:');
+            return true;
         } else {
-            console.log('User not authenticated');
-            // Redirect to login page or show login button
+            console.log('Unauthorized');
+            return false;
         }
     } catch (error) {
         console.error('Error authenticating session:', error);
-        // Handle any error with the API request
+        return false
     }
-    history.pushState({}, '', '/login');
 }
 
 function showPage(pageId) {
@@ -117,6 +103,7 @@ function showError() {
     errorText.textContent = errorMsg;
 
     backButton.addEventListener("click", () => {
-        window.location.href = '/'; 
+        history.pushState({}, '', '/');
+        loadPage();
     });
 }
