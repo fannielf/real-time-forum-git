@@ -7,8 +7,9 @@ function initializeSocket() {
 
     // Listen for messages from the WebSocket
     socket.addEventListener('message', function(event) {
+        console.log("message received")
         const message = JSON.parse(event.data);
-
+        console.log(message)
         if (message.type === "update_users") {
             const activeUsers = message.users;
         

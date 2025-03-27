@@ -10,10 +10,10 @@ import (
 func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 	loggedIn, userID := backend.VerifySession(r)
-	// get username from the database
 	if !loggedIn {
 		return
 	}
+	// get username from the database
 	username, err := backend.GetUsername(userID)
 	if err != nil {
 		log.Println("User not logged in")
@@ -41,7 +41,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		// Remove the connection from the clients map
 		delete(clients, conn)
-		conn.Close() // Close the WebSocket connection
+		conn.Close()
 		log.Println("Closed connection for", username)
 	}()
 
@@ -56,11 +56,11 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			// Remove user connection & remove from active users
 			clientsMutex.Lock()
 			delete(clients, conn)
-			clientsMutex.Unlock()
-
 			broadcastActiveUsers()
+			clientsMutex.Unlock()
 			break
 		}
+
 		// 	receiverUsername := msg.Receiver // Assuming you have this field in your message
 		// 	updateUserInteraction(username, receiverUsername)
 

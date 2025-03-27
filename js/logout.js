@@ -17,7 +17,7 @@ async function LogoutUser() {
             return
         } else {
         // Update UI
-        if (socket !== null) socket.close();
+        if (socket !== null) socket.close(); socket = null;
         document.getElementById('logout-button').style.display = 'none';
         document.getElementById('chat-sidebar').style.display = 'none';
         history.pushState({}, '', '/login');
