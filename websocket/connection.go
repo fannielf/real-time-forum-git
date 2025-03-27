@@ -8,8 +8,13 @@ import (
 
 // Handles Websocket connections
 func HandleConnections(w http.ResponseWriter, r *http.Request) {
+
+	loggedIn, userID := backend.VerifySession(r)
 	// get username from the database
-	username, err := backend.GetUsername(r)
+	if !loggedIn {
+		return
+	}
+	username, err := backend.GetUsername(userID)
 	if err != nil {
 		log.Println("User not logged in")
 		return
@@ -21,7 +26,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		log.Println("WebSocket upgrade error:", err)
 		return
 	}
-	defer conn.Close()
+
 	log.Println("New Websocket connection established")
 
 	clientsMutex.Lock()
@@ -33,6 +38,12 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	}
 	broadcastActiveUsers()
 	clientsMutex.Unlock()
+	defer func() {
+		// Remove the connection from the clients map
+		delete(clients, conn)
+		conn.Close() // Close the WebSocket connection
+		log.Println("Closed connection for", username)
+	}()
 
 	var msg Message
 
