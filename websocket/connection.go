@@ -3,27 +3,65 @@ package websocket
 import (
 	"log"
 	"net/http"
+	"real-time-forum/backend"
 )
 
-// WebSocket handler
+// Handles Websocket connections
 func HandleConnections(w http.ResponseWriter, r *http.Request) {
+	// get username from the database
+	username, err := backend.GetUsername(r)
+	if err != nil {
+		log.Println("User not logged in")
+		return
+	}
+
+	// upgrade to Websocket protocol
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("WebSocket upgrade error:", err)
 		return
 	}
 	defer conn.Close()
+	log.Println("New Websocket connection established")
 
-	clients[conn] = true
+	clientsMutex.Lock()
+	// add user to clients
+	clients[conn] = username
+	// Initialize interactions map for this user if not exists
+	if _, exists := userInteractions[username]; !exists {
+		userInteractions[username] = make(map[string]int64)
+	}
+	broadcastActiveUsers()
+	clientsMutex.Unlock()
 
+	var msg Message
+
+	// // Listen for messages
 	for {
-		var msg Message
 		err := conn.ReadJSON(&msg)
 		if err != nil {
-			log.Println("Read error:", err)
+			log.Println(username, "disconnected")
+
+			// Remove user connection & remove from active users
+			clientsMutex.Lock()
 			delete(clients, conn)
+			clientsMutex.Unlock()
+
+			broadcastActiveUsers()
 			break
 		}
-		broadcast <- msg // Send message to channel
+		// 	receiverUsername := msg.Receiver // Assuming you have this field in your message
+		// 	updateUserInteraction(username, receiverUsername)
+
+		// 	broadcast <- msg
 	}
 }
+
+// Update the interaction timestamp between two users
+// func updateUserInteraction(sender, receiver string) {
+// 	clientsMutex.Lock()
+// 	defer clientsMutex.Unlock()
+
+// 	// Update the last active timestamp for the interaction between sender and receiver
+// 	userInteractions[sender][receiver] = time.Now().Unix() // Store timestamp in seconds
+// }

@@ -11,7 +11,7 @@ import (
 func Authenticate(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusUnauthorized
 	message := "No current sessions"
-	loggedIn, userID := VerifySession(w, r)
+	loggedIn, userID := VerifySession(r)
 	if loggedIn {
 		status = http.StatusOK
 		message = "Current session found"
@@ -55,7 +55,7 @@ func CreateSession(w http.ResponseWriter, userID int) error {
 }
 
 // VerifySession checks if the session ID exists in the database
-func VerifySession(w http.ResponseWriter, r *http.Request) (bool, int) {
+func VerifySession(r *http.Request) (bool, int) {
 	var userID int
 	cookie, err := r.Cookie("session_id")
 	if err != nil {
@@ -152,7 +152,7 @@ func SessionHandler(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusOK
 	message := "Session active"
 
-	loggedIn, userID := VerifySession(w, r)
+	loggedIn, userID := VerifySession(r)
 	if !loggedIn {
 		status = http.StatusUnauthorized
 		message = "Session expired"

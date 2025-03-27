@@ -35,7 +35,8 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         const data = await response.json();
 
         if (response.ok) {
-            localStorage.setItem('authToken', data.authToken); 
+            // Send username to WebSocket server
+            if (socket === null) initializeSocket();
             history.pushState({}, '', '/');
             document.getElementById('logout-button').style.display = 'block';
             document.getElementById('chat-sidebar').style.display = 'block';

@@ -78,13 +78,15 @@ signupForm.addEventListener("submit", async function(event) {
             history.pushState({}, '', '/login');
             loadPage()
         } else {
-            console.log(data.message)
+            console.error('Error signing up:', error);
+            errorMsg = data.message;
+            showPage('error');
         }
 
     } catch(error) {
         console.error('Error signing up:', error);
-        errorMsg = error.message;
-        loadPage('error');
+        errorMsg = data.message;
+        showPage('error');
     };
 });
 

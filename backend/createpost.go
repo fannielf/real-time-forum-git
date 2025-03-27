@@ -40,7 +40,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
 
-	_, userID := VerifySession(w, r)
+	_, userID := VerifySession(r)
 
 	var newPost PostDetails
 	decoder := json.NewDecoder(r.Body)

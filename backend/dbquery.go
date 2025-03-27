@@ -2,7 +2,9 @@ package backend
 
 import (
 	"database/sql"
+	"errors"
 	"log"
+	"net/http"
 	"real-time-forum/database"
 	"strings"
 )
@@ -143,4 +145,45 @@ func GetLikes(userID, postID, commentID int) (bool, bool, error) {
 	}
 
 	return false, false, nil
+}
+
+func GetActiveUsers() ([]string, error) {
+	if db == nil {
+		return nil, errors.New("database connection is nil")
+	}
+	log.Println("Getting active users")
+	rows, err := db.Query("SELECT username FROM User WHERE status = 'active'")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var activeUsers []string
+	for rows.Next() {
+		var username string
+		if err := rows.Scan(&username); err != nil {
+			return nil, err
+		}
+		activeUsers = append(activeUsers, username)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return activeUsers, nil
+}
+
+func GetUsername(r *http.Request) (string, error) {
+
+	loggedIn, userID := VerifySession(r)
+	var username string
+
+	if !loggedIn {
+		return "", errors.New("user not logged in")
+	}
+
+	err := db.QueryRow("SELECT username FROM User WHERE id = ?", userID).Scan(&username)
+	if err != nil {
+		return "", err
+	}
+	return username, nil
 }
