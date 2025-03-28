@@ -53,18 +53,13 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		// 	receiverUsername := msg.Receiver // Assuming you have this field in your message
-		// 	updateUserInteraction(username, receiverUsername)
+		if msg.Type == "chat" {
+			HandleChatHistory(conn, userID, msg)
 
-		// 	broadcast <- msg
+		} else if msg.Type == "message" {
+			AddChatToDB(userID, &msg)
+			broadcast <- msg
+		}
+		msg = Message{} // Empty the message
 	}
 }
-
-// Update the interaction timestamp between two users
-// func updateUserInteraction(sender, receiver string) {
-// 	clientsMutex.Lock()
-// 	defer clientsMutex.Unlock()
-
-// 	// Update the last active timestamp for the interaction between sender and receiver
-// 	userInteractions[sender][receiver] = time.Now().Unix() // Store timestamp in seconds
-// }

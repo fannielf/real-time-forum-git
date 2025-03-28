@@ -23,11 +23,14 @@ var (
 )
 
 type Message struct {
-	Type     string        `json:"type"`     // "chat", "update_users"
-	Username string        `json:"username"` // Sender
-	Receiver string        `json:"receiver"` // Receiver
-	Text     string        `json:"text"`     // Chat message (if any)
-	Users    []SortedUsers `json:"users"`    // sorted users with userID and username
+	Type      string        `json:"type"`       // "chat", "message", "update_users"
+	Sender    int           `json:"sender"`     // Sender
+	ChatUser  int           `json:"chat_user"`  // The person opened for a chat
+	ChatID    int           `json:"chat_id"`    // Chat ID
+	CreatedAt string        `json:"created_at"` // Timestamp for the message
+	Content   string        `json:"content"`    // Chat message
+	Users     []SortedUsers `json:"users"`      // sorted users with userID and username
+	History   []Message     `json:"history"`    // Message history
 }
 
 type Users struct {

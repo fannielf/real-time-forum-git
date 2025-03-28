@@ -6,9 +6,7 @@ import (
 	"net/http"
 	"net/mail"
 	"regexp"
-	"strconv"
 	"strings"
-	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -95,17 +93,6 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request) {
 func hashPassword(password string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(hashed), err
-}
-
-// insertUserIntoDB inserts the user's details into the database
-func insertUserIntoDB(username, age, gender, firstname, lastname, email, hashedPassword string) error {
-	ageInt, err := strconv.Atoi(age)
-	if err != nil {
-		ageInt = 0
-	}
-	_, err = db.Exec("INSERT INTO User (username, age, gender, firstname, lastname, email, password, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-		username, ageInt, gender, firstname, lastname, email, hashedPassword, time.Now().Format("2006-01-02 15:04:05"))
-	return err
 }
 
 // isValidEmail checks if the email address is valid
