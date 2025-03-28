@@ -15,8 +15,15 @@ function renderChatPage(receiver) {
         updateSidebar(activeUsers);  
     }
 
-    document.getElementById("app").innerHTML = `
-    <div id="chat-container">
+    //send a message to the backend to get the old messages type = "chat" receiverID = 
+    //backend responds with chatID and messages. chatID i need to save 
+
+    //add chat header + rendering the messages 
+    document.getElementById("chat-container").innerHTML = `
+    <div id="chat-partner">
+        <h3>${receiver.username}</h3>
+        </div>
+    <div id="chat-messages">
         <div id="messages"></div>
         <textarea id="message-input" placeholder="Type a message..."></textarea>
         <button id="send-button" class="send-btn">Send</button>
@@ -26,8 +33,7 @@ function renderChatPage(receiver) {
     document.getElementById('send-button').addEventListener('click', sendMessage);
     // const messagesDiv = document.getElementById('messages');
     // messagesDiv.addEventListener('scroll', handleScroll);
-
-    loadMessages();
+    loadPage();
 }
 
 function sendMessage() {
@@ -38,10 +44,9 @@ function sendMessage() {
     if (!text || !receiverID || !socket) return; 
 
     const message = {
-        type: "chat",
-        senderID: userID,
-        receiverID: receiverID,
-        text: text
+        type: "message",
+        chat_id: chatID,
+        content: text
     };
 
     socket.send(JSON.stringify(message)); 
@@ -68,7 +73,8 @@ function loadMessages() {
 // }
 
 //this function is to arrange the messages in the chat - sender or receiver
-function displayMessages(messagesToDisplay) {
+//receiving sender(id), content and timestamp from the database ==data
+function displayMessages(data) {
     const messagesDiv = document.getElementById('messages');
     
     // go through all the messages and display them

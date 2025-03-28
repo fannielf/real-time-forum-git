@@ -50,6 +50,8 @@ function loadPage() {
     } else if (segments[0] === 'create-post') {
         page = 'create-post'
         renderCreatePostPage();
+    } else if (segments[0] === 'chat') {
+        page = 'chat-window'
     } else {
         page = 'error-message'
         errorMsg = "Page Not Found"

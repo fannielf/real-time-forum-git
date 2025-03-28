@@ -62,6 +62,7 @@ function updateSidebar(users) {
             
             // Make the username clickable to start a private chat
             userElement.addEventListener('click', function() {
+                history.pushState({}, '', '/chat');
                 renderChatPage(user);
             });
 
