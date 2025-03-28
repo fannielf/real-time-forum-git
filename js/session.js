@@ -17,5 +17,5 @@ const refreshSession = async () => {
     }
 };
 
-// Refresh the session every 20 minutes
-setInterval(refreshSession, 20 * 60 * 1000);
+// Refresh the session every 5 minutes
+setInterval(refreshSession, 5 * 60 * 1000);

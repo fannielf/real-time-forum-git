@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"real-time-forum/backend"
 	"real-time-forum/database"
+	"real-time-forum/websocket"
 	"text/template"
 )
 
@@ -42,6 +43,12 @@ func main() {
 		}
 		backend.APIHandler(w, r, db)
 	})
+
+	// Handler for chat
+	http.HandleFunc("/ws", websocket.HandleConnections)
+
+	// Start message broadcaster
+	go websocket.HandleMessages()
 
 	log.Println("Server is running on http://localhost:8080")
 

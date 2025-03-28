@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Handle logout
 document.getElementById('logout-button').addEventListener('click', async () => {
     await LogoutUser();
-    init();
+    loadPage();
 });
 
 // Handle back/forward navigation
@@ -22,6 +22,7 @@ async function init() {
         document.getElementById('logout-button').style.display = 'none';
         document.getElementById('chat-sidebar').style.display = 'none';
         history.pushState({}, '', '/login');
+        if (socket !== null) socket.close(); socket = null;
     };
     loadPage();
 
@@ -29,7 +30,6 @@ async function init() {
 
 // toggle which page is shown
 function loadPage() {
-    hideAllPages();
 
     const path = window.location.pathname; // Get the URL
     const segments = path.split('/').filter(Boolean); // Remove empty segments
@@ -74,6 +74,7 @@ async function isAuthenticated() {
         // Check if the response is okay
         if (response.ok) {
             console.log('User is authenticated:');
+            if (socket === null) initializeSocket()
             return true;
         } else {
             console.log('Unauthorized');
@@ -87,6 +88,7 @@ async function isAuthenticated() {
 
 function showPage(pageId) {
     if (pageId === null) return;
+    hideAllPages();
     // Show the page and hide others
     document.getElementById(pageId).style.display = 'block';
 }

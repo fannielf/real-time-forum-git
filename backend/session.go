@@ -1,7 +1,6 @@
 package backend
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"time"
@@ -12,10 +11,11 @@ import (
 func Authenticate(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusUnauthorized
 	message := "No current sessions"
-	loggedIn, _ := VerifySession(w, r)
+	loggedIn, userID := VerifySession(r)
 	if loggedIn {
 		status = http.StatusOK
 		message = "Current session found"
+		refreshLastAccess(userID)
 	}
 
 	ResponseHandler(w, status, message)
@@ -55,7 +55,7 @@ func CreateSession(w http.ResponseWriter, userID int) error {
 }
 
 // VerifySession checks if the session ID exists in the database
-func VerifySession(w http.ResponseWriter, r *http.Request) (bool, int) {
+func VerifySession(r *http.Request) (bool, int) {
 	var userID int
 	cookie, err := r.Cookie("session_id")
 	if err != nil {
@@ -71,28 +71,54 @@ func VerifySession(w http.ResponseWriter, r *http.Request) (bool, int) {
 	return true, userID
 }
 
-// Update session expiry time
-func refreshSessionExpiry(userID int) {
-	// Simulate updating the expiry time in the backend (e.g., database)
-	var lastAccess string
-	err := db.QueryRow("SELECT last_access FROM Session WHERE user_id = ?", userID).Scan(&lastAccess)
+func refreshLastAccess(userID int) {
+	lastAccessed := time.Now()
+
+	_, err := db.Exec("UPDATE Session SET last_access = ? WHERE user_id = ? AND status = 'active'", lastAccessed.Format("2006-01-02 15:04:05"), userID)
 	if err != nil {
-		log.Println("No userID found")
+		log.Println("Error updating session expiry:", err)
 		return
 	}
-	parsedTime, err := time.Parse("2006-01-02 15:04:05", lastAccess)
+}
+
+// updateSessionExpiry updates session expiry and cookie expiry based on the last access
+func updateSessionExpiry(userID int, w http.ResponseWriter) {
+	var lastAccessed string
+	var expiresAt string
+
+	err := db.QueryRow("SELECT last_access, expires_at FROM Session WHERE user_id = ? AND status = 'active'", userID).Scan(&lastAccessed, &expiresAt)
+	if err != nil {
+		log.Println("No userID found:", err)
+		return
+	}
+
+	parsedLastAccess, err := time.Parse("2006-01-02 15:04:05", lastAccessed)
 	if err != nil {
 		log.Println("Error parsing last_access:", err)
 		return
 	}
 
-	// Add 30 minutes to the parsed time
-	newSessionExpiry := parsedTime.Add(30 * time.Minute)
-
-	_, err = db.Exec("UPDATE Session SET last_access = ? WHERE user_id = ?", newSessionExpiry.Format("2006-01-02 15:04:05"), userID)
+	parsedExpiresAt, err := time.Parse("2006-01-02 15:04:05", expiresAt)
 	if err != nil {
-		log.Println("Error updating session expiry:", err)
+		log.Println("Error parsing expires_at:", err)
 		return
+	}
+
+	// If last_access and expires_at are not the same, update expires_at and session
+	if !parsedLastAccess.Equal(parsedExpiresAt) {
+		_, err := db.Exec("UPDATE Session SET expires_at = ? WHERE user_id = ?", lastAccessed, userID)
+		if err != nil {
+			log.Println("Error updating session expiry:", err)
+			return
+		}
+
+		cookieExpiry := parsedLastAccess.Add(30 * time.Minute)
+		http.SetCookie(w, &http.Cookie{
+			Name:    "session_expiry",
+			Value:   cookieExpiry.Format("2006-01-02 15:04:05"),
+			Expires: cookieExpiry,
+			Path:    "/",
+		})
 	}
 }
 
@@ -110,7 +136,7 @@ func checkSessionExpiry(userID int) bool {
 		return false
 	}
 
-	if parsedTime.Before(time.Now()) {
+	if parsedTime.After(time.Now()) {
 		_, err = db.Exec("UPDATE Session SET status = 'expired' AND updated_at = ? WHERE user_id = ?", time.Now().Format("2006-01-02 15:04:05"), userID)
 		if err != nil {
 			log.Println("Error updating session expiry:", err)
@@ -123,23 +149,20 @@ func checkSessionExpiry(userID int) bool {
 
 // Handler to verify or expire session
 func SessionHandler(w http.ResponseWriter, r *http.Request) {
-	var response Response
-	loggedIn, userID := VerifySession(w, r)
+	status := http.StatusOK
+	message := "Session active"
+
+	loggedIn, userID := VerifySession(r)
 	if !loggedIn {
-		w.WriteHeader(http.StatusUnauthorized)
-		response = Response{Message: "Session expired"}
+		status = http.StatusUnauthorized
+		message = "Session expired"
 	} else {
-		refreshSessionExpiry(userID)
+		updateSessionExpiry(userID, w)
 		activeSession := checkSessionExpiry(userID)
-		if activeSession {
-			w.WriteHeader(http.StatusOK)
-			response = Response{Message: "Session refreshed"}
-		} else {
-			w.WriteHeader(http.StatusUnauthorized)
-			response = Response{Message: "Session expired"}
+		if !activeSession {
+			status = http.StatusUnauthorized
+			message = "Session expired"
 		}
 	}
-	// Respond with a appropriate message
-	json.NewEncoder(w).Encode(response)
-
+	ResponseHandler(w, status, message)
 }

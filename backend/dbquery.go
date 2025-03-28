@@ -144,3 +144,50 @@ func GetLikes(userID, postID, commentID int) (bool, bool, error) {
 
 	return false, false, nil
 }
+
+func GetActiveUsers() ([]string, error) {
+	var activeSessions []int
+	var activeUsers []string
+
+	log.Println("Getting active users")
+	rows, err := db.Query("SELECT user_id FROM Session WHERE status = 'active'")
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// No active users, return an empty slice
+			return activeUsers, nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userID int
+		if err := rows.Scan(&userID); err != nil {
+			return nil, err
+		}
+		activeSessions = append(activeSessions, userID)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	for _, user := range activeSessions {
+		username, err := GetUsername(user)
+		if err != nil {
+			return nil, err
+		}
+		if username != "" {
+			activeUsers = append(activeUsers, username)
+		}
+	}
+	return activeUsers, nil
+}
+
+func GetUsername(userID int) (string, error) {
+
+	var username string
+	err := db.QueryRow("SELECT username FROM User WHERE id = ?", userID).Scan(&username)
+	if err != nil {
+		return "", err
+	}
+	return username, nil
+}

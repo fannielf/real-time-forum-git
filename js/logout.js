@@ -6,6 +6,8 @@ async function LogoutUser() {
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include' 
         });
+        console.log('Response:', response);
+
         const data = await response.json();
 
         if (!response.ok) {
@@ -15,6 +17,7 @@ async function LogoutUser() {
             return
         } else {
         // Update UI
+        if (socket !== null) socket.close(); socket = null;
         document.getElementById('logout-button').style.display = 'none';
         document.getElementById('chat-sidebar').style.display = 'none';
         history.pushState({}, '', '/login');

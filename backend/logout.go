@@ -15,11 +15,27 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var userID int
+	err = db.QueryRow("SELECT user_id FROM Session WHERE id = ?", cookie.Value).Scan(&userID)
+	if err != nil {
+		log.Println("Error fetching user_id from session:", err)
+		ResponseHandler(w, http.StatusInternalServerError, "Failed to retrieve session data")
+		return
+	}
+
 	_, err = db.Exec("UPDATE Session SET status = 'deleted', updated_at = ? WHERE id = ? AND status = 'active'",
 		time.Now().Format("2006-01-02 15:04:05"), cookie.Value)
 	if err != nil {
 		log.Println("Error deleting session:", err)
 		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
+
+	var username string
+	err = db.QueryRow("SELECT username FROM User WHERE id = ?", userID).Scan(&username)
+	if err != nil {
+		log.Println("Error fetching username from user table:", err)
+		ResponseHandler(w, http.StatusInternalServerError, "Failed to retrieve username")
 		return
 	}
 
@@ -31,6 +47,6 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 		Path:     "/",
 	})
-	log.Println("successful logout")
+	log.Println("user logged out: ", username)
 	ResponseHandler(w, http.StatusOK, "Logout successful")
 }
