@@ -19,6 +19,15 @@ function initializeSocket() {
         
         } else if (message.type === "chat") {
             displayMessage(message);
+        } else if (message.type === "message") {
+            const chatID = message.chatID; 
+            const messages = message.messages;
+
+            currentChatID = chatID;
+            messages = receivedMessages;
+
+            displayPreviousMessages(receivedMessages);
+        
         }
     });
 }
@@ -41,7 +50,16 @@ function updateSidebar(users) {
             userElement.textContent = user.username;
             userElement.dataset.value = user.id;
 
-
+             // Add a notification icon if user has unread messages
+             const notificationIcon = document.createElement('span');
+             notificationIcon.classList.add('notification-icon');
+             if (user.hasUnreadMessages) {
+                 notificationIcon.style.display = 'inline-block';  // Show icon if there are unread messages
+             } else {
+                 notificationIcon.style.display = 'none';  // Hide icon if no unread messages
+             }
+            userElement.appendChild(notificationIcon);
+            
             // Make the username clickable to start a private chat
             userElement.addEventListener('click', function() {
                 renderChatPage(user);

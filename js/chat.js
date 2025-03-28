@@ -1,28 +1,37 @@
 let messages = [];
 let userID = 0;
 let receiverID = null;
+let activeUsers = [];
 
 // Function to open a private chat with the selected user (implement this based on your app's logic)
 function renderChatPage(receiver) {
     console.log("Starting private chat with", receiver);
     receiverID = receiver.userID;
 
+    //all the messages have been read
+    const user = activeUsers.find(u => u.userID === receiverID);
+    if (user) {
+        user.hasUnreadMessages = false;  
+        updateSidebar(activeUsers);  
+    }
+
     document.getElementById("app").innerHTML = `
     <div id="chat-container">
         <div id="messages"></div>
         <textarea id="message-input" placeholder="Type a message..."></textarea>
-        <button id="send-message" class="send-btn">Send</button>
+        <button id="send-button" class="send-btn">Send</button>
     </div>
     `;
 
-    document.getElementById('send-message').addEventListener('click', sendMessage);
-    const messagesDiv = document.getElementById('messages');
-    messagesDiv.addEventListener('scroll', handleScroll);
+    document.getElementById('send-button').addEventListener('click', sendMessage);
+    // const messagesDiv = document.getElementById('messages');
+    // messagesDiv.addEventListener('scroll', handleScroll);
 
     loadMessages();
 }
 
 function sendMessage() {
+    console.log("Sending message...");
     const messageInput = document.getElementById('message-input');
     const text = messageInput.value.trim();
 
@@ -43,30 +52,39 @@ function loadMessages() {
     if (!receiverID || !socket) return;
 
     const messageRequest = {
-        type: "load_messages",
-        senderID: userID,
-        receiverID: receiverID
+        type: "load_messages", //type of the message
+        senderID: userID, //ID for the user who is logged in
+        receiverID: receiverID //ID for the user we are chatting with
     };
 
     socket.send(JSON.stringify(messageRequest));
 }
 
-function handleScroll() {
+// function handleScroll() {
+//     const messagesDiv = document.getElementById('messages');
+//     if (messagesDiv.scrollTop === 0) { 
+//         loadMessages(); 
+//     }
+// }
+
+//this function is to arrange the messages in the chat - sender or receiver
+function displayMessages(messagesToDisplay) {
     const messagesDiv = document.getElementById('messages');
-    if (messagesDiv.scrollTop === 0) { 
-        loadMessages(); 
-    }
+    
+    // go through all the messages and display them
+    messagesToDisplay.forEach(message => {
+        const messageElement = document.createElement('div');
+
+        if (message.senderID === userID) {
+            messageElement.classList.add('my-message');
+        } else {
+            messageElement.classList.add('other-message');
+        }
+
+        messageElement.textContent = `${message.timestamp} - ${message.sender}: ${message.text}`;
+        messagesDiv.appendChild(messageElement);
+    });
 }
-
-function displayMessage(message) {
-    const messagesDiv = document.getElementById('messages');
-    const messageElement = document.createElement('div');
-    messageElement.textContent = `${message.timestamp} - ${message.sender}: ${message.text}`;
-    messagesDiv.prepend(messageElement); // lets add a new message to the bottom so the older ones are on top
-}
-
-
-
 
 
 //function updateChat

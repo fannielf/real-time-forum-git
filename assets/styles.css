@@ -37,7 +37,7 @@ button:hover {
     transition: background-color 0.1s ease-in 0.1s;
 }
 
-.submit-btn, .send-btn {
+.submit-btn {
     padding: 10px;
     background-color: #74907f;
     color: #fff;
@@ -48,7 +48,7 @@ button:hover {
     font-size: 18px;
 }
 
-.submit-btn:hover, .send-btn:hover {
+.submit-btn:hover {
     background-color: #74907f;
     transition: background-color 0.1s ease-in 0.1s;
 }
@@ -453,6 +453,61 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     width: 100%;
 }
 
+/*------ Private messages ------*/
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#messages {
+    display: flex;
+    flex-direction: column;
+}
+
+.my-message {
+    background-color: #4a90e2;
+    color: white;
+    margin-left: auto;
+    padding: 8px;
+    border-radius: 5px;
+    max-width: 60%;
+    margin-bottom: 10px;
+}
+
+.other-message {
+    background-color: #ddd;
+    padding: 8px;
+    border-radius: 5px;
+    max-width: 60%;
+    margin-bottom: 10px;
+}
+
+#message-input-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: white;
+    border-top: 1px solid #ddd;
+}
+
+#message-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.send-button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #3d8456;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 /*------ Footer ------*/
 
 footer {
@@ -488,3 +543,4 @@ input.success {
     font-size: 15px;
     padding: 5px;
 }
+
