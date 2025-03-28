@@ -40,12 +40,12 @@ function sendMessage() {
 }
 
 function loadMessages() {
-    if (!currentChatUser || !socket) return;
+    if (!receiverID || !socket) return;
 
     const messageRequest = {
         type: "load_messages",
-        receiver: currentChatUser,
-        lastMessageId: lastMessageId
+        senderID: userID,
+        receiverID: receiverID
     };
 
     socket.send(JSON.stringify(messageRequest));
@@ -61,7 +61,7 @@ function handleScroll() {
 function displayMessage(message) {
     const messagesDiv = document.getElementById('messages');
     const messageElement = document.createElement('div');
-    messageElement.textContent = `${message.sender}: ${message.text}`;
+    messageElement.textContent = `${message.timestamp} - ${message.sender}: ${message.text}`;
     messagesDiv.prepend(messageElement); // lets add a new message to the bottom so the older ones are on top
 }
 
