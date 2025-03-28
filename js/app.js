@@ -51,7 +51,7 @@ function loadPage() {
         page = 'create-post'
         renderCreatePostPage();
     } else {
-        page = 'error'
+        page = 'error-message'
         errorMsg = "Page Not Found"
         showError();
     }
@@ -97,11 +97,8 @@ function hideAllPages() {
 }
 
 function showError() {
-    const errorContainer = document.querySelector("#error-message");
-    const errorText = document.querySelector("#error-text");
-    const backButton = document.querySelector("#error-back-btn");
-
-    if (!errorContainer || !errorText || !backButton) return;
+    const errorText = document.getElementById("error-text");
+    const backButton = document.getElementById("error-back-btn");
 
     errorText.textContent = errorMsg;
 

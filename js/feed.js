@@ -1,7 +1,10 @@
 const createPostBtn = document.getElementById("create-post-btn");
 
 // open the form when the "Create Post" button is clicked
-createPostBtn.addEventListener("click", () => {
+createPostBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    history.pushState({}, '', '/create-post');
+    loadPage();
 });
 
 function renderFeedPage() {
@@ -55,7 +58,7 @@ function renderPosts(posts) {
                 <span class="material-symbols-outlined" style="font-size: 24px;">filter_vintage</span>
                 <span class="username">${post.username}</span>
             </div>
-            <p class="post-content">${post.post_content.substring(0, 150)}...</p>
+            <p class="post-content">${post.post_content.substring(0, 50)}...</p>
             <div class="icons-container">
                 <div class="reaction-buttons">
                     <span class="comment-icon"><span class="material-symbols-outlined">chat</span>${(post.comments ?? []).length}</span>
