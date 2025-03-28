@@ -107,3 +107,12 @@ func sortActiveUsers(userID int) []SortedUsers {
 func GetTimestamp() int64 {
 	return time.Now().Unix()
 }
+
+// Update the interaction timestamp between two users
+func updateUserInteraction(sender, receiver int) {
+	clientsMutex.Lock()
+	defer clientsMutex.Unlock()
+
+	// Update the last active timestamp for the interaction between sender and receiver
+	userInteractions[sender][receiver] = time.Now().Unix() // Store timestamp in seconds
+}

@@ -5,6 +5,7 @@ import (
 	"log"
 	"real-time-forum/database"
 	"strings"
+	"time"
 )
 
 // GetCategories retrieves all categories from the database
@@ -190,4 +191,110 @@ func GetUsername(userID int) (string, error) {
 		return "", err
 	}
 	return username, nil
+}
+
+func GetChatID(user1, user2 int) (int, error) {
+	var chatID int
+
+	// Query the database for the chat ID, considering both (user1, user2) and (user2, user1)
+	query := `
+        SELECT id
+        FROM Chat
+        WHERE 
+            (user1_id = ? AND user2_id = ?) OR
+            (user1_id = ? AND user2_id = ?)
+        LIMIT 1
+    `
+
+	// Try to get the chatID if already exists
+	err := db.QueryRow(query, user1, user2, user2, user1).Scan(&chatID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			insertQuery := `
+				INSERT INTO chats (user1_id, user2_id, created_at)
+				VALUES (?, ?, ?)
+			`
+			// Insert the new chat into the database
+			res, err := db.Exec(insertQuery, user1, user2, time.Now().Format("2006-01-02 15:04:05"))
+			if err != nil {
+				return 0, err
+			}
+
+			// Get the last inserted ID
+			latestID, err := res.LastInsertId()
+			chatID = int(latestID)
+			if err != nil {
+				return 0, err
+			}
+		} else {
+			return 0, err
+		}
+	}
+
+	return int(chatID), nil
+}
+
+func GetParticipants(chatID int) ([]int, error) {
+	var participants []int
+	rows, err := db.Query("SELECT user1_id, user2_id FROM Chat WHERE id = ?", chatID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userID int
+		if err := rows.Scan(&userID); err != nil {
+			return nil, err
+		}
+		participants = append(participants, userID)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return participants, nil
+}
+
+func GetHistory(chatID int, history *[]map[string]interface{}) error {
+
+	rows, err := db.Query("SELECT sender_id, content, created_at FROM Chat WHERE id = ? AND status = 'active'", chatID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil
+		}
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var sender int
+		var content string
+		var timestamp string
+		if err := rows.Scan(&sender, &content, &timestamp); err != nil {
+			return err
+		}
+		message := map[string]interface{}{
+			"sender":    sender,
+			"createdAt": timestamp,
+			"content":   content,
+		}
+
+		*history = append(*history, message)
+	}
+
+	if err := rows.Err(); err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func GetTimestamp(message_id int, table string) (string, error) {
+	var timestamp string
+	err := db.QueryRow("SELECT username FROM ? WHERE id = ?", table, message_id).Scan(&timestamp)
+	if err != nil {
+		return "", err
+	}
+	return timestamp, nil
 }

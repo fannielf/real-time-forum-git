@@ -48,7 +48,7 @@ func main() {
 	http.HandleFunc("/ws", websocket.HandleConnections)
 
 	// Start message broadcaster
-	go websocket.HandleMessages()
+	go websocket.BroadcastMessages()
 
 	log.Println("Server is running on http://localhost:8080")
 
