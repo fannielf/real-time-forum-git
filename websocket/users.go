@@ -11,8 +11,8 @@ import (
 func broadcastActiveUsers() {
 
 	// Send sorted list to each client
-	for client, username := range clients {
-		sortedUsers := sortActiveUsers(username)
+	for client, userID := range clients {
+		sortedUsers := sortActiveUsers(userID)
 
 		// Send the list of active users back to the client
 		message := Message{
@@ -30,9 +30,9 @@ func broadcastActiveUsers() {
 }
 
 // Sorts users: latest conversations first, then alphabetically
-func sortActiveUsers(clientUsername string) []string {
-	var sortedUsers []UserInteraction
-	var noInteractionUsers []string
+func sortActiveUsers(userID int) []SortedUsers {
+	var sortedUsers []Users
+	var noInteractionUsers []Users
 
 	// Fetch active users from the database
 	activeUsers, err := backend.GetActiveUsers()
@@ -41,32 +41,37 @@ func sortActiveUsers(clientUsername string) []string {
 		return nil
 	}
 	// Iterate through all active clients (users)
-	for _, username := range activeUsers {
+	for user_id, username := range activeUsers {
 		log.Println(username)
 		// Skip the current user
-		if username == clientUsername {
+		if user_id == userID {
 			continue
 		}
 
 		// // Check for interactions where the current user is involved (either as the user or as the other user)
-		interactions, exists := userInteractions[username]
+		interactions, exists := userInteractions[user_id]
 		if exists {
 			// Get the interaction timestamp with the current user
 			var lastInteraction int64
 			// Check both directions: currentUser <-> username
-			if timestamp, ok := interactions[clientUsername]; ok {
+			if timestamp, ok := interactions[userID]; ok {
 				lastInteraction = timestamp
 			}
 
 			// If we have a timestamp, add the user to the sorted list
 			if lastInteraction > 0 {
-				sortedUsers = append(sortedUsers, UserInteraction{
+				sortedUsers = append(sortedUsers, Users{
+					UserID:          user_id,
 					Username:        username,
 					LastInteraction: lastInteraction,
 				})
 			} else {
 				//If no interaction with currentUser, add to the no interaction list
-				noInteractionUsers = append(noInteractionUsers, username)
+				noInteractionUsers = append(noInteractionUsers, Users{
+					UserID:          user_id,
+					Username:        username,
+					LastInteraction: lastInteraction,
+				})
 			}
 		}
 	}
@@ -77,15 +82,24 @@ func sortActiveUsers(clientUsername string) []string {
 	})
 
 	// Sort users with no interactions alphabetically
-	sort.Strings(noInteractionUsers)
+	sort.Slice(noInteractionUsers, func(i, j int) bool {
+		return noInteractionUsers[i].Username < noInteractionUsers[j].Username
+	})
 
 	// Combine both lists: users with interactions first, then users without interactions
-	var finalSortedUsers []string
+	var finalSortedUsers []SortedUsers
 	for _, user := range sortedUsers {
-		finalSortedUsers = append(finalSortedUsers, user.Username)
+		finalSortedUsers = append(finalSortedUsers, SortedUsers{
+			ID:       user.UserID,
+			Username: user.Username,
+		})
 	}
-	finalSortedUsers = append(finalSortedUsers, noInteractionUsers...)
-
+	for _, user := range noInteractionUsers {
+		finalSortedUsers = append(finalSortedUsers, SortedUsers{
+			ID:       user.UserID,
+			Username: user.Username,
+		})
+	}
 	return finalSortedUsers
 }
 

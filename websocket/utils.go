@@ -15,22 +15,28 @@ var upgrader = websocket.Upgrader{
 }
 
 var (
-	clients          = make(map[*websocket.Conn]string)  // Map of WebSocket connections -> usernames
-	userInteractions = make(map[string]map[string]int64) // map[username]map[otherUsername]timestamp
-	broadcast        = make(chan Message)                // Channel for broadcasting messages
-	clientsMutex     sync.Mutex                          // Protects access to activeUsers map
+	clients          = make(map[*websocket.Conn]int) // Map of WebSocket connections -> userID
+	userInteractions = make(map[int]map[int]int64)   // map[username]map[otherUsername]timestamp
+	broadcast        = make(chan Message)            // Channel for broadcasting messages
+	clientsMutex     sync.Mutex                      // Protects access to activeUsers map
 	//messagesMutex    sync.Mutex
 )
 
 type Message struct {
-	Type     string   `json:"type"`     // "chat", "update_users"
-	Username string   `json:"username"` // Sender
-	Receiver string   `json:"receiver"` // Receiver
-	Text     string   `json:"text"`     // Chat message (if any)
-	Users    []string `json:"users"`    // List of users to be broadcasted
+	Type     string        `json:"type"`     // "chat", "update_users"
+	Username string        `json:"username"` // Sender
+	Receiver string        `json:"receiver"` // Receiver
+	Text     string        `json:"text"`     // Chat message (if any)
+	Users    []SortedUsers `json:"users"`    // sorted users with userID and username
 }
 
-type UserInteraction struct {
+type Users struct {
+	UserID          int
 	Username        string
 	LastInteraction int64
+}
+
+type SortedUsers struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
 }

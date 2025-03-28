@@ -13,12 +13,6 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	if !loggedIn {
 		return
 	}
-	// get username from the database
-	username, err := backend.GetUsername(userID)
-	if err != nil {
-		log.Println("User not logged in")
-		return
-	}
 
 	// upgrade to Websocket protocol
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -31,10 +25,10 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 	clientsMutex.Lock()
 	// add user to clients
-	clients[conn] = username
+	clients[conn] = userID
 	// Initialize interactions map for this user if not exists
-	if _, exists := userInteractions[username]; !exists {
-		userInteractions[username] = make(map[string]int64)
+	if _, exists := userInteractions[userID]; !exists {
+		userInteractions[userID] = make(map[int]int64)
 	}
 	broadcastActiveUsers()
 	clientsMutex.Unlock()
@@ -42,7 +36,6 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		// Remove the connection from the clients map
 		delete(clients, conn)
 		conn.Close()
-		log.Println("Closed connection for", username)
 	}()
 
 	var msg Message
@@ -51,7 +44,6 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	for {
 		err := conn.ReadJSON(&msg)
 		if err != nil {
-			log.Println(username, "disconnected")
 
 			// Remove user connection & remove from active users
 			clientsMutex.Lock()

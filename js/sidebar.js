@@ -34,7 +34,9 @@ function updateSidebar(users) {
         users.forEach(function(user) {
             const userElement = document.createElement('div');
             userElement.classList.add('chat-user');
-            userElement.textContent = user;
+            userElement.textContent = user.username;
+            userElement.dataset.value = user.id;
+
 
             // Make the username clickable to start a private chat
             userElement.addEventListener('click', function() {
@@ -47,7 +49,7 @@ function updateSidebar(users) {
 }
 
 // Function to open a private chat with the selected user (implement this based on your app's logic)
-function openPrivateChat(username) {
-    console.log("Starting private chat with", username);
+function openPrivateChat(user) {
+    console.log("Starting private chat with", user);
     // Add logic to open private chat with the selected user
 }
