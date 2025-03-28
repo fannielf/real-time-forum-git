@@ -1,5 +1,6 @@
 // Create WebSocket connection
 let socket = null;
+let currentChatUser = null;
 
 // initialize websocket when logged or authorized 
 function initializeSocket() {
@@ -10,11 +11,14 @@ function initializeSocket() {
         console.log("message received")
         const message = JSON.parse(event.data);
         console.log(message)
+
         if (message.type === "update_users") {
             const activeUsers = message.users;
         
             updateSidebar(activeUsers);
         
+        } else if (message.type === "chat") {
+            displayMessage(message);
         }
     });
 }
@@ -34,11 +38,12 @@ function updateSidebar(users) {
         users.forEach(function(user) {
             const userElement = document.createElement('div');
             userElement.classList.add('chat-user');
-            userElement.textContent = user;
+            userElement.dataset.value = user.id;
+            userElement.textContent = user.username;
 
             // Make the username clickable to start a private chat
             userElement.addEventListener('click', function() {
-                openPrivateChat(user);
+                renderChatPage(user);
             });
 
             chatUsersDiv.appendChild(userElement);
@@ -46,8 +51,3 @@ function updateSidebar(users) {
     }
 }
 
-// Function to open a private chat with the selected user (implement this based on your app's logic)
-function openPrivateChat(username) {
-    console.log("Starting private chat with", username);
-    // Add logic to open private chat with the selected user
-}

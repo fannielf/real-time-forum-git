@@ -37,7 +37,7 @@ button:hover {
     transition: background-color 0.1s ease-in 0.1s;
 }
 
-.submit-btn {
+.submit-btn, .send-btn {
     padding: 10px;
     background-color: #74907f;
     color: #fff;
@@ -48,7 +48,7 @@ button:hover {
     font-size: 18px;
 }
 
-.submit-btn:hover {
+.submit-btn:hover, .send-btn:hover {
     background-color: #74907f;
     transition: background-color 0.1s ease-in 0.1s;
 }
