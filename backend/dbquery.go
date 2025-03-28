@@ -145,9 +145,9 @@ func GetLikes(userID, postID, commentID int) (bool, bool, error) {
 	return false, false, nil
 }
 
-func GetActiveUsers() ([]string, error) {
+func GetActiveUsers() (map[int]string, error) {
 	var activeSessions []int
-	var activeUsers []string
+	var activeUsers = make(map[int]string)
 
 	log.Println("Getting active users")
 	rows, err := db.Query("SELECT user_id FROM Session WHERE status = 'active'")
@@ -176,7 +176,7 @@ func GetActiveUsers() ([]string, error) {
 			return nil, err
 		}
 		if username != "" {
-			activeUsers = append(activeUsers, username)
+			activeUsers[user] = username
 		}
 	}
 	return activeUsers, nil

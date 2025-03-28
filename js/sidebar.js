@@ -38,8 +38,9 @@ function updateSidebar(users) {
         users.forEach(function(user) {
             const userElement = document.createElement('div');
             userElement.classList.add('chat-user');
-            userElement.dataset.value = user.id;
             userElement.textContent = user.username;
+            userElement.dataset.value = user.id;
+
 
             // Make the username clickable to start a private chat
             userElement.addEventListener('click', function() {
