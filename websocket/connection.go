@@ -28,7 +28,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer func() {
-		// Remove the connection from the clients map
+		// Remove the connection from the clients
 		delete(clients, conn)
 		conn.Close()
 	}()
@@ -47,7 +47,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 	var msg Message
 
-	// // Listen for messages
+	// Indefinite loop to listen messages while connection open
 	for {
 		_, p, err := conn.ReadMessage()
 		if err != nil {
@@ -59,7 +59,9 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			clientsMutex.Unlock()
 			break
 		}
-		log.Printf("Received: %s\n", p)
+
+		messagesMutex.Lock()
+
 		err = json.Unmarshal(p, &msg) // Unmarshal the bytes into the struct
 		if err != nil {
 			log.Println("Error unmarshalling JSON:", err)
@@ -85,5 +87,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			broadcast <- message
 		}
 		msg = Message{}
+		messagesMutex.Unlock()
+
 	}
 }
