@@ -8,17 +8,19 @@ import (
 // Broadcast messages to all active clients
 func BroadcastMessages() {
 	for {
-		msg := <-broadcast
-		participants, err := backend.GetParticipants(msg.ChatID)
-		updateUserInteraction(participants[0], participants[1])
+		message := <-broadcast
+		log.Println("Getting participants")
+		participants, err := backend.GetParticipants(message.ChatID)
 		if err != nil {
-			log.Println("Error getting chat participants")
+			log.Println(err)
 			return
 		}
+		updateUserInteraction(participants[0], participants[1])
+
 		for client, id := range clients {
 			for _, user := range participants {
 				if user == id {
-					err := client.WriteJSON(msg)
+					err := client.WriteJSON(message)
 					if err != nil {
 						log.Println("Write error:", err)
 						client.Close()
@@ -43,5 +45,7 @@ func AddChatToDB(userID int, msg *Message) {
 		return
 	}
 	msg.CreatedAt = timestamp
+	log.Println("Added to database")
+	log.Println(msg.CreatedAt)
 
 }

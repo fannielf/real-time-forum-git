@@ -236,25 +236,14 @@ func GetChatID(user1, user2 int) (int, error) {
 }
 
 func GetParticipants(chatID int) ([]int, error) {
-	var participants []int
-	rows, err := db.Query("SELECT user1_id, user2_id FROM Chat WHERE id = ?", chatID)
+	var user1ID, user2ID int
+
+	err := db.QueryRow("SELECT user1_id, user2_id FROM Chat WHERE id = ?", chatID).Scan(&user1ID, &user2ID)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var userID int
-		if err := rows.Scan(&userID); err != nil {
-			return nil, err
-		}
-		participants = append(participants, userID)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return participants, nil
+	
+    return []int{user1ID, user2ID}, nil
 }
 
 func GetHistory(chatID int, history *[]map[string]interface{}) error {
