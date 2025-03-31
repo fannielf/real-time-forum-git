@@ -32,11 +32,11 @@ function renderPostPage() {
 function renderPost(post) {
     const postContainer = document.getElementById('post-details');
 
-    const postElement = document.getElementById('post-content');
-    postElement.innerHTML = '';
+    // const postElement = document.getElementById('post-content');
+    postContainer.innerHTML = '';
 
     // Render the post content
-    postElement.innerHTML = `
+    postContainer.innerHTML = `
         <div class="post-header-like-dislike">
             <h2 class="post-title">${post.post_title}</h2>
             <div class="reaction-buttons">
@@ -56,13 +56,20 @@ function renderPost(post) {
         <div class="post-card">
             <pre>${post.post_content}</pre>
         </div>
+
+        
         <h3 class="comment-header">Comments:</h3>
+         <form id="comment-form" data-post-id="${post.PostID}">
+                <label for="comment"></label>
+                <textarea class="comment-textarea" id="comment" name="comment" placeholder="Enter comment here" required></textarea>
+                <button type="submit-btn">Submit Comment</button>
+        </form>
         ${post.comments && post.comments.length ? post.comments.map(comment => `
             <div class="comment">
                 <p><strong>${comment.username}</strong>: ${comment.created_at}</p>
                 <pre>${comment.comment_content}</pre>
             </div>
         `).join('') : '<p>No comments yet.</p>'}
+        </div>
     `;
-    postContainer.appendChild(postElement);
 }
