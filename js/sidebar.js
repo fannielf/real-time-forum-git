@@ -7,20 +7,21 @@ function initializeSocket() {
     socket = new WebSocket('ws://localhost:8080/ws');
 
     // Listen for messages from the WebSocket
-   socket.onmessage = function(event) {
+   socket.addEventListener('message', function(event) {
     try {
         console.log("message received")
         const message = JSON.parse(event.data);
         console.log(message)
 
         if (message.type === "update_users") {
+            console.log(message.users)
             const activeUsers = message.users;
         
             updateSidebar(activeUsers);
         
         } else if (message.type === "chat") {
             history.pushState({}, '', '/chat');
-            renderChatPage(message.chat_user.username, message.chatID);
+            renderChatPage(message.chat_user.username, message.chat_id);
             loadPage();
 
         } else if (message.type === "message") {
@@ -29,7 +30,7 @@ function initializeSocket() {
     } catch (error) {
         console.log("error with websocket data")
     }
-    };
+    });
 
 }
 
@@ -39,7 +40,7 @@ function updateSidebar(users) {
     chatUsersDiv.innerHTML = '';
 
     // Handle case where no users are present
-    if (!users || users.length === 0) {
+    if (!users) {
         const noUsersMessage = document.createElement('div');
         noUsersMessage.textContent = "No active users";
         chatUsersDiv.appendChild(noUsersMessage);
@@ -73,14 +74,23 @@ function updateSidebar(users) {
             
             // Make the username clickable to start a private chat
             userElement.addEventListener('click', function() {
-
+                if (userElement.dataset.value) {
+                    const userId = parseInt(userElement.dataset.value, 10); // Parse to integer (base 10)
+            
+                    if (isNaN(userId)) {
+                        console.error("Invalid user ID:", userElement.dataset.value);
+                        return; // Don't send if invalid
+                    }
                 const data = {
-                    type: "chat",
-                    chatUser: {
-                        id: user.id,
-                        username: user.username,
-                    }                };
+                    type: "chatBE",
+                    chat_user: {
+                        id: userId,
+                        username: userElement.textContent,
+                    }
+                };
+                console.log(data)
                 socket.send(JSON.stringify(data)); // Send as JSON string
+            }
 
             });
 

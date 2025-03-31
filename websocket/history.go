@@ -15,7 +15,6 @@ func HandleChatHistory(conn *websocket.Conn, userID int, msg Message) {
 		return
 	}
 
-	log.Println(chatID)
 	var history []map[string]interface{}
 	err = backend.GetHistory(chatID, &history)
 	if err != nil {
@@ -41,14 +40,14 @@ func HandleChatHistory(conn *websocket.Conn, userID int, msg Message) {
 		})
 	}
 
-	reponse := Message{
+	message := Message{
 		Type:     "chat",
 		History:  messages,
 		ChatID:   chatID,
 		ChatUser: chatUser,
 	}
-
-	err = conn.WriteJSON(reponse)
+	log.Println(message)
+	err = conn.WriteJSON(message)
 	if err != nil {
 		log.Println("Error sending history:", err)
 	}
