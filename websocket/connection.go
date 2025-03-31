@@ -15,6 +15,12 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	username, err := backend.GetUsername(userID)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	// upgrade to Websocket protocol
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -65,9 +71,19 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			HandleChatHistory(conn, userID, msg)
 
 		} else if msg.Type == "messageBE" {
-			AddChatToDB(userID, &msg)
-			log.Println(msg)
-			broadcast <- msg
+			log.Println("Message unmarshalled")
+			message := Message{
+				Type: "message",
+				Sender: User{
+					ID:       userID,
+					Username: username,
+				},
+				ChatID:  msg.ChatID,
+				Content: msg.Content,
+			}
+			AddChatToDB(userID, &message)
+			broadcast <- message
 		}
+		msg = Message{}
 	}
 }
