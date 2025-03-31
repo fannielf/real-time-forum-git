@@ -1,4 +1,5 @@
 // Create WebSocket connection
+let unreadMessages = {};
 let socket = null;
 let currentChatUser = null;
 
@@ -20,12 +21,15 @@ function initializeSocket() {
             updateSidebar(activeUsers);
         
         } else if (message.type === "chat") {
-            history.pushState({}, '', '/chat');
+            hideAllPages();
             renderChatPage(message.chat_user.username, message.chat_id);
-            loadPage();
 
         } else if (message.type === "message") {
-            displayMessages(message)
+            if (message.chatID !== getCurrentChatID()) {
+                unreadMessages[message.chatID] = true; 
+            }
+            displayMessages(message);
+            updateSidebar();
         }
     } catch (error) {
         console.log("error with websocket data")
@@ -49,8 +53,18 @@ function updateSidebar(users) {
         users.forEach(function(user) {
             const userElement = document.createElement('div');
             userElement.classList.add('chat-user');
-            userElement.textContent = user.username;
-            userElement.dataset.value = user.id
+            // userElement.textContent = user.username;
+            userElement.dataset.value = user.id;
+
+            // Create status indicator 
+            const statusIndicator = document.createElement('div');
+            statusIndicator.classList.add('status-indicator'); 
+
+            const usernameSpan = document.createElement('span');
+            usernameSpan.textContent = user.username;
+
+            userElement.appendChild(statusIndicator);
+            userElement.appendChild(usernameSpan);
 
              // Add a notification icon if user has unread messages
              const notificationIcon = document.createElement('span');
@@ -71,16 +85,19 @@ function updateSidebar(users) {
                         console.error("Invalid user ID:", userElement.dataset.value);
                         return; // Don't send if invalid
                     }
-                const data = {
-                    type: "chatBE",
-                    chat_user: {
-                        id: userId,
-                        username: userElement.textContent,
-                    }
-                };
-                console.log(data)
-                socket.send(JSON.stringify(data)); // Send as JSON string
-            }
+
+                    markMessagesAsRead(user.chatID);
+
+                    const data = {
+                        type: "chatBE",
+                        chat_user: {
+                            id: userId,
+                            username: userElement.textContent,
+                        }
+                    };
+                    console.log(data)
+                    socket.send(JSON.stringify(data)); // Send as JSON string
+                }
 
             });
 
@@ -89,3 +106,7 @@ function updateSidebar(users) {
     }
 }
 
+function markMessagesAsRead(chatID) {
+   unreadMessages[chatID] = false; // Mark messages as read
+   // Update the sidebar to remove the notification icon
+}
