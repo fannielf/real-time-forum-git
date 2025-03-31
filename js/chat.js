@@ -2,15 +2,15 @@ let messages = [];
 
 // Function to open a private chat with the selected user (implement this based on your app's logic)
 function renderChatPage(username, chatID) {
-
+    document.getElementById('chat-window').style.display = 'block';
     //add chat header + rendering the messages 
     document.getElementById("chat-container").innerHTML = `
-    <div id="chat-header">
+    <div id="chat-header" data-chat-id="${chatID}">
         <h2>Chat</h2>
-        <div id="chat-partner" data-chat-id="${chatID}">
-            <span id="close-chat" style="cursor: pointer;">X</span>
-            <h3>${username}</h3>
+        <div id="chat-partner">
+        <h3>${username}</h3>
         </div>
+        <div id="close-chat" style="cursor: pointer;">X</div>
     </div>
     <div id="chat-messages">
         <div id="messages"></div>
@@ -18,15 +18,18 @@ function renderChatPage(username, chatID) {
         <button id="send-button" class="send-btn">Send</button>
     </div>
 `;
-    document.getElementById("close-chat").addEventListener("click", closeChat);
+    document.getElementById("close-chat").addEventListener("click", function() {
+        document.getElementById('chat-window').style.display = 'none';
+        loadPage();
+    });
     document.getElementById('send-button').addEventListener('click', function() {
-        const chatPartner = document.getElementById('chat-partner');
+        const chat = document.getElementById('chat-header');
     
-        if (chatPartner && chatPartner.dataset.chatId) { // Corrected: chatPartner.dataset.chatId
-            const chatID = parseInt(chatPartner.dataset.chatId, 10); // Corrected: chatPartner.dataset.chatId
+        if (chat && chat.dataset.chatId) { 
+            const chatID = parseInt(chat.dataset.chatId, 10); 
     
             if (isNaN(chatID)) {
-                console.error("Invalid chat ID:", chatPartner.dataset.chatId);
+                console.error("Invalid chat ID:", chat.dataset.chatId);
                 return; // Don't send if invalid
             }
     
@@ -35,6 +38,7 @@ function renderChatPage(username, chatID) {
             console.error("chat-partner element or data-chat-id not found.");
         }
     });
+    markMessagesAsRead(chatID); // Mark messages as read when opening the chat
 }
 
 function sendMessage(chatID) {
@@ -94,14 +98,4 @@ function displayMessages(data) {
         messageElement.textContent = `${message.createdAt} - ${message.sender.username}: ${message.content}`;
         messagesDiv.appendChild(messageElement);
     });
-}
-
-function closeChat() {
-     // hide the chat window
-     document.getElementById("chat-window").style.display = "none";
-
-     // show the feed again
-     document.getElementById("feed").style.display = "block";
-        // clear the chat container
-     document.getElementById("chat-container").innerHTML = '';
 }
