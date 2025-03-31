@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"real-time-forum/backend"
@@ -20,6 +21,11 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		log.Println("WebSocket upgrade error:", err)
 		return
 	}
+	defer func() {
+		// Remove the connection from the clients map
+		delete(clients, conn)
+		conn.Close()
+	}()
 
 	log.Println("New Websocket connection established")
 
@@ -32,17 +38,12 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	}
 	broadcastActiveUsers()
 	clientsMutex.Unlock()
-	defer func() {
-		// Remove the connection from the clients map
-		delete(clients, conn)
-		conn.Close()
-	}()
 
 	var msg Message
 
 	// // Listen for messages
 	for {
-		err := conn.ReadJSON(&msg)
+		_, p, err := conn.ReadMessage()
 		if err != nil {
 
 			// Remove user connection & remove from active users
@@ -52,14 +53,20 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			clientsMutex.Unlock()
 			break
 		}
+		log.Printf("Received: %s\n", p)
+		err = json.Unmarshal(p, &msg) // Unmarshal the bytes into the struct
+		if err != nil {
+			log.Println("Error unmarshalling JSON:", err)
+			continue // Handle the error appropriately
+		}
 
 		if msg.Type == "chat" {
 			HandleChatHistory(conn, userID, msg)
 
 		} else if msg.Type == "message" {
 			AddChatToDB(userID, &msg)
+			log.Println(msg)
 			broadcast <- msg
 		}
-		msg = Message{} // Empty the message
 	}
 }
