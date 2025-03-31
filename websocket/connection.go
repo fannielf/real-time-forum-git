@@ -60,10 +60,11 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			continue // Handle the error appropriately
 		}
 
-		if msg.Type == "chat" {
+		if msg.Type == "chatBE" {
+			log.Println(msg)
 			HandleChatHistory(conn, userID, msg)
 
-		} else if msg.Type == "message" {
+		} else if msg.Type == "messageBE" {
 			AddChatToDB(userID, &msg)
 			log.Println(msg)
 			broadcast <- msg

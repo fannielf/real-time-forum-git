@@ -114,8 +114,8 @@ func MakeTables(db *sql.DB) {
 	createChatTableQuery := `
 	CREATE TABLE IF NOT EXISTS Chat (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user1_id INTEGER NOT NULL,
-		user2_id INTEGER NOT NULL,
+   		user1_id INTEGER NOT NULL CHECK (user1_id != 0),
+    	user2_id INTEGER NOT NULL CHECK (user2_id != 0),
 		created_at TEXT NOT NULL,
 		status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'deleted', 'archived')),
 		FOREIGN KEY (user1_id) REFERENCES User(id),

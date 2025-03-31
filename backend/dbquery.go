@@ -2,6 +2,7 @@ package backend
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"real-time-forum/database"
 	"strings"
@@ -298,7 +299,10 @@ func GetHistory(chatID int, history *[]map[string]interface{}) error {
 
 func GetTimestamp(message_id int, table string) (string, error) {
 	var timestamp string
-	err := db.QueryRow("SELECT username FROM ? WHERE id = ?", table, message_id).Scan(&timestamp)
+
+	query := fmt.Sprintf("SELECT created_at FROM %s WHERE id = ?", table)
+
+	err := db.QueryRow(query, message_id).Scan(&timestamp)
 	if err != nil {
 		return "", err
 	}

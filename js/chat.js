@@ -2,14 +2,10 @@ let messages = [];
 
 // Function to open a private chat with the selected user (implement this based on your app's logic)
 function renderChatPage(username, chatID) {
-    console.log("Starting private chat with", username);
-
-    //send a message to the backend to get the old messages type = "chat" receiverID = 
-    //backend responds with chatID and messages. chatID i need to save 
 
     //add chat header + rendering the messages 
     document.getElementById("chat-container").innerHTML = `
-    <div id="chat-partner">
+    <div id="chat-partner" data-chat-id="${chatID}">
         <h3>${username}</h3>
         </div>
     <div id="chat-messages">
@@ -19,9 +15,22 @@ function renderChatPage(username, chatID) {
     </div>
     `;
 
-    document.getElementById('send-button').addEventListener('click', sendMessage(chatID));
-    // const messagesDiv = document.getElementById('messages');
-    // messagesDiv.addEventListener('scroll', handleScroll);
+    document.getElementById('send-button').addEventListener('click', function() {
+        const chatPartner = document.getElementById('chat-partner');
+    
+        if (chatPartner && chatPartner.dataset.chatId) { // Corrected: chatPartner.dataset.chatId
+            const chatID = parseInt(chatPartner.dataset.chatId, 10); // Corrected: chatPartner.dataset.chatId
+    
+            if (isNaN(chatID)) {
+                console.error("Invalid chat ID:", chatPartner.dataset.chatId);
+                return; // Don't send if invalid
+            }
+    
+            sendMessage(chatID); // Call sendMessage with the retrieved chatID
+        } else {
+            console.error("chat-partner element or data-chat-id not found.");
+        }
+    });
 }
 
 function sendMessage(chatID) {
@@ -35,7 +44,7 @@ function sendMessage(chatID) {
     }
 
     const message = {
-        type: "message",
+        type: "messageBE",
         chat_id: chatID,
         content: text
     };
