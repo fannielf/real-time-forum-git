@@ -20,16 +20,21 @@ function renderChatPage(receiver) {
 
     //add chat header + rendering the messages 
     document.getElementById("chat-container").innerHTML = `
-    <div id="chat-partner">
-        <h3>${receiver.username}</h3>
+    <div id="chat-header">
+        <h2>Chat</h2>
+        <div id="chat-partner">
+            <span id="close-chat" style="cursor: pointer;">X</span>
+            <h3>${receiver.username}</h3>
         </div>
+    </div>
     <div id="chat-messages">
         <div id="messages"></div>
         <textarea id="message-input" placeholder="Type a message..."></textarea>
         <button id="send-button" class="send-btn">Send</button>
     </div>
-    `;
+`;
 
+    document.getElementById("close-chat").addEventListener("click", closeChat);
     document.getElementById('send-button').addEventListener('click', sendMessage);
     // const messagesDiv = document.getElementById('messages');
     // messagesDiv.addEventListener('scroll', handleScroll);
@@ -92,9 +97,12 @@ function displayMessages(data) {
     });
 }
 
+function closeChat() {
+     // hide the chat window
+     document.getElementById("chat-window").style.display = "none";
 
-//function updateChat
-
-//that updates the chat when somebody writes
-
-//submit button --> sending the username(userID-value) and receiver and text as a json message to the websocket  
+     // show the feed again
+     document.getElementById("feed").style.display = "block";
+        // clear the chat container
+     document.getElementById("chat-container").innerHTML = '';
+}

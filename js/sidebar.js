@@ -47,8 +47,18 @@ function updateSidebar(users) {
         users.forEach(function(user) {
             const userElement = document.createElement('div');
             userElement.classList.add('chat-user');
-            userElement.textContent = user.username;
+            // userElement.textContent = user.username;
             userElement.dataset.value = user.id;
+
+            // Create status indicator 
+            const statusIndicator = document.createElement('div');
+            statusIndicator.classList.add('status-indicator'); 
+
+            const usernameSpan = document.createElement('span');
+            usernameSpan.textContent = user.username;
+
+            userElement.appendChild(statusIndicator);
+            userElement.appendChild(usernameSpan);
 
              // Add a notification icon if user has unread messages
              const notificationIcon = document.createElement('span');
