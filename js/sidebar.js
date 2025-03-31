@@ -7,7 +7,8 @@ function initializeSocket() {
     socket = new WebSocket('ws://localhost:8080/ws');
 
     // Listen for messages from the WebSocket
-    socket.addEventListener('message', function(event) {
+   socket.onmessage = function(event) {
+    try {
         console.log("message received")
         const message = JSON.parse(event.data);
         console.log(message)
@@ -18,18 +19,18 @@ function initializeSocket() {
             updateSidebar(activeUsers);
         
         } else if (message.type === "chat") {
-            displayMessage(message);
+            history.pushState({}, '', '/chat');
+            renderChatPage(message.chat_user.username, message.chatID);
+            loadPage();
+
         } else if (message.type === "message") {
-            const chatID = message.chatID; 
-            const messages = message.messages;
-
-            currentChatID = chatID;
-            messages = receivedMessages;
-
-            displayPreviousMessages(receivedMessages);
-        
+            displayMessages(message)
         }
-    });
+    } catch (error) {
+        console.log("error with websocket data")
+    }
+    };
+
 }
 
 // Function to update the sidebar with the list of active users
@@ -72,8 +73,15 @@ function updateSidebar(users) {
             
             // Make the username clickable to start a private chat
             userElement.addEventListener('click', function() {
-                history.pushState({}, '', '/chat');
-                renderChatPage(user);
+
+                const data = {
+                    type: "chat",
+                    chatUser: {
+                        id: user.id,
+                        username: user.username,
+                    }                };
+                socket.send(JSON.stringify(data)); // Send as JSON string
+
             });
 
             chatUsersDiv.appendChild(userElement);

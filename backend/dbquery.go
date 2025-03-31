@@ -211,7 +211,7 @@ func GetChatID(user1, user2 int) (int, error) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			insertQuery := `
-				INSERT INTO chats (user1_id, user2_id, created_at)
+				INSERT INTO Chat (user1_id, user2_id, created_at)
 				VALUES (?, ?, ?)
 			`
 			// Insert the new chat into the database
@@ -258,7 +258,7 @@ func GetParticipants(chatID int) ([]int, error) {
 
 func GetHistory(chatID int, history *[]map[string]interface{}) error {
 
-	rows, err := db.Query("SELECT sender_id, content, created_at FROM Chat WHERE id = ? AND status = 'active'", chatID)
+	rows, err := db.Query("SELECT sender_id, content, created_at FROM Message WHERE id = ? AND status = 'active'", chatID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil
@@ -274,10 +274,16 @@ func GetHistory(chatID int, history *[]map[string]interface{}) error {
 		if err := rows.Scan(&sender, &content, &timestamp); err != nil {
 			return err
 		}
+		username, err := GetUsername(sender)
+		if err != nil {
+			log.Println("Couldn't fetch username for id: ", sender)
+			return err
+		}
 		message := map[string]interface{}{
-			"sender":    sender,
-			"createdAt": timestamp,
-			"content":   content,
+			"senderID":       sender,
+			"senderUsername": username,
+			"createdAt":      timestamp,
+			"content":        content,
 		}
 
 		*history = append(*history, message)
