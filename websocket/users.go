@@ -19,7 +19,6 @@ func broadcastActiveUsers() {
 			Type:  "update_users",
 			Users: sortedUsers, // Send the active users list
 		}
-		log.Println(message)
 		err := client.WriteJSON(message)
 		if err != nil {
 			log.Println("Error sending user update:", err)

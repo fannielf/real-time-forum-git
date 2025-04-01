@@ -14,6 +14,7 @@ window.addEventListener('popstate', () => {
 });
 
 let errorMsg = '';
+let userID = null;
 
 async function init() {
     const authenticated = await isAuthenticated();
@@ -22,6 +23,7 @@ async function init() {
         document.getElementById('logout-button').style.display = 'none';
         document.getElementById('chat-sidebar').style.display = 'none';
         history.pushState({}, '', '/login');
+        userID = null;
         if (socket !== null) socket.close(); socket = null;
     };
     loadPage();

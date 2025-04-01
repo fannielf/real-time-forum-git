@@ -80,6 +80,7 @@ function loadMessages() {
 //     }
 // }
 
+
 // displayMessages function displays the messages in the chat window (eg load chat history)
 function displayMessages(data) {
     console.log(data)

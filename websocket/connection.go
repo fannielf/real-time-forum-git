@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"real-time-forum/backend"
+	"strconv"
 )
 
 // Handles Websocket connections
@@ -15,11 +16,11 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username, err := backend.GetUsername(userID)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	// username, err := backend.GetUsername(userID)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
 
 	// upgrade to Websocket protocol
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -28,7 +29,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer func() {
-		// Remove the connection from the clients map
+		// Remove the connection from the clients
 		delete(clients, conn)
 		conn.Close()
 	}()
@@ -47,7 +48,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 	var msg Message
 
-	// // Listen for messages
+	// Indefinite loop to listen messages while connection open
 	for {
 		_, p, err := conn.ReadMessage()
 		if err != nil {
@@ -59,7 +60,9 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			clientsMutex.Unlock()
 			break
 		}
-		log.Printf("Received: %s\n", p)
+
+		messagesMutex.Lock()
+
 		err = json.Unmarshal(p, &msg) // Unmarshal the bytes into the struct
 		if err != nil {
 			log.Println("Error unmarshalling JSON:", err)
@@ -67,23 +70,35 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if msg.Type == "chatBE" {
-			log.Println(msg)
 			HandleChatHistory(conn, userID, msg)
 
 		} else if msg.Type == "messageBE" {
-			log.Println("Message unmarshalled")
-			message := Message{
-				Type: "message",
-				Sender: User{
-					ID:       userID,
-					Username: username,
-				},
-				ChatID:  msg.ChatID,
-				Content: msg.Content,
+
+			messageID := AddChatToDB(userID, msg)
+			if messageID != 0 {
+				latestMessage, err := backend.GetMessage(messageID)
+				if err != nil {
+					log.Println("Error getting latest message:", err)
+					return
+				}
+				chatID, _ := strconv.Atoi(latestMessage[0])
+				senderID, _ := strconv.Atoi(latestMessage[1])
+
+				message := Message{
+					Type:   "message",
+					ChatID: chatID,
+					Sender: User{
+						ID:       senderID,
+						Username: latestMessage[2],
+					},
+					Content:   latestMessage[3],
+					CreatedAt: latestMessage[4],
+				}
+				broadcast <- message
 			}
-			AddChatToDB(userID, &message)
-			broadcast <- message
 		}
 		msg = Message{}
+		messagesMutex.Unlock()
+
 	}
 }
