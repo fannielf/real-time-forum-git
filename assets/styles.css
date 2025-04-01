@@ -476,6 +476,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     display: flex;
     flex-direction: column;
     padding: 10px;
+    gap: 10px;
     overflow-y: auto;
 }
 
@@ -503,11 +504,10 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 .my-message {
     background-color: #4a90e2;
     color: white;
-    margin-left: auto;
     padding: 8px;
     border-radius: 5px;
     max-width: 60%;
-    margin-bottom: 10px;
+    align-self: flex-end;
 }
 
 .other-message {
@@ -515,7 +515,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     padding: 8px;
     border-radius: 5px;
     max-width: 60%;
-    margin-bottom: 10px;
+    align-self: flex-start;
 }
 
 #message-input {

@@ -80,22 +80,33 @@ function loadMessages() {
 //     }
 // }
 
-//this function is to arrange the messages in the chat - sender or receiver
-//receiving sender(id), content and timestamp from the database ==data
+
+// displayMessages function displays the messages in the chat window (eg load chat history)
 function displayMessages(data) {
-    const messagesDiv = document.getElementById('messages');
+    console.log(data)
     
     // go through all the messages and display them
     data.forEach(message => {
-        const messageElement = document.createElement('div');
-
-        if (message.sender.ID === userID) {
-            messageElement.classList.add('my-message');
-        } else {
-            messageElement.classList.add('other-message');
-        }
-
-        messageElement.textContent = `${message.createdAt} - ${message.sender.username}: ${message.content}`;
-        messagesDiv.appendChild(messageElement);
+        addMessage(message);
     });
+}
+
+//addMessage function adds a single message to the chat window
+// it checks if the sender is the user or the chat partner
+function addMessage(message) {
+    const messagesDiv = document.getElementById('messages');
+    const messageElement = document.createElement('div');
+
+    console.log(userID)
+    console.log(message.sender.id)
+    console.log(message.sender.username)
+    console.log(message.content)
+    if (message.sender.id === userID) {
+        messageElement.classList.add('my-message');
+    } else {
+        messageElement.classList.add('other-message');
+    }
+
+    messageElement.textContent = `${message.created_at} - ${message.sender.username}: ${message.content}`;
+    messagesDiv.appendChild(messageElement);
 }

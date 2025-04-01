@@ -10,26 +10,24 @@ function initializeSocket() {
     // Listen for messages from the WebSocket
    socket.addEventListener('message', function(event) {
     try {
-        console.log("message received")
         const message = JSON.parse(event.data);
-        console.log(message)
 
         if (message.type === "update_users") {
-            console.log(message.users)
-            const activeUsers = message.users;
-        
-            updateSidebar(activeUsers);
+            updateSidebar(message.users);
         
         } else if (message.type === "chat") {
+            console.log(message);
             hideAllPages();
             renderChatPage(message.chat_user.username, message.chat_id);
+            unreadMessages[message.chatID] = false;
+            displayMessages(message.history);
 
         } else if (message.type === "message") {
             if (message.chatID !== getCurrentChatID()) {
                 unreadMessages[message.chatID] = true; 
+            } else {
+                addMessage(message);
             }
-            displayMessages(message);
-            updateSidebar();
         }
     } catch (error) {
         console.log("error with websocket data")
@@ -109,4 +107,12 @@ function updateSidebar(users) {
 function markMessagesAsRead(chatID) {
    unreadMessages[chatID] = false; // Mark messages as read
    // Update the sidebar to remove the notification icon
+}
+
+function getCurrentChatID() {
+    chatWindow = document.getElementById('chat-window');
+    if (chatWindow.style.display === 'block') {
+        return chatWindow.dataset.chatID;
+    }
+    return null;
 }

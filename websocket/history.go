@@ -25,8 +25,8 @@ func HandleChatHistory(conn *websocket.Conn, userID int, msg Message) {
 	// Convert []map[string]interface{} to []Message
 	var messages []Message
 	for _, entry := range history {
-		sender, _ := entry["sender"].(int) // Convert sender to int
-		username, _ := entry["username"].(string)
+		sender, _ := entry["senderID"].(int) // Convert sender to int
+		username, _ := entry["senderUsername"].(string)
 		content, _ := entry["content"].(string)     // Convert content to string
 		createdAt, _ := entry["createdAt"].(string) // Convert timestamp to string
 
@@ -46,7 +46,6 @@ func HandleChatHistory(conn *websocket.Conn, userID int, msg Message) {
 		ChatID:   chatID,
 		ChatUser: chatUser,
 	}
-	log.Println(message)
 	err = conn.WriteJSON(message)
 	if err != nil {
 		log.Println("Error sending history:", err)

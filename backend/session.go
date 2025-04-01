@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,10 +14,11 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusUnauthorized
 	message := "No current sessions"
 	loggedIn, userID := VerifySession(r)
+	log.Println("Logged in:", userID)
 	if loggedIn {
-		status = http.StatusOK
-		message = "Current session found"
 		refreshLastAccess(userID)
+		status = http.StatusOK
+		message = strconv.Itoa(userID) 
 	}
 
 	ResponseHandler(w, status, message)

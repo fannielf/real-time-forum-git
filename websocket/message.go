@@ -9,7 +9,6 @@ import (
 func BroadcastMessages() {
 	for {
 		message := <-broadcast
-		log.Println("Getting participants")
 		participants, err := backend.GetParticipants(message.ChatID)
 		if err != nil {
 			log.Println(err)
@@ -32,20 +31,13 @@ func BroadcastMessages() {
 	}
 }
 
-func AddChatToDB(userID int, msg *Message) {
+func AddChatToDB(userID int, msg Message) int {
 
 	message_id, err := backend.AddMessageToDB(userID, msg.Content, msg.ChatID)
 	if err != nil {
 		log.Println("Error adding message:", err)
-		return
+		return 0
 	}
-	timestamp, err := backend.GetTimestamp(message_id, "Message")
-	if err != nil {
-		log.Println("Error retrieving timestamp:", err)
-		return
-	}
-	msg.CreatedAt = timestamp
-	log.Println("Added to database")
-	log.Println(msg.CreatedAt)
 
+	return message_id
 }
