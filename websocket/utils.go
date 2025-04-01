@@ -19,7 +19,7 @@ var (
 	userInteractions = make(map[int]map[int]int64)   // map[username]map[otherUsername]timestamp
 	broadcast        = make(chan Message)            // Channel for broadcasting messages
 	clientsMutex     sync.Mutex                      // Protects access to activeUsers map
-	//messagesMutex    sync.Mutex
+	messagesMutex    sync.Mutex
 )
 
 type Message struct {

@@ -43,11 +43,13 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 		status = http.StatusUnauthorized
 		message = "Invalid password"
 	}
-	// Create session
-	if err := CreateSession(w, userID); err != nil {
-		log.Println("Error creating session")
-		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
-		return
+	if err == nil {
+		// Create session
+		if err := CreateSession(w, userID); err != nil {
+			log.Println("Error creating session")
+			ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+			return
+		}
 	}
 	ResponseHandler(w, status, message)
 }

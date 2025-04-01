@@ -47,8 +47,6 @@ async function renderCreatePostPage() {
 `;
 }
 
-console.log("Create post page loaded!");
-
 document.getElementById("create-post-form").addEventListener("submit", async (event) => {
     console.log("Post form submitted!");
     event.preventDefault();

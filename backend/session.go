@@ -1,8 +1,10 @@
 package backend
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,10 +14,11 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusUnauthorized
 	message := "No current sessions"
 	loggedIn, userID := VerifySession(r)
+	log.Println("Logged in:", userID)
 	if loggedIn {
-		status = http.StatusOK
-		message = "Current session found"
 		refreshLastAccess(userID)
+		status = http.StatusOK
+		message = strconv.Itoa(userID) 
 	}
 
 	ResponseHandler(w, status, message)
@@ -23,6 +26,10 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 
 // CreateSession creates a new session for the user and stores it in the database
 func CreateSession(w http.ResponseWriter, userID int) error {
+
+	if userID == 0 {
+		return fmt.Errorf("userID is 0")
+	}
 	//First check for and delete any existing sessions for this user
 	_, err := db.Exec("UPDATE Session SET status = 'deleted', updated_at = ? WHERE user_id = ? AND status = 'active'",
 		time.Now().Format("2006-01-02 15:04:05"), userID)

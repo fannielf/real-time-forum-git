@@ -14,6 +14,7 @@ window.addEventListener('popstate', () => {
 });
 
 let errorMsg = '';
+let userID = null;
 
 async function init() {
     const authenticated = await isAuthenticated();
@@ -22,6 +23,7 @@ async function init() {
         document.getElementById('logout-button').style.display = 'none';
         document.getElementById('chat-sidebar').style.display = 'none';
         history.pushState({}, '', '/login');
+        userID = null;
         if (socket !== null) socket.close(); socket = null;
     };
     loadPage();
@@ -73,6 +75,8 @@ async function isAuthenticated() {
         
         // Check if the response is okay
         if (response.ok) {
+            const data = await response.json();
+            userID = parseInt(data.message, 10);
             console.log('User is authenticated:');
             if (socket === null) initializeSocket()
             return true;
