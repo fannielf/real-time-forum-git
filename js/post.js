@@ -62,7 +62,7 @@ function renderPost(post) {
          <form id="comment-form" data-post-id="${post.PostID}">
                 <label for="comment"></label>
                 <textarea class="comment-textarea" id="comment" name="comment" placeholder="Enter comment here" required></textarea>
-                <button type="submit-btn">Submit Comment</button>
+                <button type="submit">Submit Comment</button>
         </form>
         ${post.comments && post.comments.length ? post.comments.map(comment => `
             <div class="comment">

@@ -29,7 +29,7 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 15px;
 }
 
 button:hover {
@@ -156,6 +156,8 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 
 .content-textarea {
     height: 200px;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 50px;
 }
 
 /* Links inside the form (e.g., for signup links) */
@@ -178,12 +180,6 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     font-family: Arial, Helvetica, sans-serif;
     min-height: 50px;
 } */
-
-.content-textarea {
-    font-family: Arial, Helvetica, sans-serif;
-    min-height: 50px;
-}
-
 
 /* create-post category selection */
 .category-container {
@@ -464,6 +460,19 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     transition: all 0.3s ease;  
 }
 
+.username-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.notification-icon {
+    font-size: 18px;   
+    margin-left: 10px;  
+    display: inline-block;
+}
+
 /*------ Private messages ------*/
 #chat-container {
     display: flex;
@@ -485,6 +494,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    position: relative;
 }
 
 #chat-partner {
@@ -500,7 +510,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     margin-right: 20px;
 }
 
-.my-message {
+/* .my-message {
     background-color: #4a90e2;
     color: white;
     margin-left: auto;
@@ -516,7 +526,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     border-radius: 5px;
     max-width: 60%;
     margin-bottom: 10px;
-}
+} */
 
 #message-input {
     /* flex-grow: 1; */
@@ -541,9 +551,9 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     font-weight: bold;
     color: rgb(0, 2, 1); 
     cursor: pointer;
-    position: relative;
-    top: 10px;
-    right: 10px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }
 
 #close-chat:hover {
