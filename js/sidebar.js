@@ -67,13 +67,10 @@ function updateSidebar(users) {
              // Add a notification icon if user has unread messages
              const notificationIcon = document.createElement('span');
              notificationIcon.classList.add('material-symbols-outlined');
-             notificationIcon.innerHTML = 'mail';  
-             
-             if (unreadMessages[user.id]) {  
-                 notificationIcon.style.display = 'inline-block';  
-             } else {
-                 notificationIcon.style.display = 'none';  
-             }
+             notificationIcon.innerHTML = 'mail';
+                
+             notificationIcon.style.display = 'none';  
+        
 
              userElement.appendChild(notificationIcon);
             
