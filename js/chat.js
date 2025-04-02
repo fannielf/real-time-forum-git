@@ -12,10 +12,17 @@ function renderChatPage(username, chatID) {
         </div>
         <div id="close-chat" style="cursor: pointer;">X</div>
     </div>
+    <div id="chat-content">
     <div id="chat-messages">
         <div id="messages"></div>
+    </div>
+    <div id="input-container">
+        <div id="textarea-wrapper">
         <textarea id="message-input" placeholder="Type a message..."></textarea>
         <button id="send-button" class="send-btn">Send</button>
+        </div>
+    </div>
+    </div>
     </div>
 `;
     document.getElementById("close-chat").addEventListener("click", function() {

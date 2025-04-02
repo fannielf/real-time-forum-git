@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
 @import url('https://fonts.googleapis.com/css2?family=Limelight&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap');
 
 body {
     font-family: Arial, sans-serif;
@@ -397,7 +398,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 }
 
 .comment {
-    background-color: rgba(179, 224, 179, 0.3);
+    background-color: rgba(208, 212, 208, 0.3);
     padding: 10px;
     margin: 8px;
     border-radius: 5px;
@@ -474,6 +475,18 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     width: 100%;
 }
 
+.chat-user {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.chat-user .material-symbols-outlined {
+    font-size: 20px;
+    margin-left: 8px;
+}
+
 #chat-users {
     flex-grow: 1;
     width: 100%;
@@ -508,16 +521,11 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     display: flex;
     flex-direction: column;
     height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    margin: auto;
+    position: relative;
 }
-
-#chat-messages {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    overflow-y: auto;
-}
-
 
 #chat-header {
     display: flex;
@@ -538,6 +546,25 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     font-family:Arial, Helvetica, sans-serif;
     font-size: clamp(1rem, 3vw, 1.3rem);
     margin-right: 20px;
+}
+
+ #chat-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    height: 100vh; 
+    width: 400px;
+    margin: auto;
+    overflow: hidden;
+ }
+
+#chat-messages {
+    flex-grow: 1;
+    flex-direction: column;
+    padding: 10px;
+    overflow-y: auto;
+    margin-bottom: 30px;
+    display: flex;
 }
 
 .my-message {
@@ -565,24 +592,49 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     gap: 10px;
 }
 
+#input-container {
+    width: 100%;
+    position: relative;
+    padding: 10px;
+    bottom: 0;
+    box-sizing: border-box;
+}
+
+#textarea-wrapper {
+    /* position: relative; */
+    display: flex;
+    align-items: center; 
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
 #message-input {
     /* flex-grow: 1; */
     height: 80px;
+    width: 100%;
     padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-right: 10px;
-    bottom: 2px;
-    position: fixed;
+    border: none;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    resize: none;
+    outline: none;
 }
 
+
 .send-button {
-    padding: 8px 16px;
+    position: absolute;
+    padding: 0px 16px;
     border: none;
     background-color: #3d8456;
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 1;
+    padding: 0 16px;
 }
 
 #close-chat {

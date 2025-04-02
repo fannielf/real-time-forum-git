@@ -66,13 +66,16 @@ function updateSidebar(users) {
 
              // Add a notification icon if user has unread messages
              const notificationIcon = document.createElement('span');
-             notificationIcon.classList.add('notification-icon');
-             if (user.hasUnreadMessages) {
-                 notificationIcon.style.display = 'inline-block';  // Show icon if there are unread messages
+             notificationIcon.classList.add('material-symbols-outlined');
+             notificationIcon.innerHTML = 'mail';  
+             
+             if (unreadMessages[user.id]) {  
+                 notificationIcon.style.display = 'inline-block';  
              } else {
-                 notificationIcon.style.display = 'none';  // Hide icon if no unread messages
+                 notificationIcon.style.display = 'none';  
              }
-            userElement.appendChild(notificationIcon);
+
+             userElement.appendChild(notificationIcon);
             
             // Make the username clickable to start a private chat
             userElement.addEventListener('click', function() {
@@ -105,8 +108,16 @@ function updateSidebar(users) {
 }
 
 function markMessagesAsRead(chatID) {
-   unreadMessages[chatID] = false; // Mark messages as read
-   // Update the sidebar to remove the notification icon
+    unreadMessages[chatID] = false; // Märgi sõnumid loetuks
+
+    // Leia vastav kasutaja element ja peida notification icon
+    const userElement = document.querySelector(`.chat-user[data-value="${chatID}"]`);
+    if (userElement) {
+        const notificationIcon = userElement.querySelector('.material-symbols-outlined');
+        if (notificationIcon) {
+            notificationIcon.style.display = 'none'; // 
+        }
+    }
 }
 
 function getCurrentChatID() {
