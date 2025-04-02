@@ -521,7 +521,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 #chat-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 70%;
     width: 100%;
     overflow: hidden;
     margin: auto;
@@ -534,6 +534,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     align-items: center;
     padding: 10px;
     position: sticky;
+    z-index: 10;
 }
 
 #chat-partner {
@@ -665,11 +666,15 @@ footer {
     background-color: #e5f0e5;
     color: black;
     text-align: center;
-    padding: 1rem 0;
     position: fixed;
     bottom: 0;
     height: 5vh;
     width: 100vw;
+}
+
+footer p {
+    padding: 1rem 1rem;
+    margin: 5px 5px;
 }
 
 /*------ Error styling ------*/
