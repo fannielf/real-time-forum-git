@@ -108,7 +108,7 @@ function showError(errorMsg) {
 
     backButton.addEventListener("click", () => {
         history.pushState({}, '', '/');
-        loadPage();
+        init();
     });
     showPage('error-message')
 }

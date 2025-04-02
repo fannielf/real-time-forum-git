@@ -1,7 +1,5 @@
 // Create WebSocket connection
-let unreadMessages = {};
 let socket = null;
-let currentChatUser = null;
 
 // initialize websocket when logged or authorized 
 function initializeSocket() {
@@ -18,13 +16,13 @@ function initializeSocket() {
         } else if (message.type === "chat") {
             console.log(message);
             hideAllPages();
+            toggleEnvelope(message.chat_user, 'read')
             renderChatPage(message.chat_user.username, message.chat_id);
-            unreadMessages[message.chatID] = false;
             displayMessages(message.history);
 
         } else if (message.type === "message") {
             if (message.chatID !== getCurrentChatID()) {
-                unreadMessages[message.chatID] = true; 
+                toggleEnvelope(message.sender, 'unread')
             } else {
                 addMessage(message);
             }
@@ -58,22 +56,17 @@ function updateSidebar(users) {
             const statusIndicator = document.createElement('div');
             statusIndicator.classList.add('status-indicator'); 
 
-            const usernameSpan = document.createElement('span');
+            const usernameSpan = document.createElement('div');
+            usernameSpan.classList.add('chat-username'); 
             usernameSpan.textContent = user.username;
 
             userElement.appendChild(statusIndicator);
             userElement.appendChild(usernameSpan);
 
              // Add a notification icon if user has unread messages
-             const notificationIcon = document.createElement('span');
+             const notificationIcon = document.createElement('div');
              notificationIcon.classList.add('material-symbols-outlined');
-             notificationIcon.innerHTML = 'mail';  
-             
-             if (unreadMessages[user.id]) {  
-                 notificationIcon.style.display = 'inline-block';  
-             } else {
-                 notificationIcon.style.display = 'none';  
-             }
+             notificationIcon.innerHTML = 'mail';
 
              userElement.appendChild(notificationIcon);
             
@@ -87,13 +80,11 @@ function updateSidebar(users) {
                         return; // Don't send if invalid
                     }
 
-                    markMessagesAsRead(user.chatID);
-
                     const data = {
                         type: "chatBE",
                         chat_user: {
                             id: userId,
-                            username: userElement.textContent,
+                            username: userElement.querySelector('.chat-username').textContent,
                         }
                     };
                     console.log(data)
@@ -107,16 +98,13 @@ function updateSidebar(users) {
     }
 }
 
-function markMessagesAsRead(chatID) {
-    unreadMessages[chatID] = false; // Märgi sõnumid loetuks
-
-    // Leia vastav kasutaja element ja peida notification icon
-    const userElement = document.querySelector(`.chat-user[data-value="${chatID}"]`);
-    if (userElement) {
-        const notificationIcon = userElement.querySelector('.material-symbols-outlined');
-        if (notificationIcon) {
-            notificationIcon.style.display = 'none'; // 
-        }
+function toggleEnvelope(user, toggle) {
+    const userElement = document.querySelector(`.chat-user[data-value='${user.id}']`)
+    const notificationIcon = userElement.querySelector('.material-symbols-outlined');
+    if (toggle === 'unread') {
+    notificationIcon.style.display = 'inline-block'; // Show icon
+    } else if (toggle === 'read') {
+        notificationIcon.style.display = 'none'; // Hide icon
     }
 }
 

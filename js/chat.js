@@ -17,17 +17,15 @@ function renderChatPage(username, chatID) {
         <div id="messages"></div>
     </div>
     <div id="input-container">
-        <div id="textarea-wrapper">
         <textarea id="message-input" placeholder="Type a message..."></textarea>
         <button id="send-button" class="send-btn">Send</button>
-        </div>
     </div>
     </div>
     </div>
 `;
     document.getElementById("close-chat").addEventListener("click", function() {
         document.getElementById('chat-window').style.display = 'none';
-        loadPage();
+        init();
     });
     document.getElementById('send-button').addEventListener('click', function() {
         const chat = document.getElementById('chat-header');
@@ -45,7 +43,6 @@ function renderChatPage(username, chatID) {
             console.error("chat-partner element or data-chat-id not found.");
         }
     });
-    markMessagesAsRead(chatID); // Mark messages as read when opening the chat
 }
 
 function sendMessage(chatID) {
@@ -93,9 +90,11 @@ function displayMessages(data) {
     console.log(data)
     
     // go through all the messages and display them
-    data.forEach(message => {
-        addMessage(message);
-    });
+    if (data) {
+        data.forEach(message => {
+            addMessage(message);
+        });
+    }
 }
 
 //addMessage function adds a single message to the chat window
