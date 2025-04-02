@@ -76,8 +76,8 @@ func AddMessageToDB(userID int, content string, chatID int) (int, error) {
 func AddVotes(userID, postID, commentID, vote int) error {
 	var row *sql.Row
 	query := `SELECT Type FROM Like WHERE user_id = ? AND `
-	deleteQuery := `UPDATE Like SET type = 0, created_at = ? WHERE user_id = ? AND `
-	updateQuery := `UPDATE Like SET type = ?, created_at = ? WHERE user_id = ? AND `
+	deleteQuery := `UPDATE Like SET type = 0, updated_at = ? WHERE user_id = ? AND `
+	updateQuery := `UPDATE Like SET type = ?, updated_at = ? WHERE user_id = ? AND `
 	var addon string
 	var ID int
 

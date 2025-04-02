@@ -11,9 +11,7 @@ async function LogoutUser() {
         const data = await response.json();
 
         if (!response.ok) {
-            errorMsg = data.message;
-            showError();
-            showPage('error');
+            showError(data.message);
             return
         } else {
         // Update UI
@@ -23,9 +21,7 @@ async function LogoutUser() {
         history.pushState({}, '', '/login');
         }
     } catch (error) {
-        errorMsg = "Unknown Error";
-        showError();
-        showPage('error')
+        showError(data.message);
     }
     
 }

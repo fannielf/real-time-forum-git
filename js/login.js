@@ -42,15 +42,11 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             document.getElementById('chat-sidebar').style.display = 'block';
             loadPage();
         } else {
-            errorMsg = data.message;
-            showError();
-            showPage('error')
+            showError(data.message);
             
         }
     } catch (error) {
-        errorMsg = "Unknown Error";
-        showError();
-        showPage('error')
+        showError(data.message);
     }
 });
 

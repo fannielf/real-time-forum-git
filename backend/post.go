@@ -69,7 +69,8 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 // HandlePostPageGet handles get requests to the post page
 func HandlePostPageGet(w http.ResponseWriter, r *http.Request, postID int) {
 	log.Println("Fetching post details")
-	post, err := GetPostDetails(postID, 0)
+	_, userID := VerifySession(r)
+	post, err := GetPostDetails(postID, userID)
 	if err != nil {
 		log.Println("Error fetching post details:", err)
 		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")

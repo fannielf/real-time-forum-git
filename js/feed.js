@@ -26,8 +26,7 @@ function renderFeedPage() {
     })
     .catch(error => {
         console.error('Error fetching feed:', error);
-        errorMsg = error.message;
-        loadPage('error');
+        showError(error.message);
     });
 }
 

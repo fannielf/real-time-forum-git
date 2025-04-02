@@ -13,7 +13,6 @@ window.addEventListener('popstate', () => {
     loadPage();
 });
 
-let errorMsg = '';
 let userID = null;
 
 async function init() {
@@ -53,9 +52,8 @@ function loadPage() {
         page = 'create-post'
         renderCreatePostPage();
     } else {
-        page = 'error-message'
-        errorMsg = "Page Not Found"
-        showError();
+        showError("Page Not Found");
+        return
     }
 
     showPage(page)
@@ -102,7 +100,7 @@ function hideAllPages() {
     pages.forEach(page => page.style.display = 'none');
 }
 
-function showError() {
+function showError(errorMsg) {
     const errorText = document.getElementById("error-text");
     const backButton = document.getElementById("error-back-btn");
 
@@ -112,4 +110,5 @@ function showError() {
         history.pushState({}, '', '/');
         loadPage();
     });
+    showPage('error-message')
 }

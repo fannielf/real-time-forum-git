@@ -82,14 +82,10 @@ document.getElementById("create-post-form").addEventListener("submit", async (ev
             history.pushState({}, '', '/');
             loadPage();
         } else {
-            errorMsg = data.message;
-            showError();
-            showPage('error')
+            showError(data.message);
         }
         } catch(error)  {
-            errorMsg = "Unknown Error";
-            showError();
-            showPage('error')
+            showError(data.message);
         };
 }   );
 
