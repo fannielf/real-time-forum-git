@@ -1,4 +1,5 @@
-let messages = [];
+let allMessages = [];
+let displayedMessages = [];
 
 // Function to open a private chat with the selected user (implement this based on your app's logic)
 function renderChatPage(username, chatID) {
@@ -13,10 +14,11 @@ function renderChatPage(username, chatID) {
         <div id="close-chat" style="cursor: pointer;">X</div>
     </div>
     <div id="chat-content">
-        <div id="chat-messages">
-            <div id="messages"></div>
-        </div>
-        <div id="input-container">
+    <div id="chat-messages">
+    <div id="loading-indicator">Loading older messages...</div>
+        <div id="messages"></div>
+    </div>
+    <div id="input-container">
         <textarea id="message-input" placeholder="Type a message..."></textarea>
         <button id="send-button" class="send-btn">Send</button>
         </div>
@@ -42,6 +44,14 @@ function renderChatPage(username, chatID) {
             console.error("chat-partner element or data-chat-id not found.");
         }
     });
+
+    document.getElementById('chat-messages').addEventListener('scroll', () => {
+        // Check if the user has scrolled to the top
+        if (document.getElementById('chat-messages').scrollTop === 0 && displayedMessages.length !== allMessages.length) {
+            showLoadingIndicator();
+            setTimeout(loadMoreMessages, 1000);
+        }
+    });
 }
 
 function sendMessage(chatID) {
@@ -64,48 +74,39 @@ function sendMessage(chatID) {
     messageInput.value = ''; 
 }
 
-function loadMessages() {
+function loadMoreMessages() {
     if (!socket) return;
+    const currentMessageCount = displayedMessages.length;
+    const nextMessages = allMessages.slice(currentMessageCount, currentMessageCount + 10);
 
-    const messageRequest = {
-        type: "load_messages", //type of the message
-        senderID: userID, //ID for the user who is logged in
-        receiverID: receiverID //ID for the user we are chatting with
-    };
+    if (nextMessages.length > 0) {
+        nextMessages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        displayedMessages = [...nextMessages, ...displayedMessages];
+        displayMessages(nextMessages, 'old')
+    }
 
-    socket.send(JSON.stringify(messageRequest));
+    hideLoadingIndicator();
+
 }
 
-// function handleScroll() {
-//     const messagesDiv = document.getElementById('messages');
-//     if (messagesDiv.scrollTop === 0) { 
-//         loadMessages(); 
-//     }
-// }
-
-
 // displayMessages function displays the messages in the chat window (eg load chat history)
-function displayMessages(data) {
+function displayMessages(data, type = 'new') {
     console.log(data)
     
     // go through all the messages and display them
     if (data) {
         data.forEach(message => {
-            addMessage(message);
+            addMessage(message, type);
         });
     }
 }
 
 //addMessage function adds a single message to the chat window
 // it checks if the sender is the user or the chat partner
-function addMessage(message) {
+function addMessage(message, type = 'new') {
     const messagesDiv = document.getElementById('messages');
     const messageElement = document.createElement('div');
 
-    console.log(userID)
-    console.log(message.sender.id)
-    console.log(message.sender.username)
-    console.log(message.content)
     if (message.sender.id === userID) {
         messageElement.classList.add('my-message');
     } else {
@@ -113,5 +114,19 @@ function addMessage(message) {
     }
 
     messageElement.textContent = `${message.created_at} - ${message.sender.username}: ${message.content}`;
+    if (type === 'new') {
     messagesDiv.appendChild(messageElement);
+    } else {
+        messagesDiv.prepend(messageElement);
+    }
+}
+
+function showLoadingIndicator() {
+    const loadingIndicator = document.getElementById('loading-indicator');
+    loadingIndicator.style.display = 'block'; // Show the loading indicator
+}
+
+function hideLoadingIndicator() {
+    const loadingIndicator = document.getElementById('loading-indicator');
+    loadingIndicator.style.display = 'none'; // Hide the loading indicator
 }
