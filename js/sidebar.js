@@ -18,7 +18,9 @@ function initializeSocket() {
             hideAllPages();
             toggleEnvelope(message.chat_user, 'read')
             renderChatPage(message.chat_user.username, message.chat_id);
-            displayMessages(message.history);
+            allMessages = message.history; // Store all messages
+            displayedMessages = allMessages.slice(0,10);
+            displayMessages(displayedMessages);
 
         } else if (message.type === "message") {
             if (message.chatID !== getCurrentChatID()) {
@@ -29,6 +31,7 @@ function initializeSocket() {
         }
     } catch (error) {
         console.log("error with websocket data")
+        init();
     }
     });
 

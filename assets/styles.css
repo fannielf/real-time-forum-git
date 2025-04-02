@@ -548,6 +548,19 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     margin-right: 20px;
 }
 
+#loading-indicator {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    color: #888;
+    display: none; /* Hide it initially */
+}
+
+#loading-indicator::before {
+    content: '⏳'; /* You can replace this with an actual loading spinner if desired */
+    margin-right: 5px;
+}
+
  #chat-content {
     display: flex;
     flex-direction: column;

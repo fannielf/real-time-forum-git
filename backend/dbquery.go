@@ -248,7 +248,7 @@ func GetParticipants(chatID int) ([]int, error) {
 
 func GetHistory(chatID int, history *[]map[string]interface{}) error {
 
-	rows, err := db.Query("SELECT sender_id, content, created_at FROM Message WHERE chat_id = ? AND status = 'active'", chatID)
+	rows, err := db.Query("SELECT sender_id, content, created_at FROM Message WHERE chat_id = ? AND status = 'active' ORDER BY created_at DESC", chatID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil
