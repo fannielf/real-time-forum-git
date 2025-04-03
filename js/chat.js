@@ -48,7 +48,7 @@ function renderChatPage(username, chatID) {
     document.getElementById('chat-messages').addEventListener('scroll', () => {
         // Check if the user has scrolled to the top
         if (document.getElementById('chat-messages').scrollTop === 0 && displayedMessages.length !== allMessages.length) {
-            showLoadingIndicator();
+            toggleLoadingIndicator('show');
             setTimeout(loadMoreMessages, 1000);
         }
     });
@@ -85,13 +85,12 @@ function loadMoreMessages() {
         displayMessages(nextMessages, 'old')
     }
 
-    hideLoadingIndicator();
+    toggleLoadingIndicator('hide');
 
 }
 
 // displayMessages function displays the messages in the chat window (eg load chat history)
-function displayMessages(data, type = 'new') {
-    console.log(data)
+function displayMessages(data, type = 'old') {
     
     // go through all the messages and display them
     if (data) {
@@ -112,21 +111,20 @@ function addMessage(message, type = 'new') {
     } else {
         messageElement.classList.add('other-message');
     }
-
     messageElement.textContent = `${message.created_at} - ${message.sender.username}: ${message.content}`;
     if (type === 'new') {
-    messagesDiv.appendChild(messageElement);
+        messagesDiv.appendChild(messageElement);
     } else {
         messagesDiv.prepend(messageElement);
     }
 }
 
-function showLoadingIndicator() {
+// Toggle between showing and hiding the loading indicator
+function toggleLoadingIndicator(status = 'hide') {
     const loadingIndicator = document.getElementById('loading-indicator');
-    loadingIndicator.style.display = 'block'; // Show the loading indicator
-}
-
-function hideLoadingIndicator() {
-    const loadingIndicator = document.getElementById('loading-indicator');
-    loadingIndicator.style.display = 'none'; // Hide the loading indicator
+    if (status === 'show') {
+        loadingIndicator.style.display = 'block';
+    } else {
+        loadingIndicator.style.display = 'none';
+    }
 }

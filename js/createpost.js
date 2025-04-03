@@ -77,15 +77,14 @@ document.getElementById("create-post-form").addEventListener("submit", async (ev
             })
         })
         const data = await response.json();
-        if (response.ok) {
-            console.log("Post created:", data);
-            history.pushState({}, '', '/');
-            loadPage();
-        } else {
-            showError(data.message);
-        }
+        if (!response.ok) {
+            throw new Error(data.message);
+        } 
+        console.log("Post created:", data);
+        history.pushState({}, '', '/');
+        loadPage();
         } catch(error)  {
-            showError(data.message);
+            showError(error.message);
         };
 }   );
 

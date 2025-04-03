@@ -26,7 +26,7 @@ function initializeSocket() {
             if (message.chatID !== getCurrentChatID()) {
                 toggleEnvelope(message.sender, 'unread')
             } else {
-                addMessage(message);
+                addMessage(message, 'new');
             }
         }
     } catch (error) {
