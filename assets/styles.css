@@ -523,8 +523,8 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     transition: all 0.3s ease;  
 }
 
-.status-indicator .online {
-    background: linear-gradient(45deg, #aedeae, #3d823d);  
+.online {
+    background: linear-gradient(45deg, #aedeae, #3d823d) !important;
 }
 
 .username-container {
