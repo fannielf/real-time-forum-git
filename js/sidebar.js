@@ -8,35 +8,35 @@ function initializeSocket() {
 
     // Listen for messages from the WebSocket
    socket.addEventListener('message', function(event) {
-    try {
-        const message = JSON.parse(event.data);
+        try {
+            const message = JSON.parse(event.data);
 
-        if (message.type === "update_users") {
-            console.log(message.users)
-            updateSidebar(message.users);
-        
-        } else if (message.type === "chat") {
-            console.log(message);
-            hideAllPages();
-            toggleEnvelope(message.chat_user, 'read')
-            renderChatPage(message.chat_user.username, message.chat_id);
-            allMessages = message.history; // Store all messages
-            displayedMessages = allMessages.slice(0,10);
-            displayMessages(displayedMessages);
+            if (message.type === "update_users") {
+                console.log(message.users)
+                updateSidebar(message.users);
+            
+            } else if (message.type === "chat") {
+                console.log(message);
+                hideAllPages();
+                toggleEnvelope(message.chat_user, 'read')
+                renderChatPage(message.chat_user.username, message.chat_id);
+                allMessages = message.history; // Store all messages
+                displayedMessages = allMessages.slice(0,10);
+                displayMessages(displayedMessages);
 
-        } else if (message.type === "message") {
-            if (message.chatID !== getCurrentChatID()) {
-                toggleEnvelope(message.sender, 'unread')
-            } else {
-                addMessage(message, 'new');
+            } else if (message.type === "message") {
+                if (message.chatID !== getCurrentChatID()) {
+                    toggleEnvelope(message.sender, 'unread')
+                } else {
+                    addMessage(message, 'new');
+                }
             }
+        } catch (error) {
+            console.log("error with websocket data")
+            init();
         }
-    } catch (error) {
-        console.log("error with websocket data")
-        init();
-    }
-            });
-    }
+    });
+}
 
 // Function to update the sidebar with the list of active users
 function updateSidebar(users) {
@@ -76,9 +76,8 @@ function updateSidebar(users) {
 
              const state = userNotificationState.get(user.id);
 
-            // Apply styles based on the stored state
             if (state === 'unread') {
-                notificationIcon.style.display = 'inline-block'; // Show icon if unread
+                notificationIcon.style.display = 'inline-block';
             }
 
              userElement.appendChild(notificationIcon);
