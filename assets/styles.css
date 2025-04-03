@@ -130,6 +130,7 @@ main #feed, #create-post, #post-details, #chat-window {
     border-radius: 5px;
     height: 70vh;
     overflow: hidden;
+    max-height: min-content;
 }
 
 main #login-page, #signup-page {
@@ -484,13 +485,14 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     flex-direction: column;
     height: calc(100% - 70px);
     overflow-y: auto;
+    max-height: 100%;
 
 }
 
 .comment {
     background-color: rgba(208, 212, 208, 0.3);
     padding: 10px;
-    margin: 8px;
+    margin: 8px 0;
     border-radius: 5px;
     border: 1px solid rgba(179, 224, 179, 0.5);
 }
@@ -663,8 +665,8 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     flex-direction: column;
     justify-content: flex-start; 
     height: 90%; 
-    width: 400px;
-    margin: auto;
+    width: 90%;
+    margin-left: 25px;
     overflow: auto;
  }
 
@@ -700,6 +702,8 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     display: flex;
     flex-direction: column;
     gap: 10px;
+    height: 100%;
+    overflow-y: auto;
 }
 
 #input-container {
