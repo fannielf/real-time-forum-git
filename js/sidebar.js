@@ -35,9 +35,8 @@ function initializeSocket() {
         console.log("error with websocket data")
         init();
     }
-    });
-
-}
+            });
+    }
 
 // Function to update the sidebar with the list of active users
 function updateSidebar(users) {
@@ -47,19 +46,19 @@ function updateSidebar(users) {
     // Handle case where no users are present
     if (!users) {
         const noUsersMessage = document.createElement('div');
-        noUsersMessage.textContent = "No active users";
+        noUsersMessage.textContent = "No other users";
         chatUsersDiv.appendChild(noUsersMessage);
     } else {
         // Loop through the active users and add them to the sidebar
         users.forEach(function(user) {
             const userElement = document.createElement('div');
             userElement.classList.add('chat-user');
-            // userElement.textContent = user.username;
             userElement.dataset.value = user.id;
 
             // Create status indicator 
             const statusIndicator = document.createElement('div');
             statusIndicator.classList.add('status-indicator'); 
+            // statusIndicator.style.backgroundColor = user.online ? 'green' : 'red';
 
             if (user.online) {
                 statusIndicator.classList.add('online'); // Add 'online' class if user is online
@@ -69,8 +68,6 @@ function updateSidebar(users) {
             usernameSpan.classList.add('chat-username'); 
             usernameSpan.textContent = user.username;
 
-            userElement.appendChild(statusIndicator);
-            userElement.appendChild(usernameSpan);
 
              // Add a notification icon if user has unread messages
              const notificationIcon = document.createElement('div');
@@ -87,8 +84,8 @@ function updateSidebar(users) {
              userElement.appendChild(notificationIcon);
             
             // Make the username clickable to start a private chat
-            userElement.addEventListener('click', function() {
-                if (userElement.dataset.value) {
+            if (user.online) {
+                userElement.addEventListener('click', function() {
                     const userId = parseInt(userElement.dataset.value, 10); // Parse to integer (base 10)
             
                     if (isNaN(userId)) {
@@ -105,14 +102,19 @@ function updateSidebar(users) {
                     };
                     console.log(data)
                     socket.send(JSON.stringify(data)); // Send as JSON string
-                }
-
-            });
+                });
+            } else {
+                usernameSpan.style.color = 'gray';
+                userElement.style.cursor = 'not-allowed';
+            }
+            userElement.appendChild(statusIndicator);
+            userElement.appendChild(usernameSpan);
 
             chatUsersDiv.appendChild(userElement);
-        });
+            });
     }
 }
+
 
 function toggleEnvelope(user, toggle) {
     const userElement = document.querySelector(`.chat-user[data-value='${user.id}']`)

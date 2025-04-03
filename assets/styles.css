@@ -70,7 +70,7 @@ header {
     background-color: #e5f0e5;
     position: fixed; 
     top: 0; 
-    height: 50px;
+    height: 5vh;
     width: 100vw;
 }
 
@@ -111,9 +111,14 @@ h2 {
     font-size: clamp(1rem, 3vw, 1.8rem);
 }
 
+h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+}
+
 /*------ Main section ------*/
 
-main {
+main #feed, #create-post, #post-details, #chat-window {
     display: flex;
     flex-direction: column;
     width: 50vw;
@@ -123,8 +128,24 @@ main {
     background: #e5f0e5;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
+    height: 70vh;
+    overflow: hidden;
+}
+
+main #login-page, #signup-page {
+    display: flex;
+    flex-direction:row;
+    width: 400px;
+    margin: 20vh auto;
+    margin-top: 30vh;
+    margin-left: 30vw;
+    padding: 1rem;
+    background: #e5f0e5;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
     max-height: min-content;
-    overflow: auto;
+    /* height: 70vh; */
+    /* overflow: hidden; */
 }
 
 .page {
@@ -197,8 +218,12 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 /* Textarea styling (create post page) */
 /* .post-content {
     font-family: Arial, Helvetica, sans-serif;
-    min-height: 50px;
 } */
+
+.post-body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
 
 /* create-post category selection */
 .category-container {
@@ -217,7 +242,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     user-select: none;
     transition: all 0.3s ease-in-out;
     background-color: white;
-    color: #5c9b76;
+    color: #8eb69f;
     display: inline-block;
     text-align: center;
 }
@@ -230,7 +255,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 /* When checkbox is checked */
 .category-tags input:checked + label,
 .category-tags:has(input:checked) {  /*The :has() selector ensures the label updates*/ 
-    background-color: #85a290;
+    background-color: #9bbaa7;
     color: white;
     border-color: #5C7164;
 }
@@ -247,18 +272,32 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 
 /*------ Feed page (root) ------*/
 
+
+#feed {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%; 
+    overflow: hidden; 
+}
+
 /* Feed header */
 .feed-header {
+    position: sticky;
     display: flex;
     justify-content: space-between; 
     align-items: center; 
     padding: 10px 20px;
+    z-index: 10;
+    top: 0;
+    border-bottom: 1px solid #ddd;
 }
 
-
-/* .username {
-    font-size: 16px;
-} */
+#posts-list {
+    flex-grow: 1;
+    overflow-y: auto; 
+    height: calc(100% - 70px);
+}
 
 .post-card {
     margin-bottom: 1.5rem;
@@ -355,10 +394,22 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 /* Container for name + icon (post page) */
 .post-info {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     margin: 5px 0; 
     color: #1b2218;
     font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+.post-info .left {
+    display: flex;
+
+}
+
+.post-info .right {
+    text-align: right;
 }
 
 /* Container for name + icon (home page) */
@@ -384,13 +435,25 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 }
 
 /* Post Cards styling (post page) */
-.post-info {
-    font-size: 16px;
-    font-weight: bold;
-    color: #0b0b0b;
-    font-family: Arial, Helvetica, sans-serif;
-    justify-content: space-between;
+#post-details {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
 }
+
+.post-container {
+    flex-shrink: 0;
+    display: flex;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd; 
+    overflow: hidden; 
+    z-index: 10;
+    top: 0;
+    flex-grow: 1;
+}
+
 .post {
     margin-bottom: 1.5rem;
     padding: 1rem;
@@ -413,6 +476,15 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     border: 1px solid #a8cbb9;
     border-radius: 5px;
     background-color: #d8e7d1;
+}
+
+#comment-section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 70px);
+    overflow-y: auto;
+
 }
 
 .comment {
@@ -524,7 +596,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 }
 
 .online {
-    background: linear-gradient(45deg, #aedeae, #3d823d) !important;
+    background: linear-gradient(45deg, #aedeae, #3d823d) !important;  
 }
 
 .username-container {
@@ -544,7 +616,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 #chat-container {
     display: flex;
     flex-direction: column;
-    height: 70%;
+    height: 90%;
     width: 100%;
     overflow: hidden;
     margin: auto;

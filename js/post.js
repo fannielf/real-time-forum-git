@@ -37,8 +37,9 @@ function renderPost(post) {
 
     // Render the post content
     postContainer.innerHTML = `
+        <div id="post-container">
         <div class="post-header-like-dislike">
-            <h2 class="post-title">${post.post_title}</h2>
+            <h3 class="post-title">${post.post_title}</h3>
             <div class="reaction-buttons">
                 <button id="like-button-${post.post_id}" class="like-button" 
                 style="color: ${post.liked_now ? '#54956d' : 'inherit'}">
@@ -57,14 +58,18 @@ function renderPost(post) {
             ${post.categories.map(cat => `<p class="category-tags">${cat}</p>`).join('')}
         </div>
         <div class="post-info">
+            <div class="left">
+            <span class="material-symbols-outlined" style="font-size: 24px;">filter_vintage</span>
             <span class="username">${post.username}</span>
-            <p>${post.created_at}</p>
+            </div>
+            <p class="right">${post.created_at}</p>
         </div>
         <div class="post-card">
-            <p class="post-content">${post.post_content}</p>
+            <p class="post-body">${post.post_content}</p>
+        </div>
         </div>
 
-        
+        <div id="comment-section">
         <h3 class="comment-header">Comments:</h3>
          <form id="comment-form" data-post-id="${post.post_id}">
                 <textarea class="comment-textarea" id="comment" name="comment" placeholder="Enter comment here" required></textarea>
@@ -76,6 +81,7 @@ function renderPost(post) {
                 <pre>${comment.comment_content}</pre>
             </div>
         `).join('') : '<p>No comments yet.</p>'}
+        </div>
         </div>
     `;
 
