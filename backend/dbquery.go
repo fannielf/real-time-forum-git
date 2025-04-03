@@ -147,6 +147,35 @@ func GetLikes(userID, postID, commentID int) (bool, bool, error) {
 	return false, false, nil
 }
 
+func GetUsers() (map[int]string, error) {
+	var users = make(map[int]string)
+
+	log.Println("Getting all users")
+	rows, err := db.Query("SELECT id, username FROM User WHERE id != 1")
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// No active users, return an empty slice
+			return users, nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userID int
+		var username string
+		if err := rows.Scan(&userID, &username); err != nil {
+			return nil, err
+		}
+		users[userID] = username
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func GetActiveUsers() (map[int]string, error) {
 	var activeSessions []int
 	var activeUsers = make(map[int]string)
@@ -325,4 +354,38 @@ func GetMessage(message_id int) ([]string, error) {
 	}
 
 	return message, nil
+}
+
+func GetLastAction(user1, user2 int) (string, error) {
+	var timestamp string
+	var chatID int
+
+	err := db.QueryRow(
+		`SELECT id
+		FROM Chat
+		WHERE 
+			(user1_id = ? AND user2_id = ?) OR
+			(user1_id = ? AND user2_id = ?)
+		`, user1, user2, user2, user1).Scan(&chatID)
+
+	if err != nil {
+		return timestamp, err
+	}
+
+	err = db.QueryRow(
+		`SELECT created_at
+		FROM Message
+		WHERE 
+			chat_id = ?
+		ORDER BY created_at DESC
+		LIMIT 1`, chatID).Scan(&timestamp)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return timestamp, nil
+		} else {
+			return timestamp, err
+		}
+	}
+	return timestamp, nil
 }

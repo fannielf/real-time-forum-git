@@ -40,7 +40,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             history.pushState({}, '', '/');
             document.getElementById('logout-button').style.display = 'block';
             document.getElementById('chat-sidebar').style.display = 'block';
-            loadPage();
+            init();
         } else {
             showError(data.message);
             
@@ -54,5 +54,5 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
 document.getElementById('signup-link').addEventListener('click', (event) => {
     event.preventDefault();
     history.pushState({}, '', '/signup');
-    loadPage();
+    init();
 });

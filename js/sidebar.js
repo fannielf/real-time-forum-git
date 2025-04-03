@@ -1,5 +1,6 @@
 // Create WebSocket connection
 let socket = null;
+const userNotificationState = new Map();
 
 // initialize websocket when logged or authorized 
 function initializeSocket() {
@@ -11,6 +12,7 @@ function initializeSocket() {
         const message = JSON.parse(event.data);
 
         if (message.type === "update_users") {
+            console.log(message.users)
             updateSidebar(message.users);
         
         } else if (message.type === "chat") {
@@ -59,6 +61,10 @@ function updateSidebar(users) {
             const statusIndicator = document.createElement('div');
             statusIndicator.classList.add('status-indicator'); 
 
+            if (user.online) {
+                statusIndicator.classList.add('online'); // Add 'online' class if user is online
+            }
+
             const usernameSpan = document.createElement('div');
             usernameSpan.classList.add('chat-username'); 
             usernameSpan.textContent = user.username;
@@ -70,6 +76,13 @@ function updateSidebar(users) {
              const notificationIcon = document.createElement('div');
              notificationIcon.classList.add('material-symbols-outlined');
              notificationIcon.innerHTML = 'mail';
+
+             const state = userNotificationState.get(user.id);
+
+            // Apply styles based on the stored state
+            if (state === 'unread') {
+                notificationIcon.style.display = 'inline-block'; // Show icon if unread
+            }
 
              userElement.appendChild(notificationIcon);
             
@@ -106,8 +119,10 @@ function toggleEnvelope(user, toggle) {
     const notificationIcon = userElement.querySelector('.material-symbols-outlined');
     if (toggle === 'unread') {
     notificationIcon.style.display = 'inline-block'; // Show icon
+    userNotificationState.set(user.id, 'unread'); // Save the state as 'unread'
     } else if (toggle === 'read') {
         notificationIcon.style.display = 'none'; // Hide icon
+        userNotificationState.set(user.id, 'read'); // Save the state as 'read'
     }
 }
 

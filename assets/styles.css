@@ -515,12 +515,16 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 .status-indicator {
     width: 16px;             
     height: 16px;
-    background: linear-gradient(45deg, #aedeae, #3d823d);  
+    background: linear-gradient(45deg, #deaeb0, #a82424);  
     border-radius: 50%;       
     display: inline-block;
     margin-right: 8px;
     margin-left: 15px;
     transition: all 0.3s ease;  
+}
+
+.status-indicator .online {
+    background: linear-gradient(45deg, #aedeae, #3d823d);  
 }
 
 .username-container {

@@ -36,10 +36,11 @@ type Message struct {
 type UserInteraction struct {
 	UserID          int
 	Username        string
-	LastInteraction int64
+	LastInteraction string
 }
 
 type User struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
+	Online   bool   `json:"online"` //If user is currently online
 }

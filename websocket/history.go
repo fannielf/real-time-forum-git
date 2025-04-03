@@ -9,6 +9,17 @@ import (
 
 func HandleChatHistory(conn *websocket.Conn, userID int, msg Message) {
 	chatUser := msg.ChatUser
+	chatUser.Online = false
+
+	// Loop through the clients map to check if this user has an active connection
+	for _, clientID := range clients {
+		if clientID == chatUser.ID {
+			// If the user ID exists in the clients map, they are online
+			chatUser.Online = true
+			break
+		}
+	}
+
 	chatID, err := backend.GetChatID(userID, chatUser.ID)
 	if err != nil {
 		log.Println("Error getting chatID: ", err)

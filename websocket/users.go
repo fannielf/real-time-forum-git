@@ -8,11 +8,11 @@ import (
 )
 
 // Broadcast the active users list exluding the user themselves
-func broadcastActiveUsers() {
+func broadcastUsers() {
 
 	// Send sorted list to each client
 	for client, userID := range clients {
-		sortedUsers := sortActiveUsers(userID)
+		sortedUsers := sortUsers(userID)
 
 		// Send the list of active users back to the client
 		message := Message{
@@ -29,18 +29,19 @@ func broadcastActiveUsers() {
 }
 
 // Sorts users: latest conversations first, then alphabetically
-func sortActiveUsers(userID int) []User {
+func sortUsers(userID int) []User {
 	var sortedUsers []UserInteraction
 	var noInteractionUsers []User
 
-	// Fetch active users from the database
-	activeUsers, err := backend.GetActiveUsers()
+	allUsers, err := backend.GetUsers()
 	if err != nil {
 		log.Println("Error fetching active users:", err)
 		return nil
 	}
+	log.Println(allUsers)
+
 	// Iterate through all active clients (users)
-	for user_id, username := range activeUsers {
+	for user_id, username := range allUsers {
 		log.Println(username)
 		// Skip the current user
 		if user_id == userID {
@@ -48,35 +49,47 @@ func sortActiveUsers(userID int) []User {
 		}
 
 		// // Check for interactions where the current user is involved (either as the user or as the other user)
-		interactions, exists := userInteractions[user_id]
-		if exists {
-			// Get the interaction timestamp with the current user
-			var lastInteraction int64
-			// Check both directions: currentUser <-> username
-			if timestamp, ok := interactions[userID]; ok {
-				lastInteraction = timestamp
-			}
+		interactionTime, err := backend.GetLastAction(userID, user_id)
+		if err != nil {
+			log.Println("Error fetching active users:", err)
+			return nil
+		}
+		if interactionTime != "" {
+			log.Println("existing communication: ", username)
 
 			// If we have a timestamp, add the user to the sorted list
-			if lastInteraction > 0 {
-				sortedUsers = append(sortedUsers, UserInteraction{
-					UserID:          user_id,
-					Username:        username,
-					LastInteraction: lastInteraction,
-				})
-			} else {
-				//If no interaction with currentUser, add to the no interaction list
-				noInteractionUsers = append(noInteractionUsers, User{
-					ID:       user_id,
-					Username: username,
-				})
-			}
+			sortedUsers = append(sortedUsers, UserInteraction{
+				UserID:          user_id,
+				Username:        username,
+				LastInteraction: interactionTime,
+			})
+		} else {
+			noInteractionUsers = append(noInteractionUsers, User{
+				ID:       user_id,
+				Username: username,
+			})
 		}
 	}
 
 	// Sort users with interactions by the last interaction timestamp (descending)
 	sort.Slice(sortedUsers, func(i, j int) bool {
-		return sortedUsers[i].LastInteraction > sortedUsers[j].LastInteraction
+		layout := "2006-01-02 15:04:05" // The format you're using
+
+		timestampI, errI := time.Parse(layout, sortedUsers[i].LastInteraction)
+		timestampJ, errJ := time.Parse(layout, sortedUsers[j].LastInteraction)
+
+		// Handle parsing errors (optional, depending on your needs)
+		if errI != nil {
+			log.Println("Error parsing timestamp for user", sortedUsers[i].Username, errI)
+			return false // or handle this case as needed
+		}
+		if errJ != nil {
+			log.Println("Error parsing timestamp for user", sortedUsers[j].Username, errJ)
+			return false // or handle this case as needed
+		}
+
+		// Compare the time objects: descending order (most recent first)
+		return timestampI.After(timestampJ)
 	})
 
 	// Sort users with no interactions alphabetically
@@ -98,6 +111,22 @@ func sortActiveUsers(userID int) []User {
 			Username: user.Username,
 		})
 	}
+	for i, user := range finalSortedUsers {
+		online := false
+
+		// Loop through the clients map to check if this user has an active connection
+		for _, clientID := range clients {
+			if clientID == user.ID {
+				// If the user ID exists in the clients map, they are online
+				online = true
+				break
+			}
+		}
+
+		// Set the user's online status
+		finalSortedUsers[i].Online = online
+	}
+	log.Println(finalSortedUsers)
 	return finalSortedUsers
 }
 
@@ -106,11 +135,11 @@ func GetTimestamp() int64 {
 	return time.Now().Unix()
 }
 
-// Update the interaction timestamp between two users
-func updateUserInteraction(sender, receiver int) {
-	clientsMutex.Lock()
-	defer clientsMutex.Unlock()
+// // Update the interaction timestamp between two users
+// func updateUserInteraction(sender, receiver int) {
+// 	clientsMutex.Lock()
+// 	defer clientsMutex.Unlock()
 
-	// Update the last active timestamp for the interaction between sender and receiver
-	userInteractions[sender][receiver] = time.Now().Unix() // Store timestamp in seconds
-}
+// 	// Update the last active timestamp for the interaction between sender and receiver
+// 	userInteractions[sender][receiver] = time.Now().Unix() // Store timestamp in seconds
+// }

@@ -43,7 +43,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	if _, exists := userInteractions[userID]; !exists {
 		userInteractions[userID] = make(map[int]int64)
 	}
-	broadcastActiveUsers()
+	broadcastUsers()
 	clientsMutex.Unlock()
 
 	var msg Message
@@ -56,7 +56,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			// Remove user connection & remove from active users
 			clientsMutex.Lock()
 			delete(clients, conn)
-			broadcastActiveUsers()
+			broadcastUsers()
 			clientsMutex.Unlock()
 			break
 		}

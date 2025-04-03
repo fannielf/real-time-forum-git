@@ -38,19 +38,22 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 		log.Println("Invalid username")
 		status = http.StatusUnauthorized
 		message = "Invalid username"
-	} else if err := verifyPassword(hashedPassword, loginData.Password); err != nil {
-		log.Println("Invalid password")
-		status = http.StatusUnauthorized
-		message = "Invalid password"
-	}
-	if err == nil {
-		// Create session
-		if err := CreateSession(w, userID); err != nil {
-			log.Println("Error creating session")
-			ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
-			return
+	} else {
+		err := verifyPassword(hashedPassword, loginData.Password)
+		if err != nil {
+			log.Println("Invalid password")
+			status = http.StatusUnauthorized
+			message = "Invalid password"
+		} else {
+			// Create session
+			if err := CreateSession(w, userID); err != nil {
+				log.Println("Error creating session")
+				ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+				return
+			}
 		}
 	}
+
 	ResponseHandler(w, status, message)
 }
 

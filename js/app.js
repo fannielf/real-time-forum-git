@@ -24,9 +24,12 @@ async function init() {
     const authenticated = await isAuthenticated();
 
     if (!authenticated) {
+        
         document.getElementById('logout-button').style.display = 'none';
         document.getElementById('chat-sidebar').style.display = 'none';
+        if (!window.location.pathname !== '/signup') {
         history.pushState({}, '', '/login');
+        }
         userID = null;
         if (socket !== null) socket.close(); socket = null;
     };
