@@ -54,6 +54,11 @@ button:hover {
     transition: background-color 0.1s ease-in 0.1s;
 }
 
+#home-button {
+    all: unset;
+    cursor: pointer;
+}
+
 
 /*------ Header ------*/
 
@@ -73,6 +78,11 @@ header {
     padding-left: 20px;
 }
 
+.header-left .material-symbols-outlined {
+    font-size: 40px;
+    color: rgb(27, 50, 38);
+}
+
 .header-middle {
     flex-grow: 1;
     display: flex;
@@ -81,6 +91,10 @@ header {
 
 .header-right {
     padding-right: 20px;
+}
+
+#logout-button {
+    display: block;
 }
 
 /*------ Text styling ------*/
@@ -111,6 +125,10 @@ main {
     border-radius: 5px;
     max-height: min-content;
     overflow: auto;
+}
+
+.page {
+    display: none;
 }
 
 /*------ SignUp LogIn CreatePost styling ------*/
@@ -454,6 +472,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 /*------ Sidebar ------*/
 
 #chat-sidebar {
+    display: block;
     position: fixed;
     top: 90px; /* Position just below the header */
     right: 10px;
@@ -696,6 +715,7 @@ input.success {
 
 #error-message {
     color: rgb(172, 43, 43);
+    font-weight: bold;
     font-size: 15px;
     padding: 5px;
 }

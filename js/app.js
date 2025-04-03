@@ -8,6 +8,11 @@ document.getElementById('logout-button').addEventListener('click', async () => {
     loadPage();
 });
 
+document.getElementById('home-button').addEventListener('click', function (){
+    history.pushState({}, '', '/');
+    init();
+})
+
 // Handle back/forward navigation
 window.addEventListener('popstate', () => {
     loadPage();

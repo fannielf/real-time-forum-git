@@ -19,9 +19,8 @@ try {
 
     if (!response.ok) {
         throw new Error(data.message || "Unknown error");
-    } else {
-        renderPost(data);
     }
+        renderPost(data);
         
     } catch (error) {
         console.error("Error fetching post:", error);

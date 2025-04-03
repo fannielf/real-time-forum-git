@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="/assets/styles.css">
 
     <link rel="icon" type="image/png" href="/assets/favicon.ico">
     <title>Forum</title>
@@ -11,20 +11,22 @@
 <body>
     <header>
         <div class="header-left">
-            <a href="/"><span class="material-symbols-outlined" style="font-size: 40px">home</span></a>
+            <button id="home-button">
+                <span class="material-symbols-outlined">home</span>
+            </button>
         </div>
         <div class="header-middle">
             <h1>grit:garden</h1>
         </div>
         <div class="header-right">
-            <button id="logout-button" style="display: block;">Logout</button>
+            <button id="logout-button">Logout</button>
         </div>
     </header>
     <div class="wrapper">
     <main id="app">
         
         <!-- Main Forum Feed -->
-        <section id="feed" class="page" style="display: none;">
+        <section id="feed" class="page">
             <div class="feed-header">
                 <h2>Forum Feed</h2>
                 <button id="create-post-btn">Create Post</button>
@@ -33,24 +35,24 @@
         </section>
 
         <!-- Create Post Page -->
-        <section id="create-post" class="page" style="display: none;">
+        <section id="create-post" class="page">
             <h2>Create a new post</h2>
             <form id="create-post-form"></form>
         </section>
 
         <!-- Post Details Page -->
-        <section id="post-details" class="page" style="display: none;">
+        <section id="post-details" class="page">
             <div id="post-content"></div>
         </section>
 
         <!-- Error Page -->
-        <section id="error-message" class="page" style="display: none; color: red; font-weight: bold;">
+        <section id="error-message" class="page">
             <p id="error-text"></p>
             <button id="error-back-btn">Back to Home</button>
         </section>
 
         <!-- Login Page -->
-         <section id="login-page" class="page" style="display: none;">
+         <section id="login-page" class="page">
             <h2>Login</h2>
             <form id="login-form"></form>
             <div class="signup-link">Don't have an account yet? 
@@ -59,7 +61,7 @@
         </section>
 
         <!-- Sign Up Page-->
-        <section id="signup-page" class="page" style="display: none;">
+        <section id="signup-page" class="page">
             <h2>Sign Up</h2>
             <div class="login-link">Already have an account? 
                 <a href=# id="login-link">Log in here</a>
@@ -68,7 +70,7 @@
         </section>  
 
         <!-- Chat Window (visible when user clicks on a user in the sidebar) -->
-        <section id="chat-window" class="page" style="display: none;">
+        <section id="chat-window" class="page">
             <div id="chat-container"></div>
          </section>
 
@@ -76,7 +78,7 @@
 </div>
     
     <!-- Sidebar showing users (visible all the time) -->
-    <section id="chat-sidebar" style="display: block;">
+    <section id="chat-sidebar">
         <h3>Live Chat</h3>
         <div id="chat-users"></div> 
     </section>

@@ -18,8 +18,8 @@ func main() {
 		return
 	}
 
-	http.Handle("/assets/", http.FileServer(http.Dir(".")))
-	http.Handle("/js/", http.FileServer(http.Dir(".")))
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
+	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("js"))))
 
 	// Initialize database
 	db := database.InitDB()
