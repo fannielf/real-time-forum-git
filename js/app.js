@@ -57,7 +57,7 @@ function loadPage() {
         page = 'create-post'
         renderCreatePostPage();
     } else {
-        showError("Page Not Found");
+        renderPageNotFound()
         return
     }
 
@@ -103,17 +103,4 @@ function showPage(pageId) {
 function hideAllPages() {
     const pages = document.querySelectorAll('.page');
     pages.forEach(page => page.style.display = 'none');
-}
-
-function showError(errorMsg) {
-    const errorText = document.getElementById("error-text");
-    const backButton = document.getElementById("error-back-btn");
-
-    errorText.textContent = errorMsg;
-
-    backButton.addEventListener("click", () => {
-        history.pushState({}, '', '/');
-        init();
-    });
-    showPage('error-message')
 }

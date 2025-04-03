@@ -7,27 +7,24 @@ createPostBtn.addEventListener("click", (event) => {
     loadPage();
 });
 
-function renderFeedPage() {
-    fetch('/api/feed', {
+async function renderFeedPage() {
+    try {
+    const response = await fetch('/api/feed', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
-        //credentials: 'same-origin'  // Ensure the session cookie is sent along with the request
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => { throw new Error(err.error || "Unknown error"); });
-        }
-        return response.json();  // Parse the JSON response
-    })
-    .then(posts => {
-        renderPosts(posts);  // Pass posts to the render function
-    })
-    .catch(error => {
-        console.error('Error fetching feed:', error);
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Unknown error");
+    }
+        renderPosts(data);  // Pass posts to the render function
+
+    } catch(error) {
         showError(error.message);
-    });
+    };
 }
 
 // Function to render posts on the page
