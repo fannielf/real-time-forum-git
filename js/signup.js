@@ -66,26 +66,7 @@ signupForm.addEventListener("submit", async function(event) {
     }
 
     apiPOST('/api/signup', 'signup', formData)
-    // sending the form data to the server
-    // try {
-    //     const response = await fetch('/api/signup', {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify(formData)
-    //     });
-    //     data = await response.json();
 
-    //     if (response.ok) {
-    //         history.pushState({}, '', '/login');
-    //         init()
-    //     } else {
-    //         showError(data.message);
-    //     }
-
-    // } catch(error) {
-    //     console.error('Error signing up:', error);
-    //     showError(data.message);
-    // };
 });
 
 // Handle the link to sign-up page

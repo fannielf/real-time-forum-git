@@ -16,12 +16,6 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// username, err := backend.GetUsername(userID)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
-
 	// upgrade to Websocket protocol
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -39,10 +33,6 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	clientsMutex.Lock()
 	// add user to clients
 	clients[conn] = userID
-	// Initialize interactions map for this user if not exists
-	if _, exists := userInteractions[userID]; !exists {
-		userInteractions[userID] = make(map[int]int64)
-	}
 	broadcastUsers()
 	clientsMutex.Unlock()
 
@@ -96,6 +86,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 				}
 				broadcast <- message
 			}
+		} else if msg.Type == "userBE" {
+			sendChatPartner(conn, msg, userID)
 		}
 		msg = Message{}
 		messagesMutex.Unlock()

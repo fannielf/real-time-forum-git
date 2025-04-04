@@ -5,6 +5,8 @@ import (
 	"real-time-forum/backend"
 	"sort"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 // Broadcast the active users list exluding the user themselves
@@ -25,6 +27,46 @@ func broadcastUsers() {
 			client.Close()
 			delete(clients, client)
 		}
+	}
+}
+
+func sendChatPartner(conn *websocket.Conn, msg Message, userID int) {
+	log.Println(msg.ChatID)
+	participants, err := backend.GetParticipants(msg.ChatID)
+	if err != nil {
+		log.Println("Issue getting participant", err)
+		return
+	}
+	var chatPartner User
+	for _, user := range participants {
+		if user != userID {
+			chatPartner.ID = user
+		}
+	}
+	username, err := backend.GetUsername(chatPartner.ID)
+	if err != nil {
+		log.Println("Error getting username", err)
+		return
+	}
+	chatPartner.Username = username
+	chatPartner.Online = false
+
+	for _, clientID := range clients {
+		if clientID == chatPartner.ID {
+			// If the user ID exists in the clients map, they are online
+			chatPartner.Online = true
+			break
+		}
+	}
+
+	message := Message{
+		Type:     "user",
+		ChatUser: chatPartner, // Send the active users list
+	}
+
+	err = conn.WriteJSON(message)
+	if err != nil {
+		log.Println("Error sending history:", err)
 	}
 }
 
@@ -134,12 +176,3 @@ func sortUsers(userID int) []User {
 func GetTimestamp() int64 {
 	return time.Now().Unix()
 }
-
-// // Update the interaction timestamp between two users
-// func updateUserInteraction(sender, receiver int) {
-// 	clientsMutex.Lock()
-// 	defer clientsMutex.Unlock()
-
-// 	// Update the last active timestamp for the interaction between sender and receiver
-// 	userInteractions[sender][receiver] = time.Now().Unix() // Store timestamp in seconds
-// }

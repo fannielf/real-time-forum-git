@@ -16,7 +16,6 @@ var upgrader = websocket.Upgrader{
 
 var (
 	clients          = make(map[*websocket.Conn]int) // Map of WebSocket connections -> userID
-	userInteractions = make(map[int]map[int]int64)   // map[username]map[otherUsername]timestamp
 	broadcast        = make(chan Message)            // Channel for broadcasting messages
 	clientsMutex     sync.Mutex                      // Protects access to activeUsers map
 	messagesMutex    sync.Mutex

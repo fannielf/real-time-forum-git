@@ -741,6 +741,14 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     margin: 5px;
 }
 
+.disabled {
+    background-color: #ccc; /* light grey */
+    color: #666;            /* darker text */
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
 #close-chat {
     font-size: 18px;
     font-weight: bold;

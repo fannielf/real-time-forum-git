@@ -19,32 +19,17 @@ function renderChatPage(username, chatID) {
         <div id="messages"></div>
     </div>
     <div id="input-container">
-        <textarea id="message-input" placeholder="Type a message..."></textarea>
-        <button id="send-button" class="send-btn">Send</button>
+        <textarea id="message-input" placeholder="Type a message..." disabled></textarea>
+        <button id="send-button" class="send-btn" disabled>Send</button>
         </div>
     </div>
 `;
+
     document.getElementById("close-chat").addEventListener("click", function() {
         document.getElementById('chat-window').style.display = 'none';
         init();
     });
-    document.getElementById('send-button').addEventListener('click', function() {
-        const chat = document.getElementById('chat-header');
     
-        if (chat && chat.dataset.chatId) { 
-            const chatID = parseInt(chat.dataset.chatId, 10); 
-    
-            if (isNaN(chatID)) {
-                console.error("Invalid chat ID:", chat.dataset.chatId);
-                return; // Don't send if invalid
-            }
-    
-            sendMessage(chatID); // Call sendMessage with the retrieved chatID
-        } else {
-            console.error("chat-partner element or data-chat-id not found.");
-        }
-    });
-
     document.getElementById('chat-messages').addEventListener('scroll', () => {
         // Check if the user has scrolled to the top
         if (document.getElementById('chat-messages').scrollTop === 0 && displayedMessages.length !== allMessages.length) {
@@ -52,6 +37,49 @@ function renderChatPage(username, chatID) {
             setTimeout(loadMoreMessages, 1000);
         }
     });
+}
+
+function userStatus(username, online) {
+    console.log(`${username} is online: ${online}`)
+
+    const partnerElement = document.getElementById('chat-partner');
+    const partnerName = partnerElement.querySelector('h3')?.textContent;
+    
+    if (username === partnerName) {
+        const message = document.getElementById("message-input")
+        const sendbtn = document.getElementById("send-button")
+        if (online) {
+            message.classList.remove("disabled");
+            sendbtn.classList.remove("disabled");
+            message.disabled = false;
+            sendbtn.disabled = false;
+            document.getElementById('send-button').addEventListener('click', handleSendClick);
+        } else {
+            message.classList.add("disabled");
+            sendbtn.classList.add("disabled");
+            message.disabled = true;
+            sendbtn.disabled = true;
+            document.getElementById('send-button').removeEventListener('click', handleSendClick);
+        }
+    }
+
+}
+
+function handleSendClick() {
+    const chat = document.getElementById('chat-header');
+    
+    if (chat && chat.dataset.chatId) { 
+        const chatID = parseInt(chat.dataset.chatId, 10); 
+
+        if (isNaN(chatID)) {
+            console.error("Invalid chat ID:", chat.dataset.chatId);
+            return; // Don't send if invalid
+        }
+
+        sendMessage(chatID); // Call sendMessage with the retrieved chatID
+    } else {
+        console.error("chat-partner element or data-chat-id not found.");
+    }
 }
 
 function sendMessage(chatID) {

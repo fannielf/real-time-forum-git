@@ -14,22 +14,28 @@ function initializeSocket() {
             if (message.type === "update_users") {
                 console.log(message.users)
                 updateSidebar(message.users);
+                getCurrentChatPartner()
             
             } else if (message.type === "chat") {
                 console.log(message);
                 hideAllPages();
                 toggleEnvelope(message.chat_user, 'read')
                 renderChatPage(message.chat_user.username, message.chat_id);
+                if (message.history) {
                 allMessages = message.history; // Store all messages
                 displayedMessages = allMessages.slice(0,10);
                 displayMessages(displayedMessages);
+                }
+                userStatus(message.chat_user.username, message.chat_user.online);
 
             } else if (message.type === "message") {
-                if (message.chatID !== getCurrentChatID()) {
+                if (message.chat_id !== getCurrentChatID()) {
                     toggleEnvelope(message.sender, 'unread')
                 } else {
                     addMessage(message, 'new');
                 }
+            } else if (message.type === "user") {
+                userStatus(message.chat_user.username, message.chat_user.online);
             }
         } catch (error) {
             console.log("error with websocket data")
@@ -58,7 +64,6 @@ function updateSidebar(users) {
             // Create status indicator 
             const statusIndicator = document.createElement('div');
             statusIndicator.classList.add('status-indicator'); 
-            // statusIndicator.style.backgroundColor = user.online ? 'green' : 'red';
 
             if (user.online) {
                 statusIndicator.classList.add('online'); // Add 'online' class if user is online
@@ -80,34 +85,30 @@ function updateSidebar(users) {
                 notificationIcon.style.display = 'inline-block';
             }
 
-             userElement.appendChild(notificationIcon);
-            
-            // Make the username clickable to start a private chat
-            if (user.online) {
-                userElement.addEventListener('click', function() {
-                    const userId = parseInt(userElement.dataset.value, 10); // Parse to integer (base 10)
-            
-                    if (isNaN(userId)) {
-                        console.error("Invalid user ID:", userElement.dataset.value);
-                        return; // Don't send if invalid
-                    }
-
-                    const data = {
-                        type: "chatBE",
-                        chat_user: {
-                            id: userId,
-                            username: userElement.querySelector('.chat-username').textContent,
-                        }
-                    };
-                    console.log(data)
-                    socket.send(JSON.stringify(data)); // Send as JSON string
-                });
-            } else {
-                usernameSpan.style.color = 'gray';
-                userElement.style.cursor = 'not-allowed';
-            }
             userElement.appendChild(statusIndicator);
             userElement.appendChild(usernameSpan);
+            userElement.appendChild(notificationIcon);
+            
+            // Make the username clickable to start a private chat
+            userElement.addEventListener('click', function() {
+                const userId = parseInt(userElement.dataset.value, 10); // Parse to integer (base 10)
+        
+                if (isNaN(userId)) {
+                    console.error("Invalid user ID:", userElement.dataset.value);
+                    return; // Don't send if invalid
+                }
+
+                const data = {
+                    type: "chatBE",
+                    chat_user: {
+                        id: userId,
+                        username: userElement.querySelector('.chat-username').textContent,
+                    }
+                };
+                console.log(data)
+                socket.send(JSON.stringify(data)); // Send as JSON string
+            });
+
 
             chatUsersDiv.appendChild(userElement);
             });
@@ -130,7 +131,24 @@ function toggleEnvelope(user, toggle) {
 function getCurrentChatID() {
     chatWindow = document.getElementById('chat-window');
     if (chatWindow.style.display === 'block') {
-        return chatWindow.dataset.chatID;
+        const chatID = parseInt(document.getElementById("chat-header").dataset.chatId, 10);
+        console.log(chatID)
+        return chatID;
     }
     return null;
+}
+
+function getCurrentChatPartner() {
+    const chatID = getCurrentChatID()
+    console.log(chatID)
+
+    if (chatID != null) {
+        const data = {
+            type: "userBE",
+            chat_id: chatID
+        };
+
+        socket.send(JSON.stringify(data)); // Send as JSON string
+    }
+
 }

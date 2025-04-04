@@ -14,7 +14,6 @@ func BroadcastMessages() {
 			log.Println(err)
 			return
 		}
-		//updateUserInteraction(participants[0], participants[1])
 
 		for client, id := range clients {
 			for _, user := range participants {
