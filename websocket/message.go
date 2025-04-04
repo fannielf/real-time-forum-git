@@ -27,6 +27,7 @@ func BroadcastMessages() {
 				}
 			}
 		}
+		broadcastUsers()
 	}
 }
 
