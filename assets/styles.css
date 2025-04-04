@@ -133,13 +133,13 @@ main #feed, #create-post, #post-details, #chat-window {
     max-height: min-content;
 }
 
-main #login-page, #signup-page {
+main #login-page {
     display: flex;
     flex-direction:row;
     width: 400px;
     margin: 20vh auto;
     margin-top: 30vh;
-    margin-left: 30vw;
+    margin-left: 25vw;
     padding: 1rem;
     background: #e5f0e5;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -147,6 +147,20 @@ main #login-page, #signup-page {
     max-height: min-content;
     /* height: 70vh; */
     /* overflow: hidden; */
+}
+
+main #signup-page {
+    display: flex;
+    flex-direction:row;
+    width: 400px;
+    margin: 20vh auto;
+    margin-top: 16vh;
+    margin-left: 25vw;
+    padding: 1rem;
+    background: #e5f0e5;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    max-height: min-content;
 }
 
 .page {
@@ -297,7 +311,8 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
 #posts-list {
     flex-grow: 1;
     overflow-y: auto; 
-    height: calc(100% - 70px);
+    height: calc(100% - 20%);
+
 }
 
 .post-card {
@@ -483,7 +498,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    height: calc(100% - 70px);
+    height: calc(100% - 50%);
     overflow-y: auto;
     max-height: 100%;
 
@@ -744,6 +759,12 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     z-index: 1;
     margin: 5px;
 }
+
+#char-counter {
+    font-size: 12px;
+    color: #888;
+}
+
 
 .disabled {
     background-color: #ccc; /* light grey */

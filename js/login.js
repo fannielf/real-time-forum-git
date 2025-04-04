@@ -4,8 +4,8 @@ function renderLoginPage() {
     loginPage.innerHTML = '';
 
     loginPage.innerHTML = `
-            <label for="username-login">Username</label>
-            <input type="text" id="username-login" name="username" placeholder="Enter your username" required>
+            <label for="username-login">Username/e-mail</label>
+            <input type="text" id="username-login" name="username" placeholder="Enter your username or e-mail" required>
             <label for="password-login">Password</label>
             <input type="password" id="password-login" name="password" placeholder="Enter your password" required>
             <button type="submit">Login</button>

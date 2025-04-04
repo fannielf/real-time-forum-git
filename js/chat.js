@@ -20,7 +20,7 @@ function renderChatPage(username, chatID) {
         <div id="messages"></div>
     </div>
     <div id="input-container">
-        <textarea id="message-input" placeholder="Type a message..." disabled></textarea>
+        <textarea id="message-input" placeholder="Type a message..." maxlength="200" disabled></textarea>
         <button id="send-button" class="send-btn" disabled>Send</button>
         </div>
     </div>
