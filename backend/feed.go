@@ -14,9 +14,6 @@ func HandleFeed(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		GetFeed(w, r)
-	//case http.MethodPost:
-	//Post method on feedPage only for filters
-	//HandleHomePost(w, r)
 	default:
 		ResponseHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
 		return

@@ -26,7 +26,7 @@ function renderChatPage(username, chatID) {
     </div>
 `;
 
-    displayMessages(displayedMessages, 'old');
+    displayMessages(displayedMessages, 'new');
 
     const messageDiv = document.getElementById('messages');
     messageDiv.scrollTop = messageDiv.scrollHeight; // Scroll to the bottom
@@ -113,7 +113,7 @@ function loadMoreMessages() {
     const nextMessages = allMessages.slice(currentMessageCount, currentMessageCount + 10);
 
     if (nextMessages.length > 0) {
-        nextMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        //nextMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
         displayedMessages = [...nextMessages, ...displayedMessages];
         displayMessages(nextMessages, 'old')
     }
@@ -128,9 +128,10 @@ function loadMoreMessages() {
 
 // displayMessages function displays the messages in the chat window (eg load chat history)
 function displayMessages(data, type = 'old') {
-    const messagesDiv = document.getElementById('messages');
     
-    data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    if (type === 'new') {
+        data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    }
     // go through all the messages and display them
     if (data) {
         data.forEach(message => {

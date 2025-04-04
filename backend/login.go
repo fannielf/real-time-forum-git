@@ -54,6 +54,25 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if status == http.StatusOK {
+		username, err := GetUsername(userID)
+		if err != nil {
+			log.Println("Error getting username")
+			ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+			return
+		}
+		response := SignUpData{
+			Username: username,
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+			return
+		}
+		return
+	}
+
 	ResponseHandler(w, status, message)
 }
 
