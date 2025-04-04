@@ -9,6 +9,7 @@ function renderChatPage(username, chatID) {
     <div id="chat-header" data-chat-id="${chatID}">
         <h2>Chat</h2>
         <div id="chat-partner">
+        <span class="material-symbols-outlined" style="font-size: 24px;">filter_vintage</span>
         <h3>${username}</h3>
         </div>
         <div id="close-chat" style="cursor: pointer;">X</div>
@@ -24,6 +25,11 @@ function renderChatPage(username, chatID) {
         </div>
     </div>
 `;
+
+    displayMessages(displayedMessages, 'old');
+
+    const messageDiv = document.getElementById('messages');
+    messageDiv.scrollTop = messageDiv.scrollHeight; // Scroll to the bottom
 
     document.getElementById("close-chat").addEventListener("click", function() {
         document.getElementById('chat-window').style.display = 'none';
@@ -108,7 +114,7 @@ function loadMoreMessages() {
     const nextMessages = allMessages.slice(currentMessageCount, currentMessageCount + 10);
 
     if (nextMessages.length > 0) {
-        nextMessages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        nextMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
         displayedMessages = [...nextMessages, ...displayedMessages];
         displayMessages(nextMessages, 'old')
     }
@@ -119,12 +125,17 @@ function loadMoreMessages() {
 
 // displayMessages function displays the messages in the chat window (eg load chat history)
 function displayMessages(data, type = 'old') {
+    const messagesDiv = document.getElementById('messages');
     
+    data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     // go through all the messages and display them
     if (data) {
         data.forEach(message => {
             addMessage(message, type);
         });
+        if (type === 'new') {
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
+        }
     }
 }
 
@@ -142,6 +153,7 @@ function addMessage(message, type = 'new') {
     messageElement.textContent = `${message.created_at} - ${message.sender.username}: ${message.content}`;
     if (type === 'new') {
         messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
     } else {
         messagesDiv.prepend(messageElement);
     }
