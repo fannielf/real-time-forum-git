@@ -147,6 +147,25 @@ func GetLikes(userID, postID, commentID int) (bool, bool, error) {
 	return false, false, nil
 }
 
+// getUserCredentials retrieves the user's ID and hashed password from the database
+func getUserCredentials(username string) (int, string, error) {
+	var userID int
+	var hashedPassword string
+
+	err := db.QueryRow("SELECT id, password FROM User WHERE username = ?", username).Scan(&userID, &hashedPassword)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = db.QueryRow("SELECT id, password FROM User WHERE email = ?", username).Scan(&userID, &hashedPassword)
+			if err != nil {
+				return 0, "", err
+			}
+		} else {
+			return 0, "", err
+		}
+	}
+	return userID, hashedPassword, nil
+}
+
 func GetUsers() (map[int]string, error) {
 	var users = make(map[int]string)
 

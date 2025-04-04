@@ -57,18 +57,6 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 	ResponseHandler(w, status, message)
 }
 
-// getUserCredentials retrieves the user's ID and hashed password from the database
-func getUserCredentials(username string) (int, string, error) {
-	var userID int
-	var hashedPassword string
-
-	err := db.QueryRow("SELECT id, password FROM User WHERE username = ?", username).Scan(&userID, &hashedPassword)
-	if err != nil {
-		return 0, "", err
-	}
-	return userID, hashedPassword, nil
-}
-
 // verifyPassword compares the hashed password with the password provided by the user
 func verifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
