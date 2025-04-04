@@ -38,7 +38,6 @@ const signupForm = document.getElementById("signup-page");
 const passwordError = document.getElementById("password-error"); 
 
 signupForm.addEventListener("submit", async function(event) {
-    console.log("Signup form submitted!");
     event.preventDefault();  
 
     const formData = {
@@ -54,7 +53,6 @@ signupForm.addEventListener("submit", async function(event) {
 
     // check if passwords match
     if (formData.password !== formData.confirmPassword) {
-        console.log('Passwords do not match!');
         passwordError.style.display = 'block'; // Show the error message
         document.getElementById("confirm-password").classList.add('error'); // Add error class to confirm password field
         document.getElementById("confirm-password").classList.remove('success'); // Remove success class if exists

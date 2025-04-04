@@ -1,6 +1,5 @@
 
 function renderPost(post) {
-    console.log(post)
     const postContainer = document.getElementById('post-details');
 
     // const postElement = document.getElementById('post-content');

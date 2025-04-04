@@ -46,7 +46,6 @@ function renderChatPage(username, chatID) {
 }
 
 function userStatus(username, online) {
-    console.log(`${username} is online: ${online}`)
 
     const partnerElement = document.getElementById('chat-partner');
     const partnerName = partnerElement.querySelector('h3')?.textContent;
@@ -89,11 +88,8 @@ function handleSendClick() {
 }
 
 function sendMessage(chatID) {
-    console.log("Sending message...");
     const messageInput = document.getElementById('message-input');
-    console.log("messageInput:", messageInput); // Check if element is found
     const text = messageInput.value.trim();
-    console.log(text)
     if (!text) {
         return
     }
@@ -103,7 +99,6 @@ function sendMessage(chatID) {
         chat_id: chatID,
         content: text
     };
-    console.log("message: ", message)
     socket.send(JSON.stringify(message)); 
     messageInput.value = ''; 
 }

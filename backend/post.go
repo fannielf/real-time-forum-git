@@ -40,11 +40,9 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	log.Println("PostID:", postID)
-
 	valid := ValidatePostID(postID)
 	if !valid {
-		log.Println("Invalid postID")
+		log.Println("Invalid postID: ", postID)
 		ResponseHandler(w, http.StatusNotFound, "Page Not Found")
 		return
 	}
@@ -68,7 +66,6 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 
 // HandlePostPageGet handles get requests to the post page
 func HandlePostPageGet(w http.ResponseWriter, r *http.Request, postID int) {
-	log.Println("Fetching post details")
 	_, userID := VerifySession(r)
 	post, err := GetPostDetails(postID, userID)
 	if err != nil {
@@ -76,7 +73,7 @@ func HandlePostPageGet(w http.ResponseWriter, r *http.Request, postID int) {
 		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
 		return
 	}
-	log.Println(post.Categories)
+
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(post); err != nil {
 		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")

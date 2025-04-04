@@ -142,11 +142,10 @@ async function isAuthenticated() {
         if (response.ok) {
             const data = await response.json();
             userID = parseInt(data.message, 10);
-            console.log('User is authenticated:');
+
             if (socket === null) initializeSocket()
             return true;
         } else {
-            console.log('Unauthorized');
             return false;
         }
     } catch (error) {

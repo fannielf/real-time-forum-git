@@ -18,7 +18,6 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	}
 
 	path := r.URL.Path
-	log.Println(path)
 
 	trimmedPath := strings.TrimPrefix(path, "/api/")
 
