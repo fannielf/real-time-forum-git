@@ -20,12 +20,11 @@ function initializeSocket() {
                 console.log(message);
                 hideAllPages();
                 toggleEnvelope(message.chat_user, 'read')
-                renderChatPage(message.chat_user.username, message.chat_id);
                 if (message.history) {
                 allMessages = message.history; // Store all messages
                 displayedMessages = allMessages.slice(0,10);
-                displayMessages(displayedMessages);
                 }
+                renderChatPage(message.chat_user.username, message.chat_id);
                 userStatus(message.chat_user.username, message.chat_user.online);
 
             } else if (message.type === "message") {

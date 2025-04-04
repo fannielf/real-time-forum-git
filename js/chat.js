@@ -36,9 +36,9 @@ function renderChatPage(username, chatID) {
         init();
     });
     
-    document.getElementById('chat-messages').addEventListener('scroll', () => {
+    document.getElementById('messages').addEventListener('scroll', () => {
         // Check if the user has scrolled to the top
-        if (document.getElementById('chat-messages').scrollTop === 0 && displayedMessages.length !== allMessages.length) {
+        if (document.getElementById('messages').scrollTop === 0 && displayedMessages.length !== allMessages.length) {
             toggleLoadingIndicator('show');
             setTimeout(loadMoreMessages, 1000);
         }
@@ -110,6 +110,10 @@ function sendMessage(chatID) {
 
 function loadMoreMessages() {
     if (!socket) return;
+
+    const chatMessages = document.getElementById('messages');
+    const previousScrollHeight = chatMessages.scrollHeight;
+
     const currentMessageCount = displayedMessages.length;
     const nextMessages = allMessages.slice(currentMessageCount, currentMessageCount + 10);
 
@@ -119,8 +123,12 @@ function loadMoreMessages() {
         displayMessages(nextMessages, 'old')
     }
 
-    toggleLoadingIndicator('hide');
-
+    // Wait for DOM to update, then adjust scroll position
+    setTimeout(() => {
+        const newScrollHeight = chatMessages.scrollHeight;
+        chatMessages.scrollTop = newScrollHeight - previousScrollHeight;
+        toggleLoadingIndicator('hide');
+    }, 0);
 }
 
 // displayMessages function displays the messages in the chat window (eg load chat history)
@@ -133,9 +141,6 @@ function displayMessages(data, type = 'old') {
         data.forEach(message => {
             addMessage(message, type);
         });
-        if (type === 'new') {
-            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
-        }
     }
 }
 
