@@ -97,6 +97,11 @@ header {
     display: block;
 }
 
+#logged-in-user {
+    font-size: 14px;
+    color: rgb(36, 88, 36)
+}
+
 /*------ Text styling ------*/
 
 h1 {
@@ -711,6 +716,17 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     border-radius: 5px;
     max-width: 60%;
     align-self: flex-start;
+}
+
+.message-meta {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    color: rgb(60, 63, 62)
+}
+
+.message-text {
+    font-size: 1rem;
+
 }
 
 #messages {

@@ -155,7 +155,12 @@ function addMessage(message, type = 'new') {
     } else {
         messageElement.classList.add('other-message');
     }
-    messageElement.textContent = `${message.created_at} - ${message.sender.username}: ${message.content}`;
+    
+    messageElement.innerHTML = `
+    <div class="message-meta">${message.sender.username} • ${message.created_at}</div> 
+    <div class="message-text">${message.content}</div>
+    `;
+    
     if (type === 'new') {
         messagesDiv.appendChild(messageElement);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;

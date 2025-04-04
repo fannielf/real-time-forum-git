@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // Handle logout
 document.getElementById('logout-button').addEventListener('click', async () => {
     await LogoutUser();
+
+    const loggedInUserElement = document.getElementById('logged-in-user');
+    if (loggedInUserElement) {
+        loggedInUserElement.textContent = ''; // remove the username
+    }
+
     init();
 });
 
@@ -117,6 +123,14 @@ async function apiPOST(adress, page, postData) {
             history.pushState({}, '', '/');
             document.getElementById('logout-button').style.display = 'block';
             document.getElementById('chat-sidebar').style.display = 'block';
+
+            if (data.username) {
+                const loggedInUserElement = document.getElementById('logged-in-user');
+                if (loggedInUserElement) {
+                    loggedInUserElement.textContent = `Logged in as: ${data.username}`;
+                }
+            }
+
         } else if (page === 'signup') {
             history.pushState({}, '', '/login');
         }
