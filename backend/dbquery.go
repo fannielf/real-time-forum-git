@@ -369,7 +369,11 @@ func GetLastAction(user1, user2 int) (string, error) {
 		`, user1, user2, user2, user1).Scan(&chatID)
 
 	if err != nil {
-		return timestamp, err
+		if err == sql.ErrNoRows {
+			return timestamp, nil
+		} else {
+			return timestamp, err
+		}
 	}
 
 	err = db.QueryRow(

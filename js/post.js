@@ -1,32 +1,3 @@
-async function renderPostPage() {
-    const path = window.location.pathname;
-    const segments = path.split('/').filter(Boolean); // Remove empty segments
-
-    let postID;
-
-    if (segments[0] === 'post' && segments[1]) {
-        postID = segments[1];
-        // console.log("Post ID:", postID);
-    }
-try {
-    const response = await fetch(`/api/post/${postID}`, {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(data.message || "Unknown error");
-    }
-        renderPost(data);
-        
-    } catch (error) {
-        console.error("Error fetching post:", error);
-        showError(error.message);
-    };
-}
 
 function renderPost(post) {
     console.log(post)
@@ -94,11 +65,22 @@ function renderPost(post) {
       // Add event listeners for like and dislike buttons
     document.getElementById(`like-button-${post.post_id}`).addEventListener('click', async function(event) {
         event.preventDefault();
-        await handleVote(post.post_id, 'like', 0); //0 means this like is not for a comment
+        const voteData = {
+            vote: 'like',
+            post_id: post.post_id,
+            comment_id: 0 
+        };
+        await apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
     });
 
     document.getElementById(`dislike-button-${post.post_id}`).addEventListener('click', async function(event) {
         event.preventDefault();
+        const voteData = {
+            vote: 'dislike',
+            post_id: post.post_id,
+            comment_id: 0 
+        };
+        await apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
         await handleVote(post.post_id, 'dislike', 0);
     });
 }
@@ -112,54 +94,6 @@ async function handleComment() {
         // alert("Comment cannot be empty!");
         return;
     }
+    apiPOST(`/api/post/${postID}/comment`, 'post', { comment_content: commentContent })
 
-    try {    
-        const response = await fetch(`/api/post/${postID}/comment`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ comment_content: commentContent })
-        })
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to add comment");
-        } else {
-            loadPage();
-        }
-
-    } catch (error) {
-        showError(error.message);
-    };
-}
-
-async function handleVote(postID, voteType, commentID = 0) { 
-    const voteData = {
-        vote: voteType,
-        post_id: postID,
-        comment_id: commentID 
-    };
-
-    console.log("Vote data:", voteData);
-try {
-   const response = await fetch(`/api/post/${postID}/vote`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(voteData)
-    })
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(data.message || "Failed to add vote");
-    } else {
-        loadPage();
-    }
-
-    } catch(error) {
-        showError(error.message);
-
-    };
 }

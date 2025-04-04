@@ -24,35 +24,13 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         password: password
     };
 
-    try {
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(loginData)
-        });
-        const data = await response.json();
+    apiPOST('/api/login', 'login', loginData)
 
-        if (response.ok) {
-            // Send username to WebSocket server
-            if (socket === null) initializeSocket();
-            history.pushState({}, '', '/');
-            document.getElementById('logout-button').style.display = 'block';
-            document.getElementById('chat-sidebar').style.display = 'block';
-            init();
-        } else {
-            showError(data.message);
-            
-        }
-    } catch (error) {
-        showError(data.message);
-    }
 });
 
 // Handle the link to sign-up page
 document.getElementById('signup-link').addEventListener('click', (event) => {
     event.preventDefault();
     history.pushState({}, '', '/signup');
-    init();
+    loadPage();
 });

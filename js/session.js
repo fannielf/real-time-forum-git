@@ -1,4 +1,4 @@
-// Function to refresh session by sending a request every 5 minutes
+// Function to refresh session by sending a request every 10 minutes
 const refreshSession = async () => {
     try {
         const response = await fetch('/api/refresh-session', {
@@ -17,5 +17,5 @@ const refreshSession = async () => {
     }
 };
 
-// Refresh the session every 5 minutes
-setInterval(refreshSession, 5 * 60 * 1000);
+// Refresh the session every 10 minutes
+setInterval(refreshSession, 10 * 60 * 1000);

@@ -1,24 +1,24 @@
 
-async function renderPageNotFound() {
+// async function renderPageNotFound() {
 
-    try {
-        const response = await fetch('/api/error', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        const data = await response.json();
+//     try {
+//         const response = await fetch('/api/error', {
+//             method: 'GET',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//         })
+//         const data = await response.json();
     
-        if (!response.ok) {
-            throw new Error(data.message || "Unknown error");
-        }
+//         if (!response.ok) {
+//             throw new Error(data.message || "Unknown error");
+//         }
     
-        } catch(error) {
-            showError(error.message);
-        };
+//         } catch(error) {
+//             showError(error.message);
+//         };
 
-}
+// }
 
 
 function showError(errorMsg) {

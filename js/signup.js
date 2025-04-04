@@ -65,31 +65,32 @@ signupForm.addEventListener("submit", async function(event) {
         document.getElementById("confirm-password").classList.add('success'); // Add success class
     }
 
+    apiPOST('/api/signup', 'signup', formData)
     // sending the form data to the server
-    try {
-        const response = await fetch('/api/signup', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        });
-        data = await response.json();
+    // try {
+    //     const response = await fetch('/api/signup', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify(formData)
+    //     });
+    //     data = await response.json();
 
-        if (response.ok) {
-            history.pushState({}, '', '/login');
-            loadPage()
-        } else {
-            showError(data.message);
-        }
+    //     if (response.ok) {
+    //         history.pushState({}, '', '/login');
+    //         init()
+    //     } else {
+    //         showError(data.message);
+    //     }
 
-    } catch(error) {
-        console.error('Error signing up:', error);
-        showError(data.message);
-    };
+    // } catch(error) {
+    //     console.error('Error signing up:', error);
+    //     showError(data.message);
+    // };
 });
 
 // Handle the link to sign-up page
 document.getElementById('login-link').addEventListener('click', (event) => {
     event.preventDefault();
     history.pushState({}, '', '/login');
-    loadPage();
+    init();
 });

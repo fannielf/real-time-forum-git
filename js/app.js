@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Handle logout
 document.getElementById('logout-button').addEventListener('click', async () => {
     await LogoutUser();
-    loadPage();
+    init();
 });
 
 document.getElementById('home-button').addEventListener('click', function (){
@@ -19,9 +19,10 @@ window.addEventListener('popstate', () => {
 });
 
 let userID = null;
+let authenticated;
 
 async function init() {
-    const authenticated = await isAuthenticated();
+    authenticated = await isAuthenticated();
 
     if (!authenticated) {
         
@@ -46,26 +47,84 @@ function loadPage() {
 
     if (segments.length === 0) {
         page = 'feed'
-        renderFeedPage();
-    } else  if (segments[0] === 'post') {
+        apiGET('/api/feed', page)
+    } else  if (segments[0] === 'post' && segments.length == 2 && segments[1]) {
         page = 'post-details'
-        renderPostPage();
-    } else if (segments[0] === 'login') {
+        apiGET(`/api/post/${segments[1]}`, page)
+    } else if (segments[0] === 'login' && !authenticated) {
         page = 'login-page'
         renderLoginPage();
-    } else if (segments[0] === 'signup') {
+    } else if (segments[0] === 'signup' && !authenticated) {
         page = 'signup-page'
         renderSignupPage();
     } else if (segments[0] === 'create-post') {
         page = 'create-post'
         renderCreatePostPage();
     } else {
-        renderPageNotFound()
+        apiGET('/api/error', 'error')
         return
     }
 
     showPage(page)
 
+}
+
+async function apiGET(adress, page) {
+    try {
+    const response = await fetch(adress, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Unknown error");
+    }
+        if (page === 'feed') {
+        renderPosts(data);  // Pass posts to the render function
+        } else if (page === 'post-details') {
+            renderPost(data);
+        } else if (page === 'create-post') {
+            return data || [];
+        }
+
+    } catch(error) {
+        showError(error.message);
+    };
+}
+
+async function apiPOST(adress, page, postData) {
+    try {
+    const response = await fetch(adress, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+    })
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Unknown error");
+    }
+        if (page === 'create-post') {
+            history.pushState({}, '', '/');
+        } else if (page === 'login') {
+            if (socket === null) initializeSocket();
+            history.pushState({}, '', '/');
+            document.getElementById('logout-button').style.display = 'block';
+            document.getElementById('chat-sidebar').style.display = 'block';
+        } else if (page === 'signup') {
+            history.pushState({}, '', '/login');
+        }
+        init();
+
+    } catch(error) {
+        showError(error.message);
+    };
 }
 
 // Function to authenticate session

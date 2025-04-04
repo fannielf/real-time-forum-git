@@ -35,7 +35,7 @@ func sortUsers(userID int) []User {
 
 	allUsers, err := backend.GetUsers()
 	if err != nil {
-		log.Println("Error fetching active users:", err)
+		log.Println("Error fetching users:", err)
 		return nil
 	}
 	log.Println(allUsers)
@@ -51,7 +51,7 @@ func sortUsers(userID int) []User {
 		// // Check for interactions where the current user is involved (either as the user or as the other user)
 		interactionTime, err := backend.GetLastAction(userID, user_id)
 		if err != nil {
-			log.Println("Error fetching active users:", err)
+			log.Println("Error fetching latest activity:", err)
 			return nil
 		}
 		if interactionTime != "" {

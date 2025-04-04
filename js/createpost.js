@@ -1,26 +1,8 @@
-async function fetchCategories() {
-    try {
-        const response = await fetch('/api/create-post', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            errorMsg = data.message;
-            showError();
-            showPage('error')
-        }
-        return data || [];
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-        return [];
-    }
-}
 
 async function renderCreatePostPage() {
     console.log("Rendering create post page...");
 
-    const categories = await fetchCategories();
+    const categories = await apiGET('/api/create-post', 'create-post');
     console.log("Categories:", categories);
     
     document.getElementById("create-post-form").innerHTML = `
@@ -66,25 +48,13 @@ document.getElementById("create-post-form").addEventListener("submit", async (ev
     const selectedCategories = Array.from(document.querySelectorAll('.category-checkbox:checked'))
     .map(checkbox => checkbox.value);
 
-    try {
-        const response = await fetch('/api/create-post', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                post_title: title, 
-                post_content: content,
-                categories: selectedCategories
-            })
-        })
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message);
-        } 
-        console.log("Post created:", data);
-        history.pushState({}, '', '/');
-        loadPage();
-        } catch(error)  {
-            showError(error.message);
-        };
-}   );
+    const postData = {
+        post_title: title, 
+        post_content: content,
+        categories: selectedCategories
+    };
+
+    apiPOST('/api/create-post', 'create-post', postData)
+
+});
 

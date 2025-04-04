@@ -7,26 +7,6 @@ createPostBtn.addEventListener("click", (event) => {
     loadPage();
 });
 
-async function renderFeedPage() {
-    try {
-    const response = await fetch('/api/feed', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(data.message || "Unknown error");
-    }
-        renderPosts(data);  // Pass posts to the render function
-
-    } catch(error) {
-        showError(error.message);
-    };
-}
-
 // Function to render posts on the page
 function renderPosts(posts) {
     const feedContainer = document.getElementById('posts-list');
