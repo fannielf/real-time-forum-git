@@ -1,4 +1,3 @@
-// renderng login page dynamically
 function renderLoginPage() {
     const loginPage = document.getElementById('login-form');
     loginPage.innerHTML = '';

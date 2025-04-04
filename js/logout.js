@@ -6,7 +6,6 @@ async function LogoutUser() {
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include' 
         });
-        console.log('Response:', response);
 
         const data = await response.json();
 

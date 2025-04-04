@@ -1,9 +1,7 @@
 
 async function renderCreatePostPage() {
-    console.log("Rendering create post page...");
 
     const categories = await apiGET('/api/create-post', 'create-post');
-    console.log("Categories:", categories);
     
     document.getElementById("create-post-form").innerHTML = `
         <label for="title">Title:</label>
@@ -30,7 +28,6 @@ async function renderCreatePostPage() {
 }
 
 document.getElementById("create-post-form").addEventListener("submit", async (event) => {
-    console.log("Post form submitted!");
     event.preventDefault();
 
 

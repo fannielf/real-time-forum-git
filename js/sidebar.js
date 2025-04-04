@@ -12,12 +12,10 @@ function initializeSocket() {
             const message = JSON.parse(event.data);
 
             if (message.type === "update_users") {
-                console.log(message.users)
                 updateSidebar(message.users);
                 getCurrentChatPartner()
             
             } else if (message.type === "chat") {
-                console.log(message);
                 hideAllPages();
                 toggleEnvelope(message.chat_user, 'read')
                 if (message.history) {
@@ -104,7 +102,6 @@ function updateSidebar(users) {
                         username: userElement.querySelector('.chat-username').textContent,
                     }
                 };
-                console.log(data)
                 socket.send(JSON.stringify(data)); // Send as JSON string
             });
 
@@ -131,7 +128,6 @@ function getCurrentChatID() {
     chatWindow = document.getElementById('chat-window');
     if (chatWindow.style.display === 'block') {
         const chatID = parseInt(document.getElementById("chat-header").dataset.chatId, 10);
-        console.log(chatID)
         return chatID;
     }
     return null;
@@ -139,7 +135,6 @@ function getCurrentChatID() {
 
 function getCurrentChatPartner() {
     const chatID = getCurrentChatID()
-    console.log(chatID)
 
     if (chatID != null) {
         const data = {

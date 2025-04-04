@@ -28,8 +28,6 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		conn.Close()
 	}()
 
-	log.Println("New Websocket connection established")
-
 	clientsMutex.Lock()
 	// add user to clients
 	clients[conn] = userID

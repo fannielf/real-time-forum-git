@@ -169,7 +169,6 @@ func getUserCredentials(username string) (int, string, error) {
 func GetUsers() (map[int]string, error) {
 	var users = make(map[int]string)
 
-	log.Println("Getting all users")
 	rows, err := db.Query("SELECT id, username FROM User WHERE id != 1")
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -199,7 +198,6 @@ func GetActiveUsers() (map[int]string, error) {
 	var activeSessions []int
 	var activeUsers = make(map[int]string)
 
-	log.Println("Getting active users")
 	rows, err := db.Query("SELECT user_id FROM Session WHERE status = 'active'")
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -314,7 +312,7 @@ func GetHistory(chatID int, history *[]map[string]interface{}) error {
 		}
 		username, err := GetUsername(sender)
 		if err != nil {
-			log.Println("Couldn't fetch username for id: ", sender)
+			log.Println("Error fetching username for id: ", sender)
 			return err
 		}
 		message := map[string]interface{}{
@@ -360,7 +358,7 @@ func GetMessage(message_id int) ([]string, error) {
 
 	username, err := GetUsername(senderID)
 	if err != nil {
-		log.Println("Couldn't fetch username for id: ", senderID)
+		log.Println("Error fetching username for id: ", senderID)
 		return message, err
 	}
 

@@ -31,7 +31,7 @@ func broadcastUsers() {
 }
 
 func sendChatPartner(conn *websocket.Conn, msg Message, userID int) {
-	log.Println(msg.ChatID)
+
 	participants, err := backend.GetParticipants(msg.ChatID)
 	if err != nil {
 		log.Println("Issue getting participant", err)
@@ -80,11 +80,10 @@ func sortUsers(userID int) []User {
 		log.Println("Error fetching users:", err)
 		return nil
 	}
-	log.Println(allUsers)
 
 	// Iterate through all active clients (users)
 	for user_id, username := range allUsers {
-		log.Println(username)
+
 		// Skip the current user
 		if user_id == userID {
 			continue
@@ -97,7 +96,6 @@ func sortUsers(userID int) []User {
 			return nil
 		}
 		if interactionTime != "" {
-			log.Println("existing communication: ", username)
 
 			// If we have a timestamp, add the user to the sorted list
 			sortedUsers = append(sortedUsers, UserInteraction{
@@ -168,7 +166,7 @@ func sortUsers(userID int) []User {
 		// Set the user's online status
 		finalSortedUsers[i].Online = online
 	}
-	log.Println(finalSortedUsers)
+
 	return finalSortedUsers
 }
 

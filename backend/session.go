@@ -14,7 +14,7 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusUnauthorized
 	message := "No current sessions"
 	loggedIn, userID := VerifySession(r)
-	log.Println("Logged in:", userID)
+
 	if loggedIn {
 		refreshLastAccess(userID)
 		status = http.StatusOK
