@@ -56,35 +56,35 @@ function renderPost(post) {
     `;
 
     //add event listener to the comment form
-     document.getElementById('comment-form').addEventListener('submit', async function(event) {
+     document.getElementById('comment-form').addEventListener('submit', function(event) {
         event.preventDefault();
-        await handleComment();
+        handleComment();
     });
 
       // Add event listeners for like and dislike buttons
-    document.getElementById(`like-button-${post.post_id}`).addEventListener('click', async function(event) {
+    document.getElementById(`like-button-${post.post_id}`).addEventListener('click', function(event) {
         event.preventDefault();
         const voteData = {
             vote: 'like',
             post_id: post.post_id,
             comment_id: 0 
         };
-        await apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
+        apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
     });
 
-    document.getElementById(`dislike-button-${post.post_id}`).addEventListener('click', async function(event) {
+    document.getElementById(`dislike-button-${post.post_id}`).addEventListener('click', function(event) {
         event.preventDefault();
         const voteData = {
             vote: 'dislike',
             post_id: post.post_id,
             comment_id: 0 
         };
-        await apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
-        await handleVote(post.post_id, 'dislike', 0);
+        apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
+        handleVote(post.post_id, 'dislike', 0);
     });
 }
 
-async function handleComment() {
+function handleComment() {
     const commentTextarea = document.getElementById('comment');
     const commentContent = commentTextarea.value.trim();
     const postID = document.getElementById('comment-form').dataset.postId;

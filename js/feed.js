@@ -52,7 +52,7 @@ function renderPosts(posts) {
 }
 
  // Handle navigation events (e.g., clicking on links or buttons)
- document.addEventListener("click", async (event) => {
+ document.addEventListener("click", (event) => {
     const postLink = event.target.closest(".post-title a");
     if (!postLink) return;
 

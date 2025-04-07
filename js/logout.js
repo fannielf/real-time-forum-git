@@ -19,6 +19,7 @@ async function LogoutUser() {
         document.getElementById('chat-sidebar').style.display = 'none';
         history.pushState({}, '', '/login');
         }
+        init();
     } catch (error) {
         showError(data.message);
     }

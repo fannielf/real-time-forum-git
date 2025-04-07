@@ -1,10 +1,10 @@
-document.addEventListener('DOMContentLoaded', async function() {
-    await init();
+document.addEventListener('DOMContentLoaded', function() {
+    init();
 });
 
 // Handle logout
-document.getElementById('logout-button').addEventListener('click', async () => {
-    await LogoutUser();
+document.getElementById('logout-button').addEventListener('click', () => {
+    LogoutUser();
 
     const loggedInUserElement = document.getElementById('logged-in-user');
     if (loggedInUserElement) {
@@ -113,42 +113,42 @@ async function apiGET(adress, page) {
 
 async function apiPOST(adress, page, postData) {
     try {
-    const response = await fetch(adress, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-    })
+        const response = await fetch(adress, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData),
+        })
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!response.ok) {
-        throw new Error(data.message || "Unknown error");
-    }
-    
-    if (page === 'create-post') {
-        history.pushState({}, '', '/');
-    } else if (page === 'login') {
-        if (socket === null) initializeSocket();
-        history.pushState({}, '', '/');
-        document.getElementById('logout-button').style.display = 'block';
-        document.getElementById('chat-sidebar').style.display = 'block';
-
-        if (data.username) {
-            console.log(data.username)
-            localStorage.setItem('username', data.username);
-            const loggedInUserElement = document.getElementById('logged-in-user');
-            if (loggedInUserElement) {
-                loggedInUserElement.textContent = `Logged in as: ${data.username}`;
-            }
+        if (!response.ok) {
+            throw new Error(data.message || "Unknown error");
         }
+        
+        if (page === 'create-post') {
+            history.pushState({}, '', '/');
+        } else if (page === 'login') {
+            if (socket === null) initializeSocket();
+            history.pushState({}, '', '/');
+            document.getElementById('logout-button').style.display = 'block';
+            document.getElementById('chat-sidebar').style.display = 'block';
 
-        document.getElementById('login-error').style.display = 'none';
-    } else if (page === 'signup') {
-        history.pushState({}, '', '/login');
-    }
-    init();
+            if (data.username) {
+                console.log(data.username)
+                localStorage.setItem('username', data.username);
+                const loggedInUserElement = document.getElementById('logged-in-user');
+                if (loggedInUserElement) {
+                    loggedInUserElement.textContent = `Logged in as: ${data.username}`;
+                }
+            }
+
+            document.getElementById('login-error').style.display = 'none';
+        } else if (page === 'signup') {
+            history.pushState({}, '', '/login');
+        }
+        loadPage();
 
     } catch(error) {
         const validationErrors = {

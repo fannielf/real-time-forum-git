@@ -27,7 +27,7 @@ async function renderCreatePostPage() {
 `;
 }
 
-document.getElementById("create-post-form").addEventListener("submit", async (event) => {
+document.getElementById("create-post-form").addEventListener("submit", (event) => {
     event.preventDefault();
 
 

@@ -11,7 +11,7 @@ function renderLoginPage() {
             <button type="submit">Login</button>
     `;
 
-        document.getElementById('login-form').addEventListener('submit', async (event) => {
+        document.getElementById('login-form').addEventListener('submit', (event) => {
             event.preventDefault();
 
 
