@@ -32,7 +32,6 @@ function renderSignupPage() {
         <p id="password-error" style="color: red; display: none;">Passwords don't match</p>
         <button type="submit">Sign Up</button>
     `;
-}
 
 const signupForm = document.getElementById("signup-page");
 const passwordError = document.getElementById("password-error"); 
@@ -58,7 +57,7 @@ signupForm.addEventListener("submit", async function(event) {
         document.getElementById("confirm-password").classList.remove('success'); // Remove success class if exists
         return;  
     } else {
-        // passwordError.style.display = 'none'; // Hide the error message
+        passwordError.style.display = 'none'; // Hide the error message
         document.getElementById("confirm-password").classList.remove('error');
         document.getElementById("confirm-password").classList.add('success'); // Add success class
     }
@@ -66,6 +65,7 @@ signupForm.addEventListener("submit", async function(event) {
     apiPOST('/api/signup', 'signup', formData)
 
 });
+}
 
 // Handle the link to sign-up page
 document.getElementById('login-link').addEventListener('click', (event) => {

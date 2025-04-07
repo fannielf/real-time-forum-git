@@ -39,6 +39,16 @@ async function init() {
         }
         userID = null;
         if (socket !== null) socket.close(); socket = null;
+
+    } else {
+        //recover username from local storage
+        const username = localStorage.getItem('username');
+        if (username) {
+            const loggedInUserElement = document.getElementById('logged-in-user');
+            if (loggedInUserElement) {
+                loggedInUserElement.textContent = `Logged in as: ${username}`;
+            }
+        }
     };
     loadPage();
 
@@ -125,6 +135,8 @@ async function apiPOST(adress, page, postData) {
             document.getElementById('chat-sidebar').style.display = 'block';
 
             if (data.username) {
+                console.log(data.username)
+                localStorage.setItem('username', data.username);
                 const loggedInUserElement = document.getElementById('logged-in-user');
                 if (loggedInUserElement) {
                     loggedInUserElement.textContent = `Logged in as: ${data.username}`;
