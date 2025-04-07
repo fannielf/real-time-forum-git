@@ -30,6 +30,7 @@ function renderSignupPage() {
         <label for="confirm-password">Re-enter Password</label>
         <input type="password" id="confirm-password" name="confirm-password" placeholder="Re-enter your password" required>
         <p id="password-error" style="color: red; display: none;">Passwords don't match</p>
+        <p id="signup-error" style="color: red; display: none;"></p>
         <button type="submit">Sign Up</button>
     `;
 
@@ -57,7 +58,7 @@ signupForm.addEventListener("submit", async function(event) {
         document.getElementById("confirm-password").classList.remove('success'); // Remove success class if exists
         return;  
     } else {
-        passwordError.style.display = 'none'; // Hide the error message
+        // passwordError.style.display = 'none'; // Hide the error message
         document.getElementById("confirm-password").classList.remove('error');
         document.getElementById("confirm-password").classList.add('success'); // Add success class
     }

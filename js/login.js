@@ -7,6 +7,7 @@ function renderLoginPage() {
             <input type="text" id="username-login" name="username" placeholder="Enter your username or e-mail" required>
             <label for="password-login">Password</label>
             <input type="password" id="password-login" name="password" placeholder="Enter your password" required>
+            <p id="login-error" style="color: red; display: none;"></p>
             <button type="submit">Login</button>
     `;
 }
