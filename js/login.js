@@ -10,7 +10,6 @@ function renderLoginPage() {
             <p id="login-error" style="color: red; display: none;"></p>
             <button type="submit">Login</button>
     `;
-}
 
 document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -27,6 +26,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     apiPOST('/api/login', 'login', loginData)
 
 });
+}
 
 // Handle the link to sign-up page
 document.getElementById('signup-link').addEventListener('click', (event) => {
