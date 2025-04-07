@@ -143,13 +143,35 @@ async function apiPOST(adress, page, postData) {
                 }
             }
 
+            document.getElementById('login-error').style.display = 'none';
         } else if (page === 'signup') {
             history.pushState({}, '', '/login');
         }
         init();
 
     } catch(error) {
-        showError(error.message);
+        const validationErrors = {
+            'Invalid username': true,
+            'Invalid password': true,
+            'Invalid username: must be 3-20 characters, letters, numbers, or _': true,
+            'Invalid email address': true,
+            'Password cannot be empty': true,
+            'Username is already taken': true,
+            'Email is already registered to existing user' : true,
+        };
+        const validation = validationErrors[error.message]
+
+        if (page === 'login' && validation) {
+            const errorBox = document.getElementById('login-error')
+            errorBox.textContent = error.message;
+            errorBox.style.display = 'block';
+        } else if (page === 'signup' && validation) {
+            const errorBox = document.getElementById('signup-error')
+            errorBox.textContent = error.message;
+            errorBox.style.display = 'block';
+        } else {
+            showError(error.message);
+        }
     };
 }
 

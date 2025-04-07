@@ -11,26 +11,28 @@ function renderLoginPage() {
             <button type="submit">Login</button>
     `;
 
-document.getElementById('login-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
+        document.getElementById('login-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
 
 
-    const username = document.getElementById('username-login').value;
-    const password = document.getElementById('password-login').value;
+            const username = document.getElementById('username-login').value;
+            const password = document.getElementById('password-login').value;
 
-    const loginData = {
-        username: username,
-        password: password
-    };
+            const loginData = {
+                username: username,
+                password: password
+            };
 
-    apiPOST('/api/login', 'login', loginData)
+            apiPOST('/api/login', 'login', loginData)
 
 });
+
+
+    // Handle the link to sign-up page
+    document.getElementById('signup-link').addEventListener('click', (event) => {
+        event.preventDefault();
+        history.pushState({}, '', '/signup');
+        loadPage();
+    });
+
 }
-
-// Handle the link to sign-up page
-document.getElementById('signup-link').addEventListener('click', (event) => {
-    event.preventDefault();
-    history.pushState({}, '', '/signup');
-    loadPage();
-});

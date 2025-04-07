@@ -19,6 +19,7 @@ function renderChatPage(username, chatID) {
     <div id="loading-indicator">Loading older messages...</div>
         <div id="messages"></div>
     </div>
+    <div id="typing-indicator" style="display: none;"></div>
     <div id="input-container">
         <textarea id="message-input" placeholder="Type a message..." maxlength="200" disabled></textarea>
         <button id="send-button" class="send-btn" disabled>Send</button>
@@ -36,13 +37,27 @@ function renderChatPage(username, chatID) {
         init();
     });
     
-    document.getElementById('messages').addEventListener('scroll', () => {
+    messageDiv.addEventListener('scroll', () => {
         // Check if the user has scrolled to the top
         if (document.getElementById('messages').scrollTop === 0 && displayedMessages.length !== allMessages.length) {
             toggleLoadingIndicator('show');
             setTimeout(loadMoreMessages, 1000);
         }
     });
+
+    const input = document.getElementById('message-input');
+
+    let typingTimeout;
+
+    input.addEventListener('input', () => {
+    socket.send(JSON.stringify({ type: 'typingBE', chat_id: chatID }));
+
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        socket.send(JSON.stringify({ type: 'stopTypingBE', chat_id: chatID }));
+    }, 1000); // stops typing after 1 second of no input
+    });
+
 }
 
 function userStatus(username, online) {
@@ -88,6 +103,7 @@ function handleSendClick() {
 }
 
 function sendMessage(chatID) {
+
     const messageInput = document.getElementById('message-input');
     const text = messageInput.value.trim();
     if (!text) {
@@ -172,5 +188,18 @@ function toggleLoadingIndicator(status = 'hide') {
         loadingIndicator.style.display = 'block';
     } else {
         loadingIndicator.style.display = 'none';
+    }
+}
+
+function updateTypingStatus(message) {
+    if (message.chat_id === getCurrentChatID()) {
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (message.type === "typing") {
+            typingIndicator.style.display = 'block';
+            typingIndicator.textContent = `${message.chat_user  .username} is typing...`;
+        } else {
+            typingIndicator.style.display = 'none';
+            typingIndicator.textContent = '';
+        }
     }
 }

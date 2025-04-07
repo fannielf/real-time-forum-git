@@ -33,6 +33,8 @@ function initializeSocket() {
                 }
             } else if (message.type === "user") {
                 userStatus(message.chat_user.username, message.chat_user.online);
+            } else if (message.type === "typing" || message.type === "stop_typing") {
+                updateTypingStatus(message);
             }
         } catch (error) {
             console.log("error with websocket data")

@@ -45,45 +45,46 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request) {
 	} else if signUpData.Password == "" {
 		status = http.StatusBadRequest
 		message = "Password cannot be empty"
+	} else {
+		uniqueUsername, uniqueEmail, err := isUsernameOrEmailUnique(signUpData.Username, signUpData.Email)
+		if err != nil {
+			log.Println("Error checking if username is unique:", err)
+			ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+			return
+		}
+		if !uniqueUsername {
+			status = http.StatusConflict
+			message = "Username is already taken"
+		} else if !uniqueEmail {
+			status = http.StatusConflict
+			message = "Email is already registered to existing user"
+		}
 	}
 
-	uniqueUsername, uniqueEmail, err := isUsernameOrEmailUnique(signUpData.Username, signUpData.Email)
-	if err != nil {
-		log.Println("Error checking if username is unique:", err)
-		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
-		return
-	}
-	if !uniqueUsername {
-		status = http.StatusConflict
-		message = "Username is already taken"
-	}
-	if !uniqueEmail {
-		status = http.StatusConflict
-		message = "Email is already registered to existing user"
-	}
+	if message == "Login successful" && status == http.StatusCreated {
+		// Hash the password
+		hashedPassword, err := hashPassword(signUpData.Password)
+		if err != nil {
+			log.Println("Error hashing password:", err)
+			ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+			return
+		}
 
-	// Hash the password
-	hashedPassword, err := hashPassword(signUpData.Password)
-	if err != nil {
-		log.Println("Error hashing password:", err)
-		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
-		return
-	}
-
-	// Insert user into database
-	err = insertUserIntoDB(
-		signUpData.Username,
-		signUpData.Age,
-		signUpData.Gender,
-		signUpData.FirstName,
-		signUpData.LastName,
-		signUpData.Email,
-		hashedPassword,
-	)
-	if err != nil {
-		log.Println("Error inserting user into database:", err)
-		ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
-		return
+		// Insert user into database
+		err = insertUserIntoDB(
+			signUpData.Username,
+			signUpData.Age,
+			signUpData.Gender,
+			signUpData.FirstName,
+			signUpData.LastName,
+			signUpData.Email,
+			hashedPassword,
+		)
+		if err != nil {
+			log.Println("Error inserting user into database:", err)
+			ResponseHandler(w, http.StatusInternalServerError, "Internal Server Error")
+			return
+		}
 	}
 
 	ResponseHandler(w, status, message)
@@ -98,7 +99,11 @@ func hashPassword(password string) (string, error) {
 // isValidEmail checks if the email address is valid
 func isValidEmail(email string) bool {
 	_, err := mail.ParseAddress(email)
-	return err == nil
+	if err != nil {
+		return false
+	}
+	regex := regexp.MustCompile(`^[^@]+@[^@]+\.[^@]+$`)
+	return regex.MatchString(email)
 }
 
 // IsValidUsername checks if the username is valid

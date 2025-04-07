@@ -725,22 +725,24 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     display: flex;
 }
 
-.my-message {
-    background-color: #a5c5b3;
-    color: black;
+.my-message,
+.other-message {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     padding: 8px;
     margin: 5px;
     border-radius: 5px;
     max-width: 60%;
+}
+
+.my-message {
+    background-color: #a5c5b3;
+    color: black;
     align-self: flex-end;
 }
 
 .other-message {
     background-color: #ddd;
-    padding: 8px;
-    margin: 5px;
-    border-radius: 5px;
-    max-width: 60%;
     align-self: flex-start;
 }
 

@@ -57,11 +57,11 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			continue // Handle the error appropriately
 		}
 
-		if msg.Type == "chatBE" {
+		switch msg.Type {
+		case "chatBE":
 			HandleChatHistory(conn, userID, msg)
 
-		} else if msg.Type == "messageBE" {
-
+		case "messageBE":
 			messageID := AddChatToDB(userID, msg)
 			if messageID != 0 {
 				latestMessage, err := backend.GetMessage(messageID)
@@ -71,7 +71,16 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 				}
 				chatID, _ := strconv.Atoi(latestMessage[0])
 				senderID, _ := strconv.Atoi(latestMessage[1])
-
+				response := Message{
+					Type:   "stopTypingBE",
+					ChatID: chatID,
+					ChatUser: User{
+						ID:       senderID,
+						Username: latestMessage[2],
+						Online:   true,
+					},
+				}
+				sendTypingStatus(response, userID)
 				message := Message{
 					Type:   "message",
 					ChatID: chatID,
@@ -84,8 +93,10 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 				}
 				broadcast <- message
 			}
-		} else if msg.Type == "userBE" {
+		case "userBE":
 			sendChatPartner(conn, msg, userID)
+		case "typingBE", "stopTypingBE":
+			sendTypingStatus(msg, userID)
 		}
 		msg = Message{}
 		messagesMutex.Unlock()
