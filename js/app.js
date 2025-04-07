@@ -136,7 +136,6 @@ async function apiPOST(adress, page, postData) {
             document.getElementById('chat-sidebar').style.display = 'block';
 
             if (data.username) {
-                console.log(data.username)
                 localStorage.setItem('username', data.username);
                 const loggedInUserElement = document.getElementById('logged-in-user');
                 if (loggedInUserElement) {
