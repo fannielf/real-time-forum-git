@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
-    init();
+document.addEventListener('DOMContentLoaded', async function() {
+    await init();
 });
 
 // Handle logout
@@ -126,28 +126,29 @@ async function apiPOST(adress, page, postData) {
     if (!response.ok) {
         throw new Error(data.message || "Unknown error");
     }
-        if (page === 'create-post') {
-            history.pushState({}, '', '/');
-        } else if (page === 'login') {
-            if (socket === null) initializeSocket();
-            history.pushState({}, '', '/');
-            document.getElementById('logout-button').style.display = 'block';
-            document.getElementById('chat-sidebar').style.display = 'block';
+    
+    if (page === 'create-post') {
+        history.pushState({}, '', '/');
+    } else if (page === 'login') {
+        if (socket === null) initializeSocket();
+        history.pushState({}, '', '/');
+        document.getElementById('logout-button').style.display = 'block';
+        document.getElementById('chat-sidebar').style.display = 'block';
 
-            if (data.username) {
-                console.log(data.username)
-                localStorage.setItem('username', data.username);
-                const loggedInUserElement = document.getElementById('logged-in-user');
-                if (loggedInUserElement) {
-                    loggedInUserElement.textContent = `Logged in as: ${data.username}`;
-                }
+        if (data.username) {
+            console.log(data.username)
+            localStorage.setItem('username', data.username);
+            const loggedInUserElement = document.getElementById('logged-in-user');
+            if (loggedInUserElement) {
+                loggedInUserElement.textContent = `Logged in as: ${data.username}`;
             }
-
-            document.getElementById('login-error').style.display = 'none';
-        } else if (page === 'signup') {
-            history.pushState({}, '', '/login');
         }
-        init();
+
+        document.getElementById('login-error').style.display = 'none';
+    } else if (page === 'signup') {
+        history.pushState({}, '', '/login');
+    }
+    init();
 
     } catch(error) {
         const validationErrors = {

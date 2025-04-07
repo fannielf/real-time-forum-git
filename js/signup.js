@@ -65,10 +65,12 @@ signupForm.addEventListener("submit", async function(event) {
         document.getElementById("confirm-password").classList.add('success'); // Add success class
     }
 
-    apiPOST('/api/signup', 'signup', formData)
+    console.log(formData)
+
+    await apiPOST('/api/signup', 'signup', formData)
 
 });
-}
+
 
 // Handle the link to sign-up page
 document.getElementById('login-link').addEventListener('click', (event) => {
@@ -76,3 +78,4 @@ document.getElementById('login-link').addEventListener('click', (event) => {
     history.pushState({}, '', '/login');
     init();
 });
+}
