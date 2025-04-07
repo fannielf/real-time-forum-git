@@ -151,7 +151,7 @@ async function apiPOST(adress, page, postData) {
 
     } catch(error) {
         const validationErrors = {
-            'Invalid username': true,
+            'Invalid username or email': true,
             'Invalid password': true,
             'Invalid username: must be 3-20 characters, letters, numbers, or _': true,
             'Invalid email address': true,

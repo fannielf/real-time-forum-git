@@ -35,6 +35,8 @@ function renderSignupPage() {
         <p id="signup-error" style="color: red; display: none;"></p>
         <button type="submit">Sign Up</button>
     `;
+    
+
 
 const signupForm = document.getElementById("signup-page");
 const passwordError = document.getElementById("password-error"); 

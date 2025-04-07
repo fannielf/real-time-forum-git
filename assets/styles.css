@@ -163,8 +163,7 @@ main #login-page {
 main #signup-page {
     display: flex;
     flex-direction:row;
-    width: 400px;
-    margin: 20vh auto;
+    width: 50vh;
     margin-top: 14vh;
     margin-left: 25vw;
     padding: 1rem;
