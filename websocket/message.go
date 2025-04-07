@@ -14,7 +14,7 @@ func BroadcastMessages() {
 			log.Println(err)
 			return
 		}
-
+		clientsMutex.Lock()
 		for client, id := range clients {
 			for _, user := range participants {
 				if user == id {
@@ -27,6 +27,7 @@ func BroadcastMessages() {
 				}
 			}
 		}
+		clientsMutex.Unlock()
 		broadcastUsers()
 	}
 }

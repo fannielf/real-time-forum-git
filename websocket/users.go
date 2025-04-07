@@ -61,7 +61,7 @@ func sendChatPartner(conn *websocket.Conn, msg Message, userID int) {
 
 	message := Message{
 		Type:     "user",
-		ChatUser: chatPartner, // Send the active users list
+		ChatUser: chatPartner,
 	}
 
 	err = conn.WriteJSON(message)
@@ -81,7 +81,7 @@ func sortUsers(userID int) []User {
 		return nil
 	}
 
-	// Iterate through all active clients (users)
+	// Iterate through all clients (users)
 	for user_id, username := range allUsers {
 
 		// Skip the current user
