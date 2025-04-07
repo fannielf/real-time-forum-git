@@ -90,7 +90,6 @@ function handleComment() {
     const postID = document.getElementById('comment-form').dataset.postId;
 
     if (!commentContent) {
-        // alert("Comment cannot be empty!");
         return;
     }
     apiPOST(`/api/post/${postID}/comment`, 'post', { comment_content: commentContent })

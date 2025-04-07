@@ -7,7 +7,7 @@ async function renderCreatePostPage() {
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" required maxlength="50">
         <label for="content">Content:</label>
-        <textarea class="content-textarea" id="content" name="content" required></textarea>
+        <textarea class="content-textarea" id="content" name="content" required maxlength="500"></textarea>
         </label>
 
           <label>Categories:</label>
@@ -34,7 +34,7 @@ document.getElementById("create-post-form").addEventListener("submit", (event) =
     const title = document.getElementById("title").value.trim();
     const content = document.getElementById("content").value.trim();
     const errorMessage = document.getElementById("error-message");
-
+    
     if (title === "" || content === "") {
         errorMessage.textContent = "Please add some content to your post!";
         errorMessage.style.display = "block";
