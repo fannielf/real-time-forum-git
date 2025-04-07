@@ -55,14 +55,13 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request) {
 		if !uniqueUsername {
 			status = http.StatusConflict
 			message = "Username is already taken"
-		}
-		if !uniqueEmail {
+		} else if !uniqueEmail {
 			status = http.StatusConflict
 			message = "Email is already registered to existing user"
 		}
 	}
 
-	if message == "Login successful" && status == http.StatusOK {
+	if message == "Login successful" && status == http.StatusCreated {
 		// Hash the password
 		hashedPassword, err := hashPassword(signUpData.Password)
 		if err != nil {
@@ -100,7 +99,11 @@ func hashPassword(password string) (string, error) {
 // isValidEmail checks if the email address is valid
 func isValidEmail(email string) bool {
 	_, err := mail.ParseAddress(email)
-	return err == nil
+	if err != nil {
+		return false
+	}
+	regex := regexp.MustCompile(`^[^@]+@[^@]+\.[^@]+$`)
+	return regex.MatchString(email)
 }
 
 // IsValidUsername checks if the username is valid

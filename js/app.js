@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // Handle logout
 document.getElementById('logout-button').addEventListener('click', async () => {
     await LogoutUser();
+
+    const loggedInUserElement = document.getElementById('logged-in-user');
+    if (loggedInUserElement) {
+        loggedInUserElement.textContent = ''; // remove the username
+    }
+
     init();
 });
 
@@ -33,6 +39,16 @@ async function init() {
         }
         userID = null;
         if (socket !== null) socket.close(); socket = null;
+
+    } else {
+        //recover username from local storage
+        const username = localStorage.getItem('username');
+        if (username) {
+            const loggedInUserElement = document.getElementById('logged-in-user');
+            if (loggedInUserElement) {
+                loggedInUserElement.textContent = `Logged in as: ${username}`;
+            }
+        }
     };
     loadPage();
 
@@ -117,6 +133,16 @@ async function apiPOST(adress, page, postData) {
             history.pushState({}, '', '/');
             document.getElementById('logout-button').style.display = 'block';
             document.getElementById('chat-sidebar').style.display = 'block';
+
+            if (data.username) {
+                console.log(data.username)
+                localStorage.setItem('username', data.username);
+                const loggedInUserElement = document.getElementById('logged-in-user');
+                if (loggedInUserElement) {
+                    loggedInUserElement.textContent = `Logged in as: ${data.username}`;
+                }
+            }
+
             document.getElementById('login-error').style.display = 'none';
         } else if (page === 'signup') {
             history.pushState({}, '', '/login');
@@ -135,16 +161,14 @@ async function apiPOST(adress, page, postData) {
         };
         const validation = validationErrors[error.message]
 
-        if (page === login && validation) {
-            let error = document.getElementById('login-error')
-            error.textContent = error.message;
-            error.style.display = 'block';
-            //loadPage();
-        } else if (page === signup && validation) {
-            let error = document.getElementById('signup-error')
-            error.textContent = error.message;
-            error.style.display = 'block';
-            //loadPage();
+        if (page === 'login' && validation) {
+            const errorBox = document.getElementById('login-error')
+            errorBox.textContent = error.message;
+            errorBox.style.display = 'block';
+        } else if (page === 'signup' && validation) {
+            const errorBox = document.getElementById('signup-error')
+            errorBox.textContent = error.message;
+            errorBox.style.display = 'block';
         } else {
             showError(error.message);
         }

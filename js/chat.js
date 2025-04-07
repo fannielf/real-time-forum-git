@@ -21,7 +21,7 @@ function renderChatPage(username, chatID) {
     </div>
     <div id="typing-indicator" style="display: none;"></div>
     <div id="input-container">
-        <textarea id="message-input" placeholder="Type a message..." disabled></textarea>
+        <textarea id="message-input" placeholder="Type a message..." maxlength="200" disabled></textarea>
         <button id="send-button" class="send-btn" disabled>Send</button>
         </div>
     </div>
@@ -167,7 +167,12 @@ function addMessage(message, type = 'new') {
     } else {
         messageElement.classList.add('other-message');
     }
-    messageElement.textContent = `${message.created_at} - ${message.sender.username}: ${message.content}`;
+    
+    messageElement.innerHTML = `
+    <div class="message-meta">${message.sender.username} • ${message.created_at}</div> 
+    <div class="message-text">${message.content}</div>
+    `;
+    
     if (type === 'new') {
         messagesDiv.appendChild(messageElement);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;

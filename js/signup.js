@@ -32,9 +32,9 @@ function renderSignupPage() {
         <label for="confirm-password">Re-enter Password</label>
         <input type="password" id="confirm-password" name="confirm-password" placeholder="Re-enter your password" required>
         <p id="password-error" style="color: red; display: none;">Passwords don't match</p>
+        <p id="signup-error" style="color: red; display: none;"></p>
         <button type="submit">Sign Up</button>
     `;
-}
 
 const signupForm = document.getElementById("signup-page");
 const passwordError = document.getElementById("password-error"); 
@@ -68,6 +68,7 @@ signupForm.addEventListener("submit", async function(event) {
     apiPOST('/api/signup', 'signup', formData)
 
 });
+}
 
 // Handle the link to sign-up page
 document.getElementById('login-link').addEventListener('click', (event) => {
