@@ -37,7 +37,7 @@ func HandleLoginPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Invalid username")
 		status = http.StatusUnauthorized
-		message = "Invalid username"
+		message = "Invalid username or email"
 	} else {
 		err := verifyPassword(hashedPassword, loginData.Password)
 		if err != nil {

@@ -68,11 +68,8 @@ signupForm.addEventListener("submit", function(event) {
         document.getElementById("confirm-password").classList.add('success'); // Add success class
     }
 
-    console.log(formData)
-
-    apiPOST('/api/signup', 'signup', formData)
-    signupFormListenerAdded = true;
-
+    apiPOST('/api/signup', 'signup', formData) 
+    signupFormListenerAdded = true; 
 });
 }
 
