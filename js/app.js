@@ -117,13 +117,37 @@ async function apiPOST(adress, page, postData) {
             history.pushState({}, '', '/');
             document.getElementById('logout-button').style.display = 'block';
             document.getElementById('chat-sidebar').style.display = 'block';
+            document.getElementById('login-error').style.display = 'none';
         } else if (page === 'signup') {
             history.pushState({}, '', '/login');
         }
         init();
 
     } catch(error) {
-        showError(error.message);
+        const validationErrors = {
+            'Invalid username': true,
+            'Invalid password': true,
+            'Invalid username: must be 3-20 characters, letters, numbers, or _': true,
+            'Invalid email address': true,
+            'Password cannot be empty': true,
+            'Username is already taken': true,
+            'Email is already registered to existing user' : true,
+        };
+        const validation = validationErrors[error.message]
+
+        if (page === login && validation) {
+            let error = document.getElementById('login-error')
+            error.textContent = error.message;
+            error.style.display = 'block';
+            //loadPage();
+        } else if (page === signup && validation) {
+            let error = document.getElementById('signup-error')
+            error.textContent = error.message;
+            error.style.display = 'block';
+            //loadPage();
+        } else {
+            showError(error.message);
+        }
     };
 }
 
