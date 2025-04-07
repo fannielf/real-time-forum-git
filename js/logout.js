@@ -21,7 +21,7 @@ async function LogoutUser() {
         document.getElementById('logged-in-user').textContent = '';
         history.pushState({}, '', '/login');
         }
-        init();
+        return
     } catch (error) {
         showError(data.message);
     }

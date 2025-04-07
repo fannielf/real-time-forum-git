@@ -21,6 +21,9 @@ function initializeSocket() {
                 if (message.history) {
                 allMessages = message.history; // Store all messages
                 displayedMessages = allMessages.slice(0,10);
+                } else {
+                    allMessages = [];
+                    displayedMessages = [];
                 }
                 renderChatPage(message.chat_user.username, message.chat_id);
                 userStatus(message.chat_user.username, message.chat_user.online);
@@ -37,7 +40,7 @@ function initializeSocket() {
                 updateTypingStatus(message);
             }
         } catch (error) {
-            console.log("error with websocket data")
+            console.log("error with websocket dat: ", error)
             init();
         }
     });

@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Handle logout
-document.getElementById('logout-button').addEventListener('click', () => {
-    LogoutUser();
+document.getElementById('logout-button').addEventListener('click', async () => {
+    await LogoutUser();
 
     const loggedInUserElement = document.getElementById('logged-in-user');
     if (loggedInUserElement) {

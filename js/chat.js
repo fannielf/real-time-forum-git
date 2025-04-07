@@ -26,9 +26,9 @@ function renderChatPage(username, chatID) {
         </div>
     </div>
 `;
-
-    displayMessages(displayedMessages, 'new');
-
+    if (displayedMessages.length > 0) {
+        displayMessages(displayedMessages, 'new');
+    }
     const messageDiv = document.getElementById('messages');
     messageDiv.scrollTop = messageDiv.scrollHeight; // Scroll to the bottom
 
@@ -50,12 +50,12 @@ function renderChatPage(username, chatID) {
     let typingTimeout;
 
     input.addEventListener('input', () => {
-    socket.send(JSON.stringify({ type: 'typingBE', chat_id: chatID }));
+        socket.send(JSON.stringify({ type: 'typingBE', chat_id: chatID }));
 
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-        socket.send(JSON.stringify({ type: 'stopTypingBE', chat_id: chatID }));
-    }, 1000); // stops typing after 1 second of no input
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+            socket.send(JSON.stringify({ type: 'stopTypingBE', chat_id: chatID }));
+        }, 1000); // stops typing after 1 second of no input
     });
 
 }
@@ -143,22 +143,22 @@ function loadMoreMessages() {
 }
 
 // displayMessages function displays the messages in the chat window (eg load chat history)
-function displayMessages(data, type = 'old') {
+function displayMessages(data, order = 'old') {
     
-    if (type === 'new') {
+    if (order === 'new') {
         data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     }
     // go through all the messages and display them
     if (data) {
         data.forEach(message => {
-            addMessage(message, type);
+            addMessage(message, order);
         });
     }
 }
 
 //addMessage function adds a single message to the chat window
 // it checks if the sender is the user or the chat partner
-function addMessage(message, type = 'new') {
+function addMessage(message, order = 'new') {
     const messagesDiv = document.getElementById('messages');
     const messageElement = document.createElement('div');
 
@@ -173,7 +173,7 @@ function addMessage(message, type = 'new') {
     <div class="message-text">${message.content}</div>
     `;
     
-    if (type === 'new') {
+    if (order === 'new') {
         messagesDiv.appendChild(messageElement);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     } else {

@@ -80,7 +80,6 @@ function renderPost(post) {
             comment_id: 0 
         };
         apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
-        handleVote(post.post_id, 'dislike', 0);
     });
 }
 
