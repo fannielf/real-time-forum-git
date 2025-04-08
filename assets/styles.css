@@ -286,6 +286,21 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     text-align: center;
 }
 
+.category-selection {
+    padding: 7px 10px;
+    margin-top: 10px;
+    border: 1px solid #ebf0ed !important;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: all 0.3s ease-in-out;
+    background-color: rgb(146, 177, 159) !important;
+    color: white;
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 /* Hide the default checkbox */
 .category-tags input {
     display: none;

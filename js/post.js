@@ -25,7 +25,7 @@ function renderPost(post) {
             </div>
         </div>
         <div class="category-container">
-            ${post.categories.map(cat => `<p class="category-tags">${cat}</p>`).join('')}
+            ${post.categories.map(cat => `<p class="category-selection">${cat}</p>`).join('')}
         </div>
         <div class="post-info">
             <div class="left">

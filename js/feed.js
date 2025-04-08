@@ -28,7 +28,7 @@ function renderPosts(posts) {
                 <a href="#" data-post-id="${post.post_id}">${post.post_title}</a>
             </h3>
             <div class="category-container">
-                ${post.categories.map(category => `<p class="category-tags">${category}</p>`).join('')}
+                ${post.categories.map(category => `<p class="category-selection">${category}</p>`).join('')}
             </div>
             <div class="post-info-home">
                 <span class="material-symbols-outlined" style="font-size: 24px;">filter_vintage</span>
