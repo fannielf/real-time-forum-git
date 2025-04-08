@@ -19,7 +19,9 @@ function renderChatPage(username, chatID) {
     <div id="loading-indicator">Loading older messages...</div>
         <div id="messages"></div>
     </div>
-    <div id="typing-indicator" style="display: none;"></div>
+    <div id="typing-indicator" style="display: none;">
+    <span id="typing-user"></span> is typing<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+    </div>
     <div id="input-container">
         <textarea id="message-input" placeholder="Type a message..." maxlength="200" disabled></textarea>
         <button id="send-button" class="send-btn" disabled>Send</button>
@@ -194,12 +196,14 @@ function toggleLoadingIndicator(status = 'hide') {
 function updateTypingStatus(message) {
     if (message.chat_id === getCurrentChatID()) {
         const typingIndicator = document.getElementById('typing-indicator');
+        const typingUserSpan = document.getElementById('typing-user');
+
         if (message.type === "typing") {
+            typingUserSpan.textContent = message.chat_user.username;
             typingIndicator.style.display = 'block';
-            typingIndicator.textContent = `${message.chat_user  .username} is typing...`;
         } else {
             typingIndicator.style.display = 'none';
-            typingIndicator.textContent = '';
+            typingUserSpan.textContent = '';
         }
     }
 }
