@@ -42,7 +42,7 @@ function renderPost(post) {
         <div id="comment-section">
         <h3 class="comment-header">Comments:</h3>
          <form id="comment-form" data-post-id="${post.post_id}">
-                <textarea class="comment-textarea" id="comment" name="comment" placeholder="Enter comment here" required></textarea>
+                <textarea class="comment-textarea" id="comment" name="comment" placeholder="Enter comment here" required maxlength="200"></textarea>
                 <button type="submit">Submit Comment</button>
         </form>
         ${post.comments && post.comments.length > 0 ? post.comments.map(comment => `

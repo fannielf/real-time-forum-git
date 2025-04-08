@@ -557,6 +557,18 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     border: 1px solid rgba(179, 224, 179, 0.5);
 }
 
+.comment p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(7, 8, 7);
+    font-size: 15px;
+}
+
+.comment pre {
+    font-family: Arial, Helvetica, sans-serif;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
 .post-content {
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -566,16 +578,6 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-}
-
-.comment p {
-    font-family: Arial, Helvetica, sans-serif;
-    color: rgb(7, 8, 7);
-    font-size: 15px;
-}
-
-.comment pre {
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Categories (visually) */
