@@ -10,7 +10,7 @@ const refreshSession = async () => {
 
         const result = await response.json();
         if (response.ok) {
-            console.log(result.message);  // Should log: "Session refreshed"
+            console.log(result.message);
         }
     } catch (error) {
         console.error('Error refreshing session:', error);

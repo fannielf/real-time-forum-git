@@ -25,7 +25,7 @@ function renderPost(post) {
             </div>
         </div>
         <div class="category-container">
-            ${post.categories.map(cat => `<p class="category-tags">${cat}</p>`).join('')}
+            ${post.categories.map(cat => `<p class="category-selection">${cat}</p>`).join('')}
         </div>
         <div class="post-info">
             <div class="left">
@@ -42,7 +42,7 @@ function renderPost(post) {
         <div id="comment-section">
         <h3 class="comment-header">Comments:</h3>
          <form id="comment-form" data-post-id="${post.post_id}">
-                <textarea class="comment-textarea" id="comment" name="comment" placeholder="Enter comment here" required></textarea>
+                <textarea class="comment-textarea" id="comment" name="comment" placeholder="Enter comment here" required maxlength="200"></textarea>
                 <button type="submit">Submit Comment</button>
         </form>
         ${post.comments && post.comments.length > 0 ? post.comments.map(comment => `
@@ -56,41 +56,39 @@ function renderPost(post) {
     `;
 
     //add event listener to the comment form
-     document.getElementById('comment-form').addEventListener('submit', async function(event) {
+     document.getElementById('comment-form').addEventListener('submit', function(event) {
         event.preventDefault();
-        await handleComment();
+        handleComment();
     });
 
       // Add event listeners for like and dislike buttons
-    document.getElementById(`like-button-${post.post_id}`).addEventListener('click', async function(event) {
+    document.getElementById(`like-button-${post.post_id}`).addEventListener('click', function(event) {
         event.preventDefault();
         const voteData = {
             vote: 'like',
             post_id: post.post_id,
             comment_id: 0 
         };
-        await apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
+        apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
     });
 
-    document.getElementById(`dislike-button-${post.post_id}`).addEventListener('click', async function(event) {
+    document.getElementById(`dislike-button-${post.post_id}`).addEventListener('click', function(event) {
         event.preventDefault();
         const voteData = {
             vote: 'dislike',
             post_id: post.post_id,
             comment_id: 0 
         };
-        await apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
-        await handleVote(post.post_id, 'dislike', 0);
+        apiPOST(`/api/post/${post.post_id}/vote`, 'vote', voteData)
     });
 }
 
-async function handleComment() {
+function handleComment() {
     const commentTextarea = document.getElementById('comment');
-    const commentContent = commentTextarea.value.trim();
+    const commentContent = commentTextarea.value.replace(/[<>]/g, '').trim();
     const postID = document.getElementById('comment-form').dataset.postId;
 
     if (!commentContent) {
-        // alert("Comment cannot be empty!");
         return;
     }
     apiPOST(`/api/post/${postID}/comment`, 'post', { comment_content: commentContent })

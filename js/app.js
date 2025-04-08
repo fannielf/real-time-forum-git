@@ -113,19 +113,20 @@ async function apiGET(adress, page) {
 
 async function apiPOST(adress, page, postData) {
     try {
-    const response = await fetch(adress, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-    })
+        const response = await fetch(adress, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData),
+        })
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!response.ok) {
-        throw new Error(data.message || "Unknown error");
-    }
+        if (!response.ok) {
+            throw new Error(data.message || "Unknown error");
+        }
+        
         if (page === 'create-post') {
             history.pushState({}, '', '/');
         } else if (page === 'login') {
@@ -135,7 +136,6 @@ async function apiPOST(adress, page, postData) {
             document.getElementById('chat-sidebar').style.display = 'block';
 
             if (data.username) {
-                console.log(data.username)
                 localStorage.setItem('username', data.username);
                 const loggedInUserElement = document.getElementById('logged-in-user');
                 if (loggedInUserElement) {
@@ -189,6 +189,8 @@ async function isAuthenticated() {
         // Check if the response is okay
         if (response.ok) {
             const data = await response.json();
+            console.log(data.message)
+            localStorage.setItem('userID', data.message)
             userID = parseInt(data.message, 10);
 
             if (socket === null) initializeSocket()

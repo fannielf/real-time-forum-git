@@ -1,3 +1,5 @@
+let signupFormListenerAdded = false;  // Track if the listener has been added
+
 function renderSignupPage() {
     const signupPage = document.getElementById('signup-form');
     signupPage.innerHTML = '';
@@ -41,7 +43,8 @@ function renderSignupPage() {
 const signupForm = document.getElementById("signup-page");
 const passwordError = document.getElementById("password-error"); 
 
-signupForm.addEventListener("submit", async function(event) {
+if (!signupFormListenerAdded) {
+signupForm.addEventListener("submit", function(event) {
     event.preventDefault();  
 
     const formData = {
@@ -67,10 +70,11 @@ signupForm.addEventListener("submit", async function(event) {
         document.getElementById("confirm-password").classList.add('success'); // Add success class
     }
 
-    apiPOST('/api/signup', 'signup', formData)
-
+    apiPOST('/api/signup', 'signup', formData) 
+    signupFormListenerAdded = true; 
 });
 }
+
 
 // Handle the link to sign-up page
 document.getElementById('login-link').addEventListener('click', (event) => {
@@ -78,3 +82,4 @@ document.getElementById('login-link').addEventListener('click', (event) => {
     history.pushState({}, '', '/login');
     init();
 });
+}

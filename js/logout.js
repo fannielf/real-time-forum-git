@@ -17,8 +17,11 @@ async function LogoutUser() {
         if (socket !== null) socket.close(); socket = null;
         document.getElementById('logout-button').style.display = 'none';
         document.getElementById('chat-sidebar').style.display = 'none';
+        localStorage.removeItem('username');
+        document.getElementById('logged-in-user').textContent = '';
         history.pushState({}, '', '/login');
         }
+        return
     } catch (error) {
         showError(data.message);
     }
