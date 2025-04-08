@@ -141,7 +141,7 @@ main #feed, #create-post, #post-details, #chat-window {
     background: #e5f0e5;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
-    height: 70vh;
+    height: 77vh;
     overflow: hidden;
     max-height: min-content;
 }
