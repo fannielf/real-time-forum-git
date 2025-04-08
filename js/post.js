@@ -85,7 +85,7 @@ function renderPost(post) {
 
 function handleComment() {
     const commentTextarea = document.getElementById('comment');
-    const commentContent = commentTextarea.value.trim();
+    const commentContent = commentTextarea.value.replace(/[<>]/g, '').trim();
     const postID = document.getElementById('comment-form').dataset.postId;
 
     if (!commentContent) {

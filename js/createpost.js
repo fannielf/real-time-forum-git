@@ -31,8 +31,8 @@ document.getElementById("create-post-form").addEventListener("submit", (event) =
     event.preventDefault();
 
 
-    const title = document.getElementById("title").value.trim();
-    const content = document.getElementById("content").value.trim();
+    const title = document.getElementById("title").value.replace(/[<>]/g, '').trim();
+    const content = document.getElementById("content").value.replace(/[<>]/g, '').trim();
     const errorMessage = document.getElementById("error-message");
     
     if (title === "" || content === "") {
