@@ -147,7 +147,7 @@ async function apiPOST(adress, page, postData) {
         } else if (page === 'signup') {
             history.pushState({}, '', '/login');
         }
-        loadPage();
+        init();
 
     } catch(error) {
         const validationErrors = {
@@ -189,6 +189,8 @@ async function isAuthenticated() {
         // Check if the response is okay
         if (response.ok) {
             const data = await response.json();
+            console.log(data.message)
+            localStorage.setItem('userID', data.message)
             userID = parseInt(data.message, 10);
 
             if (socket === null) initializeSocket()
