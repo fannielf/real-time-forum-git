@@ -7,12 +7,7 @@ import (
 func sendTypingStatus(msg Message, userID int) {
 
 	response := Message{
-		Type: "typing",
-		ChatUser: User{
-			ID:       userID,
-			Username: msg.ChatUser.Username,
-			Online:   true,
-		},
+		Type:   "typing",
 		ChatID: msg.ChatID,
 	}
 
@@ -35,12 +30,7 @@ func sendTypingStatus(msg Message, userID int) {
 				continue
 			}
 			if clientID == chatUser {
-				var err error
-				response.ChatUser.Username, err = backend.GetUsername(userID)
-				if err != nil {
-					return
-				}
-				err = i.WriteJSON(response)
+				err := i.WriteJSON(response)
 				if err != nil {
 					return
 				}

@@ -197,10 +197,11 @@ function updateTypingStatus(message) {
     if (message.chat_id === getCurrentChatID()) {
         const typingIndicator = document.getElementById('typing-indicator');
         const typingUserSpan = document.getElementById('typing-user');
-        const userName
+        const partnerElement = document.getElementById('chat-partner');
+        const partnerName = partnerElement.querySelector('h3').textContent;
 
         if (message.type === "typing") {
-            typingUserSpan.textContent = message.chat_user.username;
+            typingUserSpan.textContent = partnerName;
             typingIndicator.style.display = 'block';
         } else {
             typingIndicator.style.display = 'none';
