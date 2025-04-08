@@ -45,6 +45,15 @@ func handleSignUpPost(w http.ResponseWriter, r *http.Request) {
 	} else if signUpData.Password == "" {
 		status = http.StatusBadRequest
 		message = "Password cannot be empty"
+	} else if signUpData.Age == "" {
+		status = http.StatusBadRequest
+		message = "Please enter your age"
+	} else if signUpData.Gender == "" {
+		status = http.StatusBadRequest
+		message = "Gender is still missing"
+	} else if signUpData.LastName == "" || signUpData.FirstName == "" {
+		status = http.StatusBadRequest
+		message = "Please enter your first and last name"
 	} else {
 		uniqueUsername, uniqueEmail, err := isUsernameOrEmailUnique(signUpData.Username, signUpData.Email)
 		if err != nil {

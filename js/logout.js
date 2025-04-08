@@ -18,7 +18,10 @@ async function LogoutUser() {
         document.getElementById('logout-button').style.display = 'none';
         document.getElementById('chat-sidebar').style.display = 'none';
         localStorage.removeItem('username');
-        document.getElementById('logged-in-user').textContent = '';
+        const loggedInUserElement = document.getElementById('logged-in-user');
+        if (loggedInUserElement) {
+            loggedInUserElement.textContent = '';
+        }
         history.pushState({}, '', '/login');
         }
         return

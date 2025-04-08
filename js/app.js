@@ -6,11 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('logout-button').addEventListener('click', async () => {
     await LogoutUser();
 
-    const loggedInUserElement = document.getElementById('logged-in-user');
-    if (loggedInUserElement) {
-        loggedInUserElement.textContent = ''; // remove the username
-    }
-
     init();
 });
 
@@ -21,7 +16,7 @@ document.getElementById('home-button').addEventListener('click', function (){
 
 // Handle back/forward navigation
 window.addEventListener('popstate', () => {
-    loadPage();
+    init();
 });
 
 let userID = null;
@@ -51,7 +46,6 @@ async function init() {
         }
     };
     loadPage();
-
 }
 
 // toggle which page is shown
@@ -158,6 +152,7 @@ async function apiPOST(adress, page, postData) {
             'Password cannot be empty': true,
             'Username is already taken': true,
             'Email is already registered to existing user' : true,
+            'Title or content cannot be empty' : true,
         };
         const validation = validationErrors[error.message]
 
@@ -167,6 +162,10 @@ async function apiPOST(adress, page, postData) {
             errorBox.style.display = 'block';
         } else if (page === 'signup' && validation) {
             const errorBox = document.getElementById('signup-error')
+            errorBox.textContent = error.message;
+            errorBox.style.display = 'block';
+        } else if (page === 'create-post' && validation) {
+            const errorBox = document.getElementById('error-message')
             errorBox.textContent = error.message;
             errorBox.style.display = 'block';
         } else {
