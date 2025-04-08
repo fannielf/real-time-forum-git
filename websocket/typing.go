@@ -35,7 +35,6 @@ func sendTypingStatus(msg Message, userID int) {
 				continue
 			}
 			if clientID == chatUser {
-				response.ChatUser.ID = chatUser
 				var err error
 				response.ChatUser.Username, err = backend.GetUsername(userID)
 				if err != nil {

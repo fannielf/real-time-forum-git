@@ -197,6 +197,7 @@ function updateTypingStatus(message) {
     if (message.chat_id === getCurrentChatID()) {
         const typingIndicator = document.getElementById('typing-indicator');
         const typingUserSpan = document.getElementById('typing-user');
+        const userName
 
         if (message.type === "typing") {
             typingUserSpan.textContent = message.chat_user.username;

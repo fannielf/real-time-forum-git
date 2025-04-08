@@ -733,11 +733,11 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
  }
 
 #chat-messages {
-    flex-grow: 1;
+    height: 75%; 
     flex-direction: column;
     padding: 10px;
     overflow-y: auto;
-    margin-bottom: 30px;
+    margin-bottom: auto;
     display: flex;
 }
 
@@ -841,16 +841,23 @@ input[type="text"], input[type="password"], input[type="email"], input[type="num
     color: rgb(5, 121, 67); 
 }
 
+.typing-user {
+    font-style: italic;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    padding: 2px 2px;
+}
+
 #typing-indicator {
     font-style: italic;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
-    padding: 6px 12px;
+    padding: 2px 2px;
     color: rgb(27, 50, 38);
   }
   
   .dots span {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     display: inline-block;
     animation: bounce 1.2s infinite;
