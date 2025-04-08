@@ -10,15 +10,14 @@ import (
 	"github.com/google/uuid"
 )
 
-func Authenticate(w http.ResponseWriter, r *http.Request) {
+func Authenticate(w http.ResponseWriter, loggedIn bool, userID int) {
 	status := http.StatusUnauthorized
 	message := "No current sessions"
-	loggedIn, userID := VerifySession(r)
 
 	if loggedIn {
 		refreshLastAccess(userID)
 		status = http.StatusOK
-		message = strconv.Itoa(userID) 
+		message = strconv.Itoa(userID)
 	}
 
 	ResponseHandler(w, status, message)
@@ -155,11 +154,10 @@ func checkSessionExpiry(userID int) bool {
 }
 
 // Handler to verify or expire session
-func SessionHandler(w http.ResponseWriter, r *http.Request) {
+func SessionHandler(w http.ResponseWriter, loggedIn bool, userID int) {
 	status := http.StatusOK
 	message := "Session active"
 
-	loggedIn, userID := VerifySession(r)
 	if !loggedIn {
 		status = http.StatusUnauthorized
 		message = "Session expired"

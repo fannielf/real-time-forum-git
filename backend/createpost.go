@@ -21,13 +21,13 @@ func FetchCategories(w http.ResponseWriter, r *http.Request) {
 }
 
 // // CreatePost receives details for created post and inserts them into the database
-func CreatePost(w http.ResponseWriter, r *http.Request) {
+func CreatePost(w http.ResponseWriter, r *http.Request, userID int) {
 
 	if r.Method == http.MethodGet {
 		FetchCategories(w, r)
 		return
 	} else if r.Method == http.MethodPost {
-		NewPost(w, r)
+		NewPost(w, r, userID)
 		return
 	} else {
 		ResponseHandler(w, http.StatusMethodNotAllowed, "Method Not Allowed")
@@ -36,9 +36,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func NewPost(w http.ResponseWriter, r *http.Request) {
-
-	_, userID := VerifySession(r)
+func NewPost(w http.ResponseWriter, r *http.Request, userID int) {
 
 	var newPost PostDetails
 	decoder := json.NewDecoder(r.Body)

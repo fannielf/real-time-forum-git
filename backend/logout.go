@@ -31,14 +31,6 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var username string
-	err = db.QueryRow("SELECT username FROM User WHERE id = ?", userID).Scan(&username)
-	if err != nil {
-		log.Println("Error fetching username from user table:", err)
-		ResponseHandler(w, http.StatusInternalServerError, "Failed to retrieve username")
-		return
-	}
-
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_id",
 		Value:    "",
@@ -47,6 +39,6 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 		Path:     "/",
 	})
-	log.Println("user logged out: ", username)
+
 	ResponseHandler(w, http.StatusOK, "Logout successful")
 }

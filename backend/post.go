@@ -9,7 +9,7 @@ import (
 )
 
 // PostHandler handles requests to view a specific post
-func PostPage(w http.ResponseWriter, r *http.Request) {
+func PostPage(w http.ResponseWriter, r *http.Request, userID int) {
 
 	pathParts := strings.Split(r.URL.Path, "/")
 	var postID int
@@ -49,12 +49,12 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		HandlePostPageGet(w, r, postID)
+		HandlePostPageGet(w, r, postID, userID)
 	case http.MethodPost:
 		if addedItem == "comment" {
-			HandleComment(w, r, postID)
+			HandleComment(w, r, postID, userID)
 		} else if addedItem == "vote" {
-			HandleVote(w, r, postID)
+			HandleVote(w, r, postID, userID)
 		} else {
 			ResponseHandler(w, http.StatusBadRequest, "Bad Request")
 		}
@@ -65,8 +65,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 }
 
 // HandlePostPageGet handles get requests to the post page
-func HandlePostPageGet(w http.ResponseWriter, r *http.Request, postID int) {
-	_, userID := VerifySession(r)
+func HandlePostPageGet(w http.ResponseWriter, r *http.Request, postID, userID int) {
 	post, err := GetPostDetails(postID, userID)
 	if err != nil {
 		log.Println("Error fetching post details:", err)
@@ -82,8 +81,7 @@ func HandlePostPageGet(w http.ResponseWriter, r *http.Request, postID int) {
 }
 
 // HandlePostPagePost handles post requests to the post page
-func HandleComment(w http.ResponseWriter, r *http.Request, postID int) {
-	_, userID := VerifySession(r)
+func HandleComment(w http.ResponseWriter, r *http.Request, postID, userID int) {
 
 	var newComment CommentDetails
 	decoder := json.NewDecoder(r.Body)
@@ -103,12 +101,11 @@ func HandleComment(w http.ResponseWriter, r *http.Request, postID int) {
 		}
 	}
 
-	HandlePostPageGet(w, r, postID)
+	HandlePostPageGet(w, r, postID, userID)
 }
 
 // HandlePostPagePost handles post requests to the post page
-func HandleVote(w http.ResponseWriter, r *http.Request, postID int) {
-	_, userID := VerifySession(r)
+func HandleVote(w http.ResponseWriter, r *http.Request, postID, userID int) {
 
 	var newVote VoteDetails
 	decoder := json.NewDecoder(r.Body)
@@ -152,7 +149,7 @@ func HandleVote(w http.ResponseWriter, r *http.Request, postID int) {
 		return
 	}
 
-	HandlePostPageGet(w, r, postID)
+	HandlePostPageGet(w, r, postID, userID)
 }
 
 // ValidatePostID checks if a post with the given ID exists in the database

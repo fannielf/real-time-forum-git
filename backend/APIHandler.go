@@ -30,25 +30,38 @@ func APIHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	}
 
 	// Handle different routes based on the URL path
-	switch page {
-	case "feed":
-		HandleFeed(w, r) // Returns posts to be shown in feed
-	case "auth":
-		Authenticate(w, r)
-	case "create-post":
-		CreatePost(w, r)
-	case "login":
-		Login(w, r)
-	case "signup":
-		SignUp(w, r)
-	case "logout":
-		Logout(w, r)
-	case "post":
-		PostPage(w, r)
-	case "refresh-session":
-		SessionHandler(w, r)
-	default:
-		ResponseHandler(w, http.StatusNotFound, "Page Not Found")
-		return
+	loggedIn, userID := VerifySession(r)
+	if !loggedIn {
+		switch page {
+		case "auth":
+			Authenticate(w, loggedIn, userID)
+		case "login":
+			Login(w, r)
+		case "signup":
+			SignUp(w, r)
+		case "refresh-session":
+			SessionHandler(w, loggedIn, userID)
+		default:
+			ResponseHandler(w, http.StatusNotFound, "Page Not Found")
+			return
+		}
+	} else {
+		switch page {
+		case "feed":
+			HandleFeed(w, r) // Returns posts to be shown in feed
+		case "auth":
+			Authenticate(w, loggedIn, userID)
+		case "create-post":
+			CreatePost(w, r, userID)
+		case "logout":
+			Logout(w, r)
+		case "post":
+			PostPage(w, r, userID)
+		case "refresh-session":
+			SessionHandler(w, loggedIn, userID)
+		default:
+			ResponseHandler(w, http.StatusNotFound, "Page Not Found")
+			return
+		}
 	}
 }
